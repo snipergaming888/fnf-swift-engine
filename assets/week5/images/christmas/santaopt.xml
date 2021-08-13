@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="santaopt.png">
+	<!-- Created with Adobe Animate version 20.0.3.25487 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="santa idle in fear instance 10000" x="0" y="0" width="664" height="722" pivotX="7.05" pivotY="0" frameX="0" frameY="-26" frameWidth="664" frameHeight="748"/>
+</TextureAtlas>
