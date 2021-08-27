@@ -34,11 +34,29 @@ class MainMenuState extends MusicBeatState
 
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
-	public static var sniperengineversion:String = " Sniper Engine 2.6";
+	public static var sniperengineversion:String = " Sniper Engine 2.8";
+	public static var sniperengineversionA:String = " SE 2.8";
 	public static var gameVer:String = "v0.2.7.1";
+	public static var nightly:String = " | nightly 1";
 
 	override function create()
 	{
+
+		if (FlxG.random.bool(2))
+			{
+				sniperengineversion = " Sniper Engine 2.7 | LIAM IS STUPID";
+				trace('stupid liam');
+			}
+
+
+			if (FlxG.random.bool(3))
+				{
+					sniperengineversion = " Sniper Engine 2.7 | hi jacob";
+					trace('jacob');
+				}
+
+
+			
 		#if desktop
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("Looking at the Menu", null);
@@ -99,7 +117,7 @@ class MainMenuState extends MusicBeatState
 
 		FlxG.camera.follow(camFollow, null, 0.06);
 
-		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, gameVer + " FNF |" + sniperengineversion + "", 12);
+		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, gameVer + " FNF |" + sniperengineversion + nightly, 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);

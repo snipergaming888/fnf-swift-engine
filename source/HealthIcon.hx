@@ -16,7 +16,7 @@ class HealthIcon extends FlxSprite
 
 		antialiasing = true;
 		animation.add('bf-mallet', [0, 1], 0, false, isPlayer);
-		animation.add('picomallet', [24, 25], 0, false, isPlayer);
+		animation.add('picomallet', [4, 5], 0, false, isPlayer);
 		animation.add('bf', [0, 1], 0, false, isPlayer);
 		animation.add('bf-wolves', [0, 1], 0, false, isPlayer);
 		animation.add('bf-car', [0, 1], 0, false, isPlayer);
@@ -25,6 +25,7 @@ class HealthIcon extends FlxSprite
 		animation.add('ascend', [21, 21], 0, false, isPlayer);
 		animation.add('spooky', [2, 3], 0, false, isPlayer);
 		animation.add('pico', [4, 5], 0, false, isPlayer);
+		animation.add('picoplayable', [4, 5], 0, false, isPlayer);
 		animation.add('mom', [6, 7], 0, false, isPlayer);
 		animation.add('mom-car', [6, 7], 0, false, isPlayer);
 		animation.add('tankman', [8, 9], 0, false, isPlayer);
@@ -40,6 +41,7 @@ class HealthIcon extends FlxSprite
 		animation.add('monster-christmas', [19, 20], 0, false, isPlayer);
 		animation.play(char);
 		scrollFactor.set();
+	
 	}
 
 	override function update(elapsed:Float)

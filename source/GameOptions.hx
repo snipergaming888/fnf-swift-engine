@@ -17,6 +17,7 @@ class GameOptions extends MusicBeatState
 {
 	var selector:FlxText;
 	var curSelected:Int = 0;
+	var CYAN:FlxColor = 0xFF00FFFF;
 
 	var controlsStrings:Array<String> = [];
 
@@ -99,6 +100,9 @@ class GameOptions extends MusicBeatState
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll'), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 0;
+						#if windows
+						ctrl.color = FlxColor.CYAN;
+						#end
 						grpControls.add(ctrl);
 						
 					case 1:
@@ -107,18 +111,27 @@ class GameOptions extends MusicBeatState
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.ghosttapping ? "Ghost Tapping" : "No Ghost Tapping"), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 1;
+						#if windows
+						ctrl.color = FlxColor.CYAN;
+						#end
 						grpControls.add(ctrl);
 					case 2:
 						FlxG.save.data.hideHUD = !FlxG.save.data.hideHUD;
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD"), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 2;
+						#if windows
+						ctrl.color = FlxColor.CYAN;
+						#end
 						grpControls.add(ctrl);
 				    case 3:
 					    FlxG.save.data.cinematic = !FlxG.save.data.cinematic;
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF"), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 3;
+						#if windows
+						ctrl.color = FlxColor.CYAN;
+						#end
 						grpControls.add(ctrl);
 					case 4:
 					   grpControls.remove(grpControls.members[curSelected]);
@@ -126,6 +139,9 @@ class GameOptions extends MusicBeatState
 					   var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.debug ? "debug MODE ON" : "debug MODE OFF"), true, false);
 					   ctrl.isMenuItem = true;
 					   ctrl.targetY = curSelected - 4;
+					   #if windows
+						ctrl.color = FlxColor.RED;
+						#end
 					   grpControls.add(ctrl);
 					 case 5:
 					   grpControls.remove(grpControls.members[curSelected]);
@@ -133,6 +149,9 @@ class GameOptions extends MusicBeatState
 					   var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.reset ? "RESET BUTTON ON" : "RESET BUTTON OFF"), true, false);
 					   ctrl.isMenuItem = true;
 					   ctrl.targetY = curSelected - 5;
+					   #if windows
+						ctrl.color = FlxColor.CYAN;
+						#end
 					   grpControls.add(ctrl);
 					 case 6:
 						grpControls.remove(grpControls.members[curSelected]);
@@ -140,6 +159,9 @@ class GameOptions extends MusicBeatState
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.pausecount ? "pause counter on" : "pause counter off"), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 6;
+						#if windows
+						ctrl.color = FlxColor.CYAN;
+						#end
 						grpControls.add(ctrl);								   	
 				}
 			}
@@ -172,11 +194,26 @@ class GameOptions extends MusicBeatState
 			bullShit++;
 
 			item.alpha = 0.6;
+			#if windows
+			item.color = FlxColor.WHITE;
+            #end
 			// item.setGraphicSize(Std.int(item.width * 0.8));
 
 			if (item.targetY == 0)
 			{
 				item.alpha = 1;
+				#if windows
+				item.color = FlxColor.RED;
+				#end
+				if (curSelected != 4)
+					{
+						#if windows
+						///if debug is current selection
+						/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
+						item.color = FlxColor.CYAN;
+						#end
+					}
+				
 				// item.setGraphicSize(Std.int(item.width));
 			}
 		}

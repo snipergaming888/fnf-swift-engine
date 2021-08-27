@@ -17,6 +17,7 @@ class PerformanceOptions extends MusicBeatState
 {
 	var selector:FlxText;
 	var curSelected:Int = 0;
+	var CYAN:FlxColor = 0xFF00FFFF;
 
 	var controlsStrings:Array<String> = [];
 
@@ -76,6 +77,9 @@ class PerformanceOptions extends MusicBeatState
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, "Antialiasing " + (FlxG.save.data.antialiasing ? "on" : "off"), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 0;
+						#if windows
+						ctrl.color = FlxColor.CYAN;
+						#end
 						grpControls.add(ctrl);
 						
 					case 1:
@@ -83,18 +87,27 @@ class PerformanceOptions extends MusicBeatState
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, "optimizations " + (FlxG.save.data.optimizations ? "on" : "off"), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 1;
+						#if windows
+						ctrl.color = FlxColor.CYAN;
+						#end
 						grpControls.add(ctrl);
 					case 2:
 						FlxG.save.data.downscroll = !FlxG.save.data.downscroll;
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll'), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 2;
+						#if windows
+						ctrl.color = FlxColor.CYAN;
+						#end
 						grpControls.add(ctrl);
 					case 3:
 						FlxG.save.data.antialiasing = !FlxG.save.data.antialiasing;
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, "Antialiasing " + (FlxG.save.data.antialiasing ? "on" : "off"), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 3;
+						#if windows
+						ctrl.color = FlxColor.CYAN;
+						#end
 						grpControls.add(ctrl);
 				}
 			}
@@ -127,11 +140,17 @@ class PerformanceOptions extends MusicBeatState
 			bullShit++;
 
 			item.alpha = 0.6;
+			#if windows
+			item.color = FlxColor.WHITE;
+            #end
 			// item.setGraphicSize(Std.int(item.width * 0.8));
 
 			if (item.targetY == 0)
 			{
 				item.alpha = 1;
+				#if windows
+				item.color = FlxColor.CYAN;
+				#end
 				// item.setGraphicSize(Std.int(item.width));
 			}
 		}

@@ -311,7 +311,14 @@ class StoryMenuState extends MusicBeatState
 					diffic = '-hard';
 			}
 
-			PlayState.storyDifficulty = curDifficulty;
+			new FlxTimer().start(1, function(tmr:FlxTimer)
+				{
+					FlxG.switchState(new CharacterSelectState());
+				});
+
+
+            //BACKUP incase i fuck up
+			/*PlayState.storyDifficulty = curDifficulty;
 
 			PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0].toLowerCase() + diffic, PlayState.storyPlaylist[0].toLowerCase());
 			PlayState.storyWeek = curWeek;
@@ -319,7 +326,7 @@ class StoryMenuState extends MusicBeatState
 			new FlxTimer().start(1, function(tmr:FlxTimer)
 			{
 				LoadingState.loadAndSwitchState(new PlayState(), true);
-			});
+			*///});
 		}
 	}
 

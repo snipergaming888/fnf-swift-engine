@@ -27,6 +27,8 @@ class OptionsMenu extends MusicBeatState
 	var menuBG:FlxSprite;
 	var keytext:FlxText;
 	var aming:Alphabet;
+	var CYAN:FlxColor = 0xFF00FFFF;
+	var LIME:FlxColor = 0xFF00FF00;
 
 	var controlsStrings:Array<String> = [];
 	private var grpControls:FlxTypedGroup<Alphabet>;
@@ -71,6 +73,9 @@ class OptionsMenu extends MusicBeatState
 		var aming:Alphabet = new Alphabet(0, (70 * curSelected) + 30, ('press-any-key'), true, false);
 								aming.isMenuItem = false;
 								aming.targetY = curSelected - 0;
+								#if windows
+								aming.color = FlxColor.LIME;
+								#end
 								keyalphabet.add(aming);
 		if(keytextbool)
 			{
@@ -161,6 +166,7 @@ class OptionsMenu extends MusicBeatState
 			if (FlxG.keys.justPressed.ANY)
 			{
 				PlayerSettings.player1.controls.replaceBinding(Control.UP, Keys, FlxG.keys.getIsDown()[0].ID, null);
+				trace(FlxG.keys.getIsDown()[0].ID);
 				isSettingControlup = false;
 				new FlxTimer().start(0.01, function(tmr:FlxTimer)
 					{
@@ -178,6 +184,7 @@ class OptionsMenu extends MusicBeatState
 				if (FlxG.keys.justPressed.ANY)
 				{
 					PlayerSettings.player1.controls.replaceBinding(Control.DOWN, Keys, FlxG.keys.getIsDown()[0].ID, null);
+					trace(FlxG.keys.getIsDown()[0].ID);
 					isSettingControldown = false;
 					new FlxTimer().start(0.01, function(tmr:FlxTimer)
 						{
@@ -196,6 +203,7 @@ class OptionsMenu extends MusicBeatState
 					if (FlxG.keys.justPressed.ANY)
 					{
 						PlayerSettings.player1.controls.replaceBinding(Control.LEFT, Keys, FlxG.keys.getIsDown()[0].ID, null);
+						trace(FlxG.keys.getIsDown()[0].ID);
 						isSettingControlleft = false;
 						new FlxTimer().start(0.01, function(tmr:FlxTimer)
 							{
@@ -214,6 +222,7 @@ class OptionsMenu extends MusicBeatState
 						if (FlxG.keys.justPressed.ANY)
 						{
 							PlayerSettings.player1.controls.replaceBinding(Control.RIGHT, Keys, FlxG.keys.getIsDown()[0].ID, null);
+							trace(FlxG.keys.getIsDown()[0].ID);
 							isSettingControlright = false;
 							new FlxTimer().start(0.01, function(tmr:FlxTimer)
 								{
@@ -253,11 +262,25 @@ class OptionsMenu extends MusicBeatState
 			bullShit++;
 
 			item.alpha = 0.6;
+			#if windows
+			item.color = FlxColor.WHITE;
+            #end
 			// item.setGraphicSize(Std.int(item.width * 0.8));
 
 			if (item.targetY == 0)
 			{
 				item.alpha = 1;
+				#if windows
+				item.color = FlxColor.RED;
+				#end
+				if (curSelected != 4)
+					{
+						#if windows
+						///if debug is current selection
+						/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
+						item.color = FlxColor.CYAN;
+						#end
+					}
 				// item.setGraphicSize(Std.int(item.width));
 			}
 		}

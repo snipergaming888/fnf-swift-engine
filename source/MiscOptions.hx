@@ -17,6 +17,7 @@ class MiscOptions extends MusicBeatState
 {
 	var selector:FlxText;
 	var curSelected:Int = 0;
+	var CYAN:FlxColor = 0xFF00FFFF;
 
 	var controlsStrings:Array<String> = [];
 
@@ -25,7 +26,7 @@ class MiscOptions extends MusicBeatState
 	override function create()
 	{
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.healthdrain ? 'Healthdrain on' : 'Healthdrain off'));
+		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.healthdrain ? 'Healthdrain on' : 'Healthdrain off') + "\n" + (FlxG.save.data.catgirl ? 'CATGIRL GF ON' : 'CATGIRL GF OFF'));
 		
 		trace(controlsStrings);
 
@@ -76,7 +77,19 @@ class MiscOptions extends MusicBeatState
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.healthdrain ? 'Healthdrain on' : 'Healthdrain off'), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 0;
-						grpControls.add(ctrl);			   	
+						#if windows
+						ctrl.color = FlxColor.CYAN;
+						#end
+						grpControls.add(ctrl);
+					case 1:
+						FlxG.save.data.catgirl = !FlxG.save.data.catgirl;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.catgirl ? 'CATGIRL GF ON' : 'CATGIRL GF OFF'), true, false);
+						ctrl.isMenuItem = true;
+						ctrl.targetY = curSelected - 1;
+						#if windows
+						ctrl.color = FlxColor.CYAN;
+						#end
+						grpControls.add(ctrl);				   	
 				}
 			}
 	}
@@ -108,11 +121,17 @@ class MiscOptions extends MusicBeatState
 			bullShit++;
 
 			item.alpha = 0.6;
+			#if windows
+			item.color = FlxColor.WHITE;
+            #end
 			// item.setGraphicSize(Std.int(item.width * 0.8));
 
 			if (item.targetY == 0)
 			{
 				item.alpha = 1;
+				#if windows
+				item.color = FlxColor.CYAN;
+				#end
 				// item.setGraphicSize(Std.int(item.width));
 			}
 		}

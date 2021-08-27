@@ -37,6 +37,7 @@ class TitleState extends MusicBeatState
 	var credTextShit:Alphabet;
 	var textGroup:FlxGroup;
 	var ngSpr:FlxSprite;
+	var CYAN:FlxColor = 0xFF00FFFF;
 
 	var curWacky:Array<String> = [];
 
@@ -61,13 +62,6 @@ class TitleState extends MusicBeatState
 		// DEBUG BULLSHIT
 
 		super.create();
-
-		// NGio.noLogin(APIStuff.API);
-
-		#if ng
-		var ng:NGio = new NGio(APIStuff.API, APIStuff.EncKey);
-		trace('NEWGROUNDS LOL');
-		#end
 		FlxG.save.data.ghosttapping = true;
 		trace('fuck old input');
 		FlxG.save.data.debug = false;
@@ -131,6 +125,7 @@ class TitleState extends MusicBeatState
 	{
 		if (!initialized)
 		{
+			trace('liam is a nerd');
 			var diamond:FlxGraphic = FlxGraphic.fromClass(GraphicTransTileDiamond);
 			diamond.persist = true;
 			diamond.destroyOnNoUse = false;
@@ -306,7 +301,7 @@ class TitleState extends MusicBeatState
 			transitioning = true;
 			// FlxG.sound.music.stop();
 
-			new FlxTimer().start(2, function(tmr:FlxTimer)
+			new FlxTimer().start(1, function(tmr:FlxTimer)
 			{
 
 			    {
@@ -349,6 +344,16 @@ class TitleState extends MusicBeatState
 		textGroup.add(coolText);
 	}
 
+		function addMoreTextcolorsnipergaming(text:String)
+			{
+				var coolText:Alphabet = new Alphabet(0, 0, text, true, false);
+				coolText.screenCenter(X);
+				coolText.color = FlxColor.BROWN;
+				coolText.y += (textGroup.length * 60) + 200;
+				credGroup.add(coolText);
+				textGroup.add(coolText);
+			}
+
 	function deleteCoolText()
 	{
 		while (textGroup.members.length > 0)
@@ -363,7 +368,7 @@ class TitleState extends MusicBeatState
 		super.beatHit();
 
 		FlxTween.tween(FlxG.camera, {zoom: 1.05}, 0.3, {ease: FlxEase.quadOut, type: BACKWARD});
-		///poly i though you used flx camera lerp but i guess not
+		///poly i thought you used flx camera lerp but i guess not
 		FlxG.log.add(curBeat);
 
 		logoBl.animation.play('bump');
@@ -393,7 +398,12 @@ class TitleState extends MusicBeatState
 			case 5:
 				createCoolText(['sniper engine', 'by']);
 			case 7:
-				addMoreText('sniper gaming');
+				#if windows
+				addMoreTextcolorsnipergaming('sniper gaming');
+				#end
+			#if web	
+			 addMoreText('sniper gaming');
+			 #end
 			// credTextShit.text += '\nNewgrounds';
 			case 8:
 				deleteCoolText();
@@ -416,6 +426,7 @@ class TitleState extends MusicBeatState
 			case 13:
 				addMoreText('Friday');
 			// credTextShit.visible = true;
+			/// friday night funkin night funkin
 			case 14:
 				addMoreText('Night');
 			// credTextShit.text += '\nNight';

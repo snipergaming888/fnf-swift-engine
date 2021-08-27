@@ -57,6 +57,7 @@ class Conductor
 			totalPos += ((60 / curBPM) * 1000 / 4) * deltaSteps;
 		}
 		trace("new BPM map BUDDY " + bpmChangeMap);
+		trace("SONG INFO : " + "\nBPM: " + bpm + "\nCROCHET: " + crochet + "\nSTEP CROCHET: " + stepCrochet + "\nOFFSET: " + offset + "\nSAFE FRAMES: " + safeFrames + "\nSAFE ZONE OFFSET: " + safeZoneOffset);
 	}
 
 	public static function changeBPM(newBpm:Int)

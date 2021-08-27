@@ -5,6 +5,8 @@ import Discord.DiscordClient;
 #end
 import flash.text.TextField;
 import flixel.FlxG;
+import flixel.FlxState;
+import flixel.FlxCamera;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -12,6 +14,8 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import lime.utils.Assets;
 
 using StringTools;
@@ -19,24 +23,30 @@ using StringTools;
 class FreeplayState extends MusicBeatState
 {
 	var songs:Array<SongMetadata> = [];
+	var beatArray:Array<Int> = [100,100,120,180,150,165,130,150,175,165,110,125,180];
 
 	var selector:FlxText;
 	var curSelected:Int = 0;
 	var curDifficulty:Int = 1;
+	var icon:HealthIcon;
 
 	var scoreText:FlxText;
 	var diffText:FlxText;
 	var lerpScore:Int = 0;
 	var intendedScore:Int = 0;
-	var preloadtimer:FlxTimer = new FlxTimer();
+	var songWait:FlxTimer = new FlxTimer();
+	var defaultCamZoom:Float = 1.05;
 
 	private var grpSongs:FlxTypedGroup<Alphabet>;
 	private var curPlaying:Bool = false;
+	private var camZooming:Bool = false;
 
 	private var iconArray:Array<HealthIcon> = [];
 
 	override function create()
 	{
+		Conductor.changeBPM(110);
+
 		var initSonglist = CoolUtil.coolTextFile(Paths.txt('freeplaySonglist'));
 
 		for (i in 0...initSonglist.length)
@@ -93,6 +103,11 @@ class FreeplayState extends MusicBeatState
 			// using a FlxGroup is too much fuss!
 			iconArray.push(icon);
 			add(icon);
+
+			
+				{
+					icon.setGraphicSize(Std.int(FlxMath.lerp(icon.width, 150, 0.15)));
+				}
 
 			// songText.x += 40;
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
@@ -169,6 +184,16 @@ class FreeplayState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+
+		/*if (curSelected != 4)
+			{
+				Conductor.changeBPM(180);
+				if (curBeat % 1 == 0)	
+				FlxTween.tween(FlxG.camera, {zoom: 1.05}, 0.3, {ease: FlxEase.quadOut, type: BACKWARD});
+			}
+
+			*////trace(curBeat);	
+
 		super.update(elapsed);
 
 		if (FlxG.sound.music.volume < 0.7)
@@ -245,6 +270,30 @@ class FreeplayState extends MusicBeatState
 				diffText.text = "[  HARD ";
 		}
 	}
+	override function beatHit()
+		{
+			super.beatHit();
+			trace(curBeat);
+		
+		
+		
+		
+			///iconBop();
+			
+			if (FlxG.camera.zoom < 1.35 && songs[curSelected].songName.toLowerCase() == 'milf' && curBeat >= 8)
+				{
+					FlxG.camera.zoom += 0.030;
+					
+				}
+			//Sum extra detail
+			if (FlxG.camera.zoom < 1.35 && songs[curSelected].songName.toLowerCase() == 'milf' && curBeat >= 168 && curBeat < 200)
+				{
+					FlxG.camera.zoom += 0.060;
+						
+				}
+			
+
+		}
 
 	function changeSelection(change:Int = 0)
 	{
@@ -269,12 +318,12 @@ class FreeplayState extends MusicBeatState
 		#end
 
 		#if PRELOAD_ALL
-		preloadtimer.cancel();
-
-		preloadtimer.start(1.5, function(tmr:FlxTimer)
-		{
-			FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
-		});
+		FlxG.sound.music.stop();
+		songWait.cancel();
+		songWait.start(1, function(tmr:FlxTimer) {
+		Conductor.changeBPM(beatArray[curSelected]);
+		FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
+	    });
 		#end
 
 		var bullShit:Int = 0;
@@ -301,7 +350,16 @@ class FreeplayState extends MusicBeatState
 			}
 		}
 	}
-}
+
+		
+		/*function iconBop(?_scale:Float = 1.25, ?_time:Float = 0.2):Void {
+			iconArray[curSelected].iconScale = iconArray[curSelected].defualtIconScale * _scale;
+		
+		
+			FlxTween.tween(iconArray[curSelected], {iconScale: iconArray[curSelected].defualtIconScale}, _time, {ease: FlxEase.quintOut});
+			 ///once again idk why my shit will not work but thank you smart people from fnf hd dev team
+		*///}
+}   
 
 class SongMetadata
 {

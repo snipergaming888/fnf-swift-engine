@@ -22,6 +22,7 @@ class MenuState extends MusicBeatState
 
 	private var grpControls:FlxTypedGroup<Alphabet>;
 	var versionShit:FlxText;
+	var CYAN:FlxColor = 0xFF00FFFF;
 	override function create()
 	{
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
@@ -110,11 +111,18 @@ class MenuState extends MusicBeatState
 			bullShit++;
 
 			item.alpha = 0.6;
+
+			#if windows
+			item.color = FlxColor.WHITE;
+            #end
 			// item.setGraphicSize(Std.int(item.width * 0.8));
 
 			if (item.targetY == 0)
 			{
 				item.alpha = 1;
+				#if windows
+				item.color = FlxColor.CYAN;
+				#end
 				// item.setGraphicSize(Std.int(item.width));
 			}
 		}
