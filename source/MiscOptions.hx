@@ -26,7 +26,7 @@ class MiscOptions extends MusicBeatState
 	override function create()
 	{
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.healthdrain ? 'Healthdrain on' : 'Healthdrain off') + "\n" + (FlxG.save.data.catgirl ? 'CATGIRL GF ON' : 'CATGIRL GF OFF'));
+		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.healthdrain ? 'Healthdrain on' : 'Healthdrain off') + "\n" + (FlxG.save.data.catgirl ? 'CATGIRL GF ON' : 'CATGIRL GF OFF') + "\n" + (FlxG.save.data.picooverbf ? 'PICO OVER BF ON' : 'PICO OVER BF OFF') + "\n" + (FlxG.save.data.botplay ? 'BOTPLAY ON' : 'BOTPLAY OFF'));
 		
 		trace(controlsStrings);
 
@@ -48,6 +48,7 @@ class MiscOptions extends MusicBeatState
 				grpControls.add(controlLabel);
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 		}
+
 
 		super.create();
 	}
@@ -89,7 +90,27 @@ class MiscOptions extends MusicBeatState
 						#if windows
 						ctrl.color = FlxColor.CYAN;
 						#end
-						grpControls.add(ctrl);				   	
+						grpControls.add(ctrl);
+						
+					case 2:
+						FlxG.save.data.picooverbf = !FlxG.save.data.picooverbf;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.picooverbf ? 'PICO OVER BF ON' : 'PICO OVER BF OFF'), true, false);
+						ctrl.isMenuItem = true;
+						ctrl.targetY = curSelected - 2;
+						#if windows
+						ctrl.color = FlxColor.CYAN;
+						#end
+						grpControls.add(ctrl);
+						
+					case 3:
+						FlxG.save.data.botplay = !FlxG.save.data.botplay;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.botplay ? 'BOTPLAY ON' : 'BOTPLAY OFF'), true, false);
+						ctrl.isMenuItem = true;
+						ctrl.targetY = curSelected - 3;
+						#if windows
+						ctrl.color = FlxColor.CYAN;
+						#end
+						grpControls.add(ctrl);	
 				}
 			}
 	}
@@ -136,4 +157,25 @@ class MiscOptions extends MusicBeatState
 			}
 		}
 	}
+
+
+}	
+
+
+
+   class BotPlay extends MiscOptions
+{	
+	public function press():Bool
+	{
+		FlxG.save.data.botplay = !FlxG.save.data.botplay;
+		trace('BotPlay : ' + FlxG.save.data.botplay);
+		updateDisplay();
+		return true;
+	}
+	
+	private function updateDisplay():String
+		return "BotPlay " + (FlxG.save.data.botplay ? "on" : "off");
 }
+
+
+

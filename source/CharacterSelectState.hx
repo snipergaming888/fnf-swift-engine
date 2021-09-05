@@ -206,27 +206,7 @@ class CharacterSelectState extends MusicBeatState
 				switch(curSelected)
 				{
 					case 0:
-						trace('case 0');
-						var diffic = "";
 
-						switch (curDifficulty)
-						{
-							case 0:
-								diffic = '-easy';
-							case 2:
-								diffic = '-hard';
-						}
-
-
-						PlayState.storyDifficulty = curDifficulty;
-
-						PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0].toLowerCase() + diffic, PlayState.storyPlaylist[0].toLowerCase());
-						PlayState.storyWeek = curWeek;
-						PlayState.campaignScore = 0;
-						new FlxTimer().start(1, function(tmr:FlxTimer)
-						{
-							LoadingState.loadAndSwitchState(new PlayState(), true);
-						});
 					case 1:
 						FlxG.switchState(new OptionsMenu());
 					case 2:

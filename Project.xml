@@ -77,7 +77,8 @@
 		<library name="ugh"    preload="false" />
 		
 	</section>
-	
+	<assets path="assets/preload/videos" include="*.mp3" if="web"/>
+    <assets path="assets/preload/videos" include="*.ogg" unless="web"/>
 	<assets path="assets/songs"    library="songs"    exclude="*.ogg" if="web"/>
 	<assets path="assets/songs"    library="songs"    exclude="*.mp3" unless="web"/>
 	<assets path="assets/shared"   library="shared"   exclude="*.ogg" if="web"/>
@@ -128,8 +129,8 @@
 	<haxelib name="flixel-ui" />
 	<haxelib name="newgrounds"/>
 	<haxelib name="faxe" if='switch'/>
-	<haxelib name="openfl-webm"/>
 	<haxelib name="actuate" />
+    <haxelib name="extension-webm" if="desktop" />
 	<haxelib name="polymod"/>
 	<haxelib name="discord_rpc" if="desktop"/>
 	<!-- <haxelib name="hxcpp-debug-server" if="desktop"/> -->

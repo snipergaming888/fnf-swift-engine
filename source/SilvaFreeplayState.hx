@@ -40,7 +40,7 @@ class SilvaFreeplayState extends MusicBeatState
 
 		for (i in 0...initSonglist.length)
 		{
-			songs.push(new SongMetadatasilva(initSonglist[i], 2, 'gf'));
+			songs.push(new SongMetadatasilva(initSonglist[i], 2, 'bf-pixel'));
 		}
 
 		/* 
@@ -61,8 +61,9 @@ class SilvaFreeplayState extends MusicBeatState
 		#if debug
 		isDebug = true;
 		#end
-		addWeek(['test'], 1, ['bf-pixel']);
 		addWeek(['hand-crushed-by-a-mallet'], 3, ['picomallet']);
+		addWeek(['glitcher'], 1, ['hexvirus']);
+		addWeek(['defeat'], 1, ['black']);
 		// LOAD MUSIC
 
 		// LOAD CHARACTERS
@@ -160,6 +161,7 @@ class SilvaFreeplayState extends MusicBeatState
 		}
 	}
 
+
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
@@ -201,28 +203,33 @@ class SilvaFreeplayState extends MusicBeatState
 
 		if (accepted)
 		{
-			var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
+         #if windows
+		 if (curSelected == 2)
+				{
+					FlxG.switchState(new Cache());
+					diffText.text = "LOADING";
+				}
+			#end
+					{
+						var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
 
-			trace(poop);
+						trace(poop);
+			
+						PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
+						PlayState.isStoryMode = false;
+						PlayState.storyDifficulty = 1;
+			
+						PlayState.storyWeek = songs[curSelected].week;
+						trace('CUR WEEK' + PlayState.storyWeek);
+						LoadingState.loadAndSwitchState(new PlayState());
+					}
 
-			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
-			PlayState.isStoryMode = false;
-			PlayState.storyDifficulty = curDifficulty;
-
-			PlayState.storyWeek = songs[curSelected].week;
-			trace('CUR WEEK' + PlayState.storyWeek);
-			LoadingState.loadAndSwitchState(new PlayState());
+				
 		}
 	}
 
 	function changeDiff(change:Int = 0)
 	{
-		curDifficulty += change;
-
-		if (curDifficulty < 0)
-			curDifficulty = 1;
-		if (curDifficulty > 0)
-			curDifficulty = 1;
 
 		#if !switch
 		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
@@ -231,11 +238,11 @@ class SilvaFreeplayState extends MusicBeatState
 		switch (curDifficulty)
 		{
 			case 0:
-				diffText.text = "NORMAL";
+				diffText.text = "HARD";
 			case 1:
-				diffText.text = 'NORMAL';
+				diffText.text = 'HARD';
 			case 2:
-				diffText.text = "NORMAL";
+				diffText.text = "HARD";
 		}
 	}
 

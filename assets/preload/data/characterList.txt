@@ -16,3 +16,9 @@ senpai
 senpai-angry
 spirit
 picoplayable
+toby
+hexWIRE
+bfWIRE
+hexvirus
+bf-glitcher
+gf-glitcher

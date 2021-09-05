@@ -14,6 +14,7 @@ using StringTools;
 class Note extends FlxSprite
 {
 	public var strumTime:Float = 0;
+	///default 0;
 
 	public var mustPress:Bool = false;
 	public var noteData:Int = 0;
@@ -26,6 +27,9 @@ class Note extends FlxSprite
 	public var isSustainNote:Bool = false;
 
 	public var noteScore:Float = 1;
+
+	public var noteYOff:Int = 0;
+	///default: 0
 
 	public static var swagWidth:Float = 160 * 0.7;
 	public static var PURP_NOTE:Int = 0;

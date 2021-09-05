@@ -163,6 +163,12 @@ class AnimationDebug extends FlxState
 			genBoyOffsets(false);
 		}
 
+		if (FlxG.keys.pressed.ESCAPE)
+			{
+				FlxG.switchState(new MainMenuState());
+				///why was there no option to leave this state?
+			}
+
 		var upP = FlxG.keys.anyJustPressed([UP]);
 		var rightP = FlxG.keys.anyJustPressed([RIGHT]);
 		var downP = FlxG.keys.anyJustPressed([DOWN]);

@@ -76,8 +76,16 @@ class StoryMenuState extends MusicBeatState
 
 		if (FlxG.sound.music != null)
 		{
-			if (!FlxG.sound.music.playing)
-				FlxG.sound.playMusic(Paths.music('freakyMenu'));
+			if (TitleState.old)
+				{
+					if (!FlxG.sound.music.playing)
+						FlxG.sound.playMusic(Paths.music('title'));
+				}
+				else
+					{
+						if (!FlxG.sound.music.playing)
+							FlxG.sound.playMusic(Paths.music('freakyMenu'));
+					}
 		}
 
 		persistentUpdate = persistentDraw = true;
@@ -311,22 +319,30 @@ class StoryMenuState extends MusicBeatState
 					diffic = '-hard';
 			}
 
-			new FlxTimer().start(1, function(tmr:FlxTimer)
-				{
-					FlxG.switchState(new CharacterSelectState());
-				});
-
 
             //BACKUP incase i fuck up
-			/*PlayState.storyDifficulty = curDifficulty;
+			///i fucked up
+			PlayState.storyDifficulty = curDifficulty;
 
 			PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0].toLowerCase() + diffic, PlayState.storyPlaylist[0].toLowerCase());
 			PlayState.storyWeek = curWeek;
 			PlayState.campaignScore = 0;
-			new FlxTimer().start(1, function(tmr:FlxTimer)
-			{
-				LoadingState.loadAndSwitchState(new PlayState(), true);
-			*///});
+			if (curWeek == 6)
+				{
+					new FlxTimer().start(1, function(tmr:FlxTimer)
+						{
+							LoadingStatePixel.loadAndSwitchState(new PlayState(), true);
+							trace(curWeek);
+						});
+				}
+				else
+					{
+						new FlxTimer().start(1, function(tmr:FlxTimer)
+							{
+								LoadingState.loadAndSwitchState(new PlayState(), true);
+								trace(curWeek);
+							});
+					}
 		}
 	}
 

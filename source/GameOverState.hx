@@ -21,6 +21,7 @@ class GameOverState extends FlxTransitionableState
 		bfY = y;
 	}
 
+
 	override function create()
 	{
 		/* var loser:FlxSprite = new FlxSprite(100, 100);
@@ -31,9 +32,29 @@ class GameOverState extends FlxTransitionableState
 			// add(loser); */
 
 		var bf:Boyfriend = new Boyfriend(bfX, bfY);
+		var bfsecret:Boyfriend = new Boyfriend(bfX, bfY, 'bf-defeat-secret');
+		var bfdefeat:Boyfriend = new Boyfriend(bfX, bfY, 'bf-defeat-death');
 		// bf.scrollFactor.set();
-		add(bf);
-		bf.playAnim('firstDeath');
+
+		if (PlayState.SONG.song.toLowerCase() == 'defeat')
+			{
+				trace('defeat');
+				if(FlxG.random.bool(5))	
+					{
+						add(bfsecret)
+						bfsecret.playAnim('firstDeath');
+					}
+					else
+						{
+							add(bfdefeat)
+							bfdefeat.playAnim('firstDeath');
+						}
+			}
+			else
+				{
+					add(bf);
+					bf.playAnim('firstDeath');
+				}
 
 		FlxG.camera.follow(bf, LOCKON, 0.001);
 		/* 
