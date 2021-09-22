@@ -1,6 +1,8 @@
 package;
 
+import Controls.KeyboardScheme;
 import flixel.FlxG;
+import flixel.util.FlxSave;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.FlxCamera;
@@ -32,6 +34,7 @@ class TitleState extends MusicBeatState
 {
 	static var initialized:Bool = false;
 	public static var old:Bool = false;
+	public static var gamepad:Bool = false;
 
 	var blackScreen:FlxSprite;
 	var credGroup:FlxGroup;
@@ -41,6 +44,7 @@ class TitleState extends MusicBeatState
 	var CYAN:FlxColor = 0xFF00FFFF;
 	var LIGHTBLUE:FlxColor = 0xFF00eaff;
 	var logo:FlxSprite;
+	var _controlsSave:FlxSave;
 
 	var curWacky:Array<String> = [];
 	var curWacky2:Array<String> = [];
@@ -78,28 +82,32 @@ class TitleState extends MusicBeatState
 		trace('turning off debug');
 		
 		if (FlxG.save.data.ghosttapping == null)
-			FlxG.save.data.ghosttapping = false;
+			FlxG.save.data.ghosttapping = true;
 
 		if (FlxG.save.data.downscroll == null)
 			FlxG.save.data.downscroll = false;
 
 		if (FlxG.save.data.optimizations == null)
 			FlxG.save.data.optimizations = false;
+
+		if (FlxG.save.data.debug == null)
+			FlxG.save.data.debug = false;
 		
 		if (FlxG.save.data.antialiasing == null)
 			FlxG.save.data.antialiasing = true;
 
+		if (FlxG.save.data.botplay == null)
+			FlxG.save.data.botplay = false;
+
 
 		if (FlxG.save.data.offset == null)
 			FlxG.save.data.offset = 0;
-
-		if (FlxG.save.data.offset == null)
-			FlxG.save.data.offset = 0;
-
+		
 			
-		FlxG.save.bind('sniper', 'snipergaming888');
+		FlxG.save.bind('sniperengine', 'snipergaming888');
 
 		Highscore.load();
+		keyCheck();
 
 		if (FlxG.save.data.weekUnlocked != null)
 		{
@@ -121,7 +129,7 @@ class TitleState extends MusicBeatState
 		FlxG.switchState(new ChartingState());
 		#else
 		new FlxTimer().start(1, function(tmr:FlxTimer)
-		{if (FlxG.random.bool(20))
+		{if (FlxG.random.bool(5))
 			{
 				old = true;
 				trace('old intro');
@@ -650,4 +658,37 @@ class TitleState extends MusicBeatState
 			skippedIntro = true;
 		}
 	}
+
+	public static function resetBinds():Void{
+
+        FlxG.save.data.upBind = "UP";
+        FlxG.save.data.downBind = "DOWN";
+        FlxG.save.data.leftBind = "LEFT";
+        FlxG.save.data.rightBind = "RIGHT";
+		PlayerSettings.player1.controls.loadKeyBinds();
+		trace('RESET BINDS TO:');
+		trace('${FlxG.save.data.leftBind}-${FlxG.save.data.downBind}-${FlxG.save.data.upBind}-${FlxG.save.data.rightBind}');
+	}
+
+    public static function keyCheck():Void
+    {
+        if(FlxG.save.data.upBind == null){
+            FlxG.save.data.upBind = "UP";
+			trace("DEFAULT BIND");
+        }
+        if(FlxG.save.data.downBind == null){
+            FlxG.save.data.downBind = "DOWN";
+			trace("DEFAULT BIND");
+        }
+        if(FlxG.save.data.leftBind == null){
+            FlxG.save.data.leftBind = "LEFT";
+			trace("DEFAULT BIND");
+        }
+        if(FlxG.save.data.rightBind == null){
+            FlxG.save.data.rightBind = "RIGHT";
+			trace("DEFAULT BIND");
+        }
+		trace('UR BINDS ARE:');
+        trace('${FlxG.save.data.leftBind}-${FlxG.save.data.downBind}-${FlxG.save.data.upBind}-${FlxG.save.data.rightBind}');
+    }
 }

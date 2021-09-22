@@ -1,10 +1,14 @@
 package;
 
+import Controls.KeyboardScheme;
+import Controls.Control;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
+import flixel.input.keyboard.FlxKey;
+import flixel.math.FlxMath;
 
 class LatencyState extends FlxState
 {
@@ -14,19 +18,18 @@ class LatencyState extends FlxState
 
 	override function create()
 	{
-		FlxG.sound.playMusic(Paths.sound('soundTest'));
+		FlxG.sound.playMusic(Paths.sound('soundTest', 'shared'));
 
 		noteGrp = new FlxTypedGroup<Note>();
 		add(noteGrp);
 
-		for (i in 0...32)
+		for (i in 0...200)
 		{
 			var note:Note = new Note(Conductor.crochet * i, 1);
 			noteGrp.add(note);
 		}
 
-		offsetText = new FlxText();
-		offsetText.screenCenter();
+		offsetText = new FlxText(500,700);
 		add(offsetText);
 
 		strumLine = new FlxSprite(FlxG.width / 2, 100).makeGraphic(FlxG.width, 5);
@@ -39,7 +42,7 @@ class LatencyState extends FlxState
 
 	override function update(elapsed:Float)
 	{
-		offsetText.text = "Offset: " + Conductor.offset + "ms";
+		offsetText.text = "Offset: " + Conductor.offset + "ms | left and right arrow to change, hold down SHIFT to go faster.";
 
 		Conductor.songPosition = FlxG.sound.music.time - Conductor.offset;
 
@@ -60,6 +63,12 @@ class LatencyState extends FlxState
 			FlxG.resetState();
 		}
 
+		if (FlxG.keys.justPressed.ESCAPE)
+			FlxG.switchState(new GameOptions());
+		if (FlxG.keys.justPressed.ESCAPE)
+			FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
+		if (FlxG.keys.justPressed.ESCAPE)
+			FlxG.sound.music.stop();
 		noteGrp.forEach(function(daNote:Note)
 		{
 			daNote.y = (strumLine.y - (Conductor.songPosition - daNote.strumTime) * 0.45);

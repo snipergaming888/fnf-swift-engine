@@ -4,6 +4,7 @@ package;
 import Discord.DiscordClient;
 #end
 import flash.text.TextField;
+import Song.SwagSong;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.FlxCamera;
@@ -22,14 +23,13 @@ using StringTools;
 
 class FreeplayState extends MusicBeatState
 {
-	var songs:Array<SongMetadata> = [];
-	var beatArray:Array<Int> = [100,100,120,180,150,165,130,150,175,165,110,125,180];
+	var songs:Array<SongMetadata> = []; ///all bpms up to milf
+	var beatArray:Array<Int> = [100,100,120,180,150,165,130,150,175,165,110,125,180,100,150,159,144,120,190,162];
 
 	var selector:FlxText;
-	var curSelected:Int = 0;
+	var curSelected:Int = FlxG.save.data.curselected;
 	var curDifficulty:Int = 1;
 	var icon:HealthIcon;
-
 	var scoreText:FlxText;
 	var diffText:FlxText;
 	var lerpScore:Int = 0;
@@ -41,11 +41,19 @@ class FreeplayState extends MusicBeatState
 	private var curPlaying:Bool = false;
 	private var camZooming:Bool = false;
 
+	var startTimer:FlxTimer;
+
+	var camZoom:FlxTween;
+
 	private var iconArray:Array<HealthIcon> = [];
 
 	override function create()
 	{
 		Conductor.changeBPM(110);
+
+		if (FlxG.save.data.curselected == null)
+			FlxG.save.data.curselected = "0";
+		trace('default selected: ' + FlxG.save.data.curselected);
 
 		var initSonglist = CoolUtil.coolTextFile(Paths.txt('freeplaySonglist'));
 
@@ -80,6 +88,7 @@ class FreeplayState extends MusicBeatState
 		addWeek(['Cocoa', 'Eggnog', 'Winter-Horrorland'], 5, ['parents-christmas', 'parents-christmas', 'monster-christmas']);
 		
 		addWeek(['Senpai', 'Roses', 'Thorns'], 6, ['senpai', 'senpai', 'spirit']);
+		addWeek(['RANDOM SONGS'], 1, ['nothing']);
 		// LOAD MUSIC
 
 		// LOAD CHARACTERS
@@ -185,16 +194,19 @@ class FreeplayState extends MusicBeatState
 	override function update(elapsed:Float)
 	{
 
-		/*if (curSelected != 4)
-			{
-				Conductor.changeBPM(180);
-				if (curBeat % 1 == 0)	
-				FlxTween.tween(FlxG.camera, {zoom: 1.05}, 0.3, {ease: FlxEase.quadOut, type: BACKWARD});
-			}
+		if (FlxG.sound.music != null)
+            Conductor.songPosition = FlxG.sound.music.time;
 
-			*////trace(curBeat);	
+		///if (curSelected != 4)
+
 
 		super.update(elapsed);
+
+
+		if (curSelected == 19)
+			{
+				curDifficulty = 2;
+			}
 
 		if (FlxG.sound.music.volume < 0.7)
 		{
@@ -210,7 +222,7 @@ class FreeplayState extends MusicBeatState
 
 		var upP = controls.UP_P;
 		var downP = controls.DOWN_P;
-		var accepted = controls.ACCEPT;
+		///var accepted = controls.ACCEPT;
 
 		if (upP)
 		{
@@ -230,20 +242,37 @@ class FreeplayState extends MusicBeatState
 		{
 			FlxG.switchState(new MainMenuState());
 		}
+		#if windows
+			if (curSelected == 19)
+				   {
+					  /// diffText.text = "[  HARD ";
+					  diffText.text = " RANDOM SHIT ";
+				   }
+			   #end
 
-		if (accepted)
+		if (controls.ACCEPT)
 		{
-			var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
+			accepted = false;
+			
+			if (curSelected == 19)
+				   {
+					   FlxG.switchState(new SilvaFreeplayState());
+					   diffText.text = "LOADING";
+				   }
+				   else
+					{
+						var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
 
-			trace(poop);
-
-			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
-			PlayState.isStoryMode = false;
-			PlayState.storyDifficulty = curDifficulty;
-
-			PlayState.storyWeek = songs[curSelected].week;
-			trace('CUR WEEK' + PlayState.storyWeek);
-			LoadingState.loadAndSwitchState(new PlayState());
+						trace(poop);
+			
+						PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
+						PlayState.isStoryMode = false;
+						PlayState.storyDifficulty = curDifficulty;
+			
+						PlayState.storyWeek = songs[curSelected].week;
+						trace('CUR WEEK' + PlayState.storyWeek);
+						LoadingState.loadAndSwitchState(new PlayState());
+					}
 		}
 	}
 
@@ -255,6 +284,12 @@ class FreeplayState extends MusicBeatState
 			curDifficulty = 2;
 		if (curDifficulty > 2)
 			curDifficulty = 0;
+
+		if (curSelected == 19)
+			{
+				diffText.text = "[  HARD ";
+				curDifficulty = 2;
+			}
 
 		#if !switch
 		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
@@ -270,30 +305,67 @@ class FreeplayState extends MusicBeatState
 				diffText.text = "[  HARD ";
 		}
 	}
+
 	override function beatHit()
 		{
 			super.beatHit();
-			trace(curBeat);
 		
-		
-		
-		
-			///iconBop();
-			
-			if (FlxG.camera.zoom < 1.35 && songs[curSelected].songName.toLowerCase() == 'milf' && curBeat >= 8)
+			if (accepted)
 				{
-					FlxG.camera.zoom += 0.030;
-					
+					bopOnBeat();
+					///iconBop();
+					trace(curBeat);
 				}
-			//Sum extra detail
-			if (FlxG.camera.zoom < 1.35 && songs[curSelected].songName.toLowerCase() == 'milf' && curBeat >= 168 && curBeat < 200)
-				{
-					FlxG.camera.zoom += 0.060;
-						
-				}
-			
-
 		}
+
+		function bopOnBeat()
+			{
+				if (accepted)
+				{
+					if (curSelected == 12)
+						{
+							new FlxTimer().start(2.50, function(tmr:FlxTimer)
+								{
+									trace('milf');
+									if (curBeat % 1 == 0)
+										{
+											FlxG.camera.zoom += 0.030;
+											camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+										}
+					
+								});
+						}
+						else if (curSelected == 9)
+							{
+								new FlxTimer().start(11.00, function(tmr:FlxTimer)
+									{
+										trace('blammed');
+										if (curBeat % 4 == 0)
+											{
+												FlxG.camera.zoom += 0.090;
+												camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+											}
+						
+									});
+							}
+							else if (curSelected == 0)
+								{
+											if (curBeat % 4 == 0)
+												{
+													FlxG.camera.zoom += 0.015;
+													camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+												}
+								
+								}
+						    else if (curBeat % 4 == 0)
+						    	{
+								    FlxG.camera.zoom += 0.015;
+								    camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+							    }
+				}
+			}
+
+	var accepted:Bool = true;
 
 	function changeSelection(change:Int = 0)
 	{
@@ -311,7 +383,7 @@ class FreeplayState extends MusicBeatState
 			curSelected = 0;
 
 		// selector.y = (70 * curSelected) + 30;
-
+		FlxG.save.data.curselected = curSelected;
 		#if !switch
 		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
 		// lerpScore = 0;
@@ -321,10 +393,12 @@ class FreeplayState extends MusicBeatState
 		FlxG.sound.music.stop();
 		songWait.cancel();
 		songWait.start(1, function(tmr:FlxTimer) {
-		Conductor.changeBPM(beatArray[curSelected]);
 		FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
+		Conductor.changeBPM(beatArray[curSelected]);
+		trace(Conductor.bpm);
 	    });
 		#end
+		trace('current selection: ' + curSelected);
 
 		var bullShit:Int = 0;
 
@@ -332,6 +406,9 @@ class FreeplayState extends MusicBeatState
 		{
 			iconArray[i].alpha = 0.6;
 		}
+
+
+		///curSelected = FlxG.save.data.curselected;
 
 		iconArray[curSelected].alpha = 1;
 
@@ -352,13 +429,13 @@ class FreeplayState extends MusicBeatState
 	}
 
 		
-		/*function iconBop(?_scale:Float = 1.25, ?_time:Float = 0.2):Void {
-			iconArray[curSelected].iconScale = iconArray[curSelected].defualtIconScale * _scale;
+	/*function iconBop(?_scale:Float = 1.25, ?_time:Float = 0.2):Void {
+		iconArray[curSelected].iconScale = iconArray[curSelected].defualtIconScale* _scale;
+	
+	
+		FlxTween.tween(iconArray[curSelected], {iconScale: iconArray[curSelected].defualtIconScale}, _time, {ease: FlxEase.quintOut});
 		
-		
-			FlxTween.tween(iconArray[curSelected], {iconScale: iconArray[curSelected].defualtIconScale}, _time, {ease: FlxEase.quintOut});
-			 ///once again idk why my shit will not work but thank you smart people from fnf hd dev team
-		*///}
+	*///}
 }   
 
 class SongMetadata

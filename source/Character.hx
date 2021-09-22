@@ -129,6 +129,92 @@ class Character extends FlxSprite
 						}
 
 
+						case 'gf-wire':
+				   // GIRLFRIEND WIRE CODE
+							tex = Paths.getSparrowAtlas('GF_assets_night', 'shared');
+
+							frames = tex;
+					animation.addByPrefix('cheer', 'GF Cheer', 24, false);
+					animation.addByPrefix('singLEFT', 'GF left note', 24, false);
+					animation.addByPrefix('singRIGHT', 'GF Right Note', 24, false);
+					animation.addByPrefix('singUP', 'GF Up Note', 24, false);
+					animation.addByPrefix('singDOWN', 'GF Down Note', 24, false);
+					animation.addByIndices('sad', 'gf sad', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "", 24, false);
+					animation.addByIndices('danceLeft', 'GF Dancing Beat', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
+					animation.addByIndices('danceRight', 'GF Dancing Beat', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
+					animation.addByIndices('hairBlow', "GF Dancing Beat Hair blowing", [0, 1, 2, 3], "", 24);
+					animation.addByIndices('hairFall', "GF Dancing Beat Hair Landing", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], "", 24, false);
+					animation.addByPrefix('scared', 'GF FEAR', 24);
+	
+					addOffset('cheer');
+					addOffset('sad', -2, -2);
+					addOffset('danceLeft', 0, -9);
+					addOffset('danceRight', 0, -9);
+	
+					addOffset("singUP", 0, 4);
+					addOffset("singRIGHT", 0, -20);
+					addOffset("singLEFT", 0, -19);
+					addOffset("singDOWN", 0, -20);
+					addOffset('hairBlow', 45, -8);
+					addOffset('hairFall', 0, -9);
+	
+					addOffset('scared', -2, -17);
+	
+					if (FlxG.save.data.antialiasing)
+						{
+							antialiasing = true;
+						}
+						else
+							{
+								antialiasing = false;
+							}
+	
+					playAnim('danceRight');
+
+					case 'gf-night':
+						// GIRLFRIEND WIRE CODE
+								 tex = Paths.getSparrowAtlas('GF_assets_night', 'shared');
+	 
+								 frames = tex;
+						 animation.addByPrefix('cheer', 'GF Cheer', 24, false);
+						 animation.addByPrefix('singLEFT', 'GF left note', 24, false);
+						 animation.addByPrefix('singRIGHT', 'GF Right Note', 24, false);
+						 animation.addByPrefix('singUP', 'GF Up Note', 24, false);
+						 animation.addByPrefix('singDOWN', 'GF Down Note', 24, false);
+						 animation.addByIndices('sad', 'gf sad', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "", 24, false);
+						 animation.addByIndices('danceLeft', 'GF Dancing Beat', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
+						 animation.addByIndices('danceRight', 'GF Dancing Beat', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
+						 animation.addByIndices('hairBlow', "GF Dancing Beat Hair blowing", [0, 1, 2, 3], "", 24);
+						 animation.addByIndices('hairFall', "GF Dancing Beat Hair Landing", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], "", 24, false);
+						 animation.addByPrefix('scared', 'GF FEAR', 24);
+		 
+						 addOffset('cheer');
+						 addOffset('sad', -2, -2);
+						 addOffset('danceLeft', 0, -9);
+						 addOffset('danceRight', 0, -9);
+		 
+						 addOffset("singUP", 0, 4);
+						 addOffset("singRIGHT", 0, -20);
+						 addOffset("singLEFT", 0, -19);
+						 addOffset("singDOWN", 0, -20);
+						 addOffset('hairBlow', 45, -8);
+						 addOffset('hairFall', 0, -9);
+		 
+						 addOffset('scared', -2, -17);
+		 
+						 if (FlxG.save.data.antialiasing)
+							 {
+								 antialiasing = true;
+							 }
+							 else
+								 {
+									 antialiasing = false;
+								 }
+		 
+						 playAnim('danceRight');
+						
+
+
 						case 'gf-glitcher':
 				// GIRLFRIEND CODE
 				if (FlxG.save.data.catgirl)
@@ -408,6 +494,44 @@ class Character extends FlxSprite
 								flipX = true;
 							}
 
+							case 'bf-night':
+					
+							tex = Paths.getSparrowAtlas('BOYFRIENDNIGHT', 'shared');
+							frames = tex;
+							animation.addByPrefix('idle', "Pico Idle Dance", 24);
+							animation.addByPrefix('singUP', 'pico Up note0', 24, false);
+							animation.addByPrefix('singDOWN', 'Pico Down Note0', 24, false);
+							animation.addByPrefix('singLEFT', 'Pico NOTE LEFT0', 24, false);
+					     	animation.addByPrefix('singRIGHT', 'Pico Note Right0', 24, false);
+							animation.addByPrefix('singRIGHTmiss', 'Pico NOTE LEFT miss', 24, false);
+							animation.addByPrefix('singLEFTmiss', 'Pico Note Right Miss', 24, false);
+							animation.addByPrefix('singUPmiss', 'pico Up note miss', 24);
+							animation.addByPrefix('singDOWNmiss', 'Pico Down Note MISS', 24);
+			
+							addOffset('idle');
+							addOffset("singUP", 14, 27);
+							addOffset("singRIGHT", -51, -6);
+							addOffset("singLEFT", 84, -7);
+							addOffset("singDOWN", 87, -72);
+							addOffset("singUPmiss", 14, 27);
+							addOffset("singRIGHTmiss", 84, -7);
+							addOffset("singLEFTmiss", -51, -6);
+							addOffset("singDOWNmiss", 94, -28);
+	
+							flipX = true;
+			
+							if (FlxG.save.data.antialiasing)
+								{
+									antialiasing = true;
+								}
+								else
+									{
+										antialiasing = false;
+									}
+			
+							playAnim('idle');
+						
+
 
 			case 'gf-christmas':
 				tex = Paths.getSparrowAtlas('gfChristmas', 'week5');
@@ -548,6 +672,36 @@ class Character extends FlxSprite
 						}
 
 				playAnim('idle');
+
+
+				case 'mia':
+				// MIA ANIMATION LOADING CODE
+				// SHE IS SO HOT
+				tex = Paths.getSparrowAtlas('stadium/Mia', 'shared');
+				frames = tex;
+				animation.addByPrefix('idle', 'mia idle', 24);
+				animation.addByPrefix('singUP', 'Mia Up', 24);
+				animation.addByPrefix('singRIGHT', 'mia right', 24);
+				animation.addByPrefix('singDOWN', 'Mia Down', 24);
+				animation.addByPrefix('singLEFT', 'Mia Left', 24);
+
+				addOffset('idle');
+				addOffset("singUP", 26, 73);
+				addOffset("singRIGHT", 66, -68);
+				addOffset("singLEFT", 185, -5);
+				addOffset("singDOWN", 18, -21);
+
+				if (FlxG.save.data.antialiasing)
+					{
+						antialiasing = true;
+					}
+					else
+						{
+							antialiasing = false;
+						}
+
+				playAnim('idle');
+
 
 
 				case 'toby':
@@ -1474,6 +1628,7 @@ class Character extends FlxSprite
 			if (holdTimer >= Conductor.stepCrochet * dadVar * 0.001)
 			{
 				dance();
+				trace('dance');
 				holdTimer = 0;
 			}
 		}
@@ -1569,6 +1724,28 @@ class Character extends FlxSprite
 							playAnim('danceLeft');
 					}
 				case 'gf-pixel':
+					if (!animation.curAnim.name.startsWith('hair'))
+					{
+						danced = !danced;
+
+						if (danced)
+							playAnim('danceRight');
+						else
+							playAnim('danceLeft');
+					}
+
+					case 'gf-wire':
+					if (!animation.curAnim.name.startsWith('hair'))
+					{
+						danced = !danced;
+
+						if (danced)
+							playAnim('danceRight');
+						else
+							playAnim('danceLeft');
+					}
+
+					case 'gf-night':
 					if (!animation.curAnim.name.startsWith('hair'))
 					{
 						danced = !danced;

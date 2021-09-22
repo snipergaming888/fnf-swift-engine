@@ -18,9 +18,14 @@ class HealthIcon extends FlxSprite
 		animation.add('bf-mallet', [0, 1], 0, false, isPlayer);
 		animation.add('picomallet', [4, 5], 0, false, isPlayer);
 		animation.add('bf', [0, 1], 0, false, isPlayer);
+		animation.add('bf-night', [0, 1], 0, false, isPlayer);
 		animation.add('bf-glitcher', [0, 1], 0, false, isPlayer);
 		animation.add('bfWIRE', [30, 31], 0, false, isPlayer);
 		animation.add('black', [32, 33], 0, false, isPlayer);
+		animation.add('mia', [35, 36, 37], 0, false, isPlayer);
+		animation.add('nothing', [38], 0, false, isPlayer);
+	 ///animation.add('miawinning', [37], 0, false, isPlayer);
+		animation.add('gf-wire', [34, 34], 0, false, isPlayer);
 		animation.add('bf-wolves', [0, 1], 0, false, isPlayer);
 		animation.add('bf-car', [0, 1], 0, false, isPlayer);
 		animation.add('bf-christmas', [0, 1], 0, false, isPlayer);
@@ -41,6 +46,7 @@ class HealthIcon extends FlxSprite
 		animation.add('toby', [24, 25], 0, false, isPlayer);
 		animation.add('bf-old', [14, 15], 0, false, isPlayer);
 		animation.add('gf', [16], 0, false, isPlayer);
+		animation.add('gf-night', [16], 0, false, isPlayer);
 		animation.add('parents-christmas', [17], 0, false, isPlayer);
 		animation.add('monster', [19, 20], 0, false, isPlayer);
 		animation.add('monster-christmas', [19, 20], 0, false, isPlayer);

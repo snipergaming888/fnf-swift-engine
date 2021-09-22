@@ -5,6 +5,7 @@ import Discord.DiscordClient;
 #end
 import flash.text.TextField;
 import flixel.FlxG;
+import Song.SwagSong;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -12,6 +13,8 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import lime.utils.Assets;
 
 using StringTools;
@@ -19,18 +22,22 @@ using StringTools;
 class SilvaFreeplayState extends MusicBeatState
 {
 	var songs:Array<SongMetadatasilva> = [];
+	var beatArray:Array<Int> = [154,162,165,175,200,190];
 
 	var selector:FlxText;
 	var curSelected:Int = 0;
-	var curDifficulty:Int = 1;
+	var curDifficulty:Int = 2;
 
 	var scoreText:FlxText;
 	var diffText:FlxText;
 	var lerpScore:Int = 0;
 	var intendedScore:Int = 0;
+	var songWait:FlxTimer = new FlxTimer();
+	var defaultCamZoom:Float = 1.05;
 
 	private var grpSongs:FlxTypedGroup<Alphabet>;
 	private var curPlaying:Bool = false;
+	var camZoom:FlxTween;
 
 	private var iconArray:Array<HealthIcon> = [];
 
@@ -61,9 +68,11 @@ class SilvaFreeplayState extends MusicBeatState
 		#if debug
 		isDebug = true;
 		#end
+		addWeek(['Rockefeller-Street-Nightcore'], 1, ['gf']);
 		addWeek(['hand-crushed-by-a-mallet'], 3, ['picomallet']);
 		addWeek(['glitcher'], 1, ['hexvirus']);
 		addWeek(['defeat'], 1, ['black']);
+		addWeek(['diva'], 1, ['mia']);
 		// LOAD MUSIC
 
 		// LOAD CHARACTERS
@@ -166,6 +175,14 @@ class SilvaFreeplayState extends MusicBeatState
 	{
 		super.update(elapsed);
 
+		if (FlxG.sound.music != null)
+            Conductor.songPosition = FlxG.sound.music.time;
+
+		if (curSelected == 1)
+			{
+				curDifficulty = 2;
+			}
+
 		if (FlxG.sound.music.volume < 0.7)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
@@ -201,23 +218,39 @@ class SilvaFreeplayState extends MusicBeatState
 			FlxG.switchState(new MainMenuState());
 		}
 
+		#if windows
+			if (curSelected == 1)
+				   {
+					  diffText.text = "[  HARD ";
+				   }
+			   #end
+
 		if (accepted)
 		{
          #if windows
 		 if (curSelected == 2)
 				{
 					FlxG.switchState(new Cache());
-					diffText.text = "LOADING";
+					diffText.text = "[  HARD ";
 				}
 			#end
+
+			accepted = false;
+			#if windows
+			if (curSelected == 1)
+				   {
+					   FlxG.switchState(new CacheRock());
+					   diffText.text = "[  HARD ";
+				   }
+			   #end
 					{
-						var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
+						var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), 2);
 
 						trace(poop);
 			
 						PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
 						PlayState.isStoryMode = false;
-						PlayState.storyDifficulty = 1;
+						PlayState.storyDifficulty = 2;
 			
 						PlayState.storyWeek = songs[curSelected].week;
 						trace('CUR WEEK' + PlayState.storyWeek);
@@ -227,6 +260,63 @@ class SilvaFreeplayState extends MusicBeatState
 				
 		}
 	}
+
+	override function beatHit()
+		{
+			super.beatHit();
+		
+			if (accepted)
+				{
+					bopOnBeat();
+					trace(curBeat);
+				}
+		}
+
+		function bopOnBeat()
+			{
+				if (accepted)
+				{
+					if (curSelected == 5)
+						{
+									trace('diva');
+									if (curBeat % 1 == 0)
+										{
+											FlxG.camera.zoom += 0.030;
+											camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+										}
+					
+						}
+						else if (curSelected == 9)
+							{
+								new FlxTimer().start(11.00, function(tmr:FlxTimer)
+									{
+										trace('blammed');
+										if (curBeat % 4 == 0)
+											{
+												FlxG.camera.zoom += 0.090;
+												camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+											}
+						
+									});
+							}
+							else if (curSelected == 3)
+								{
+											if (curBeat % 2 == 0)
+												{
+													FlxG.camera.zoom += 0.015;
+													camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+												}
+								
+								}
+						    else if (curBeat % 4 == 0)
+						    	{
+								    FlxG.camera.zoom += 0.015;
+								    camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+							    }
+				}
+			}
+
+	var accepted:Bool = true;
 
 	function changeDiff(change:Int = 0)
 	{
@@ -269,11 +359,15 @@ class SilvaFreeplayState extends MusicBeatState
 		#end
 
 		#if PRELOAD_ALL
-		new FlxTimer().start(1.5, function(tmr:FlxTimer)
-			{
-				FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
-			});
+		FlxG.sound.music.stop();
+		songWait.cancel();
+		songWait.start(1, function(tmr:FlxTimer) {
+		FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
+		Conductor.changeBPM(beatArray[curSelected]);
+		trace(Conductor.bpm);
+	    });
 		#end
+		trace('current selection: ' + curSelected);
 
 		var bullShit:Int = 0;
 

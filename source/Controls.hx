@@ -545,7 +545,16 @@ class Controls extends FlxActionSet
 				inline bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
 				inline bindKeys(Control.RESET, [R]);
 			case None: // nothing
-			case Custom: // nothing
+			case Custom:
+				inline bindKeys(Control.UP, [FlxG.save.data.upBind, FlxKey.UP]);
+				inline bindKeys(Control.DOWN, [FlxG.save.data.downBind, FlxKey.DOWN]);
+				inline bindKeys(Control.LEFT, [FlxG.save.data.leftBind, FlxKey.LEFT]);
+				inline bindKeys(Control.RIGHT, [FlxG.save.data.rightBind, FlxKey.RIGHT]);
+				inline bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
+				inline bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
+				inline bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
+				inline bindKeys(Control.RESET, [R]);
+
 			
 		}
 		#else
@@ -598,10 +607,41 @@ class Controls extends FlxActionSet
 				bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
 				bindKeys(Control.RESET, [R]);
 			case None: // nothing
-			case Custom: // nothing
+			case Custom:
+				bindKeys(Control.UP, [FlxG.save.data.upBind]);
+				bindKeys(Control.DOWN, [FlxG.save.data.downBind]);
+				bindKeys(Control.LEFT, [FlxG.save.data.leftBind]);
+				bindKeys(Control.RIGHT, [FlxG.save.data.rightBind]);
+				bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
+				bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
+				bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
+				bindKeys(Control.RESET, [R]);	
+
 		}
 		#end
 	}
+
+	public function loadKeyBinds()
+		{
+	
+			//trace(FlxKey.fromString(FlxG.save.data.upBind));
+	
+			removeKeyboard();
+			if (gamepadsAdded.length != 0)
+				removeGamepad();
+			TitleState.keyCheck();
+	
+			var buttons = new Map<Control,Array<FlxGamepadInputID>>();
+	
+			inline bindKeys(Control.UP, [FlxKey.fromString(FlxG.save.data.upBind), FlxKey.UP]);
+			inline bindKeys(Control.DOWN, [FlxKey.fromString(FlxG.save.data.downBind), FlxKey.DOWN]);
+			inline bindKeys(Control.LEFT, [FlxKey.fromString(FlxG.save.data.leftBind), FlxKey.LEFT]);
+			inline bindKeys(Control.RIGHT, [FlxKey.fromString(FlxG.save.data.rightBind), FlxKey.RIGHT]);
+			inline bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
+			inline bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
+			inline bindKeys(Control.PAUSE, [ENTER, ESCAPE]);
+		}
+
 
 	function removeKeyboard()
 	{

@@ -26,7 +26,7 @@ class GameOptions extends MusicBeatState
 	override function create()
 	{
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll') + "\n" + (FlxG.save.data.ghosttapping ? "Ghost Tapping" : "No Ghost Tapping") + "\n" + (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD") + "\n" + (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF") + "\n" + (FlxG.save.data.debug ? "debug MODE ON" : "debug MODE OFF") + "\n" + (FlxG.save.data.reset ? "RESET BUTTON ON" : "RESET BUTTON OFF") + "\n" + (FlxG.save.data.pausecount ? "pause counter on" : "pause counter off"));
+		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll') + "\n" + (FlxG.save.data.middlescroll ? "middlescroll on" : "middlescroll off") + "\n" + (FlxG.save.data.ghosttapping ? "Ghost Tapping" : "No Ghost Tapping") + "\n" + (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD") + "\n" + (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF") + "\n" + (FlxG.save.data.debug ? "debug MODE ON" : "debug MODE OFF") + "\n" + (FlxG.save.data.reset ? "RESET BUTTON ON" : "RESET BUTTON OFF") + "\n" + (FlxG.save.data.pausecount ? "pause counter on" : "pause counter off")+ "\n" + (FlxG.save.data.hittimings ? "MS Timing text ON" : "MS Timing text OFF")+ "\n" + (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION off") + "\n" + "EDIT OFFSET");
 		
 		trace(controlsStrings);
 
@@ -104,65 +104,106 @@ class GameOptions extends MusicBeatState
 						ctrl.color = FlxColor.CYAN;
 						#end
 						grpControls.add(ctrl);
-						
+
 					case 1:
-						/// ok but fr why it default to no ghost tappin bruh
-						FlxG.save.data.ghosttapping = !FlxG.save.data.ghosttapping;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.ghosttapping ? "Ghost Tapping" : "No Ghost Tapping"), true, false);
+						FlxG.save.data.middlescroll = !FlxG.save.data.middlescroll;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.middlescroll ? 'middlescroll on' : 'middlescroll off'), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 1;
 						#if windows
 						ctrl.color = FlxColor.CYAN;
 						#end
 						grpControls.add(ctrl);
+						
 					case 2:
-						FlxG.save.data.hideHUD = !FlxG.save.data.hideHUD;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD"), true, false);
+						/// ok but fr why it default to no ghost tappin bruh
+						FlxG.save.data.ghosttapping = !FlxG.save.data.ghosttapping;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.ghosttapping ? "Ghost Tapping" : "No Ghost Tapping"), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 2;
 						#if windows
 						ctrl.color = FlxColor.CYAN;
 						#end
 						grpControls.add(ctrl);
-				    case 3:
-					    FlxG.save.data.cinematic = !FlxG.save.data.cinematic;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF"), true, false);
+					case 3:
+						FlxG.save.data.hideHUD = !FlxG.save.data.hideHUD;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD"), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 3;
 						#if windows
 						ctrl.color = FlxColor.CYAN;
 						#end
 						grpControls.add(ctrl);
-					case 4:
+				    case 4:
+						grpControls.remove(grpControls.members[curSelected]);
+					    FlxG.save.data.cinematic = !FlxG.save.data.cinematic;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF"), true, false);
+						ctrl.isMenuItem = true;
+						ctrl.targetY = curSelected - 4;
+						#if windows
+						ctrl.color = FlxColor.CYAN;
+						#end
+						grpControls.add(ctrl);
+					case 5:
 					   grpControls.remove(grpControls.members[curSelected]);
 					   FlxG.save.data.debug = !FlxG.save.data.debug;
 					   var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.debug ? "debug MODE ON" : "debug MODE OFF"), true, false);
 					   ctrl.isMenuItem = true;
-					   ctrl.targetY = curSelected - 4;
+					   ctrl.targetY = curSelected - 5;
 					   #if windows
 						ctrl.color = FlxColor.RED;
 						#end
 					   grpControls.add(ctrl);
-					 case 5:
+					 case 6:
 					   grpControls.remove(grpControls.members[curSelected]);
 					   FlxG.save.data.reset = !FlxG.save.data.reset;
 					   var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.reset ? "RESET BUTTON ON" : "RESET BUTTON OFF"), true, false);
 					   ctrl.isMenuItem = true;
-					   ctrl.targetY = curSelected - 5;
+					   ctrl.targetY = curSelected - 6;
 					   #if windows
 						ctrl.color = FlxColor.CYAN;
 						#end
 					   grpControls.add(ctrl);
-					 case 6:
+					 case 7:
 						grpControls.remove(grpControls.members[curSelected]);
 						FlxG.save.data.pausecount = !FlxG.save.data.pausecount;
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.pausecount ? "pause counter on" : "pause counter off"), true, false);
 						ctrl.isMenuItem = true;
-						ctrl.targetY = curSelected - 6;
+						ctrl.targetY = curSelected - 7;
 						#if windows
 						ctrl.color = FlxColor.CYAN;
 						#end
-						grpControls.add(ctrl);								   	
+						grpControls.add(ctrl);
+					 case 8:
+						grpControls.remove(grpControls.members[curSelected]);
+						FlxG.save.data.hittimings = !FlxG.save.data.hittimings;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.hittimings ? "MS Timing text ON" : "MS Timing text OFF"), true, false);
+						ctrl.isMenuItem = true;
+						ctrl.targetY = curSelected - 8;
+						#if windows
+						ctrl.color = FlxColor.CYAN;
+						#end
+						grpControls.add(ctrl);
+					 case 9:
+						grpControls.remove(grpControls.members[curSelected]);
+						FlxG.save.data.songPosition = !FlxG.save.data.songPosition;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION OFF"), true, false);
+						ctrl.isMenuItem = true;
+						ctrl.targetY = curSelected - 9;
+						#if windows
+						ctrl.color = FlxColor.CYAN;
+						#end
+						grpControls.add(ctrl);
+						case 10:
+						grpControls.remove(grpControls.members[curSelected]);
+						FlxG.switchState(new LatencyState());
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, "EDIT OFFSET");
+						ctrl.isMenuItem = true;
+						ctrl.targetY = curSelected - 10;
+						#if windows
+						ctrl.color = FlxColor.CYAN;
+						#end
+						grpControls.add(ctrl);												   	
 				}
 			}
 	}
@@ -205,7 +246,7 @@ class GameOptions extends MusicBeatState
 				#if windows
 				item.color = FlxColor.RED;
 				#end
-				if (curSelected != 4)
+				if (curSelected != 5)
 					{
 						#if windows
 						///if debug is current selection

@@ -38,6 +38,7 @@ class OptionsMenu extends MusicBeatState
 	var versionShit:FlxText;
 	override function create()
 	{
+		TitleState.resetBinds();
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		controlsStrings = CoolUtil.coolTextFile(Paths.txt('controlsmenu'));
 
@@ -113,20 +114,25 @@ class OptionsMenu extends MusicBeatState
 							}
 			{
 				if (controls.BACK)
-					FlxG.switchState(new MenuState());
+					FlxG.switchState(new ControlState());
 				if (controls.UP_P)
 					changeSelection(-1);
 				if (controls.DOWN_P)
 					changeSelection(1);
 				if (controls.BACK)
-					FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
+					{
+						PlayerSettings.player1.controls.loadKeyBinds();
+						trace('SAVED BINDS');
+						FlxG.save.data.controls = true;
+						FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
+					}
 			}
 			if (controls.ACCEPT)
 				{
 					switch(curSelected)
 					{
 						case 0:
-							isSettingControlup = true;
+							isSettingControlleft = true;
 							abletochange = false;
 							FlxG.sound.play(Paths.soundRandom('GF_', 1, 4), FlxG.random.float(0.7, 0.7));
 						case 1:
@@ -134,7 +140,7 @@ class OptionsMenu extends MusicBeatState
 							abletochange = false;
 							FlxG.sound.play(Paths.soundRandom('GF_', 1, 4), FlxG.random.float(0.7, 0.7));
 						case 2:
-							isSettingControlleft = true;
+							isSettingControlup = true;
 							abletochange = false;
 							FlxG.sound.play(Paths.soundRandom('GF_', 1, 4), FlxG.random.float(0.7, 0.7));
 						case 3:
@@ -142,7 +148,8 @@ class OptionsMenu extends MusicBeatState
 							abletochange = false;
 							FlxG.sound.play(Paths.soundRandom('GF_', 1, 4), FlxG.random.float(0.7, 0.7));
 						case 4:
-							controls.setKeyboardScheme(Solo);
+							///controls.setKeyboardScheme(Solo);
+							TitleState.resetBinds();
 							FlxG.sound.play(Paths.sound('GF_4'), 0.7);
 					}
 				}
@@ -166,7 +173,9 @@ class OptionsMenu extends MusicBeatState
 			if (FlxG.keys.justPressed.ANY)
 			{
 				PlayerSettings.player1.controls.replaceBinding(Control.UP, Keys, FlxG.keys.getIsDown()[0].ID, null);
-				trace(FlxG.keys.getIsDown()[0].ID);
+				FlxG.save.data.upBind = FlxG.keys.getIsDown()[0].ID.toString();
+				trace(FlxG.keys.getIsDown()[0].ID + " | PRESSED KEY");
+				trace(FlxG.save.data.upBind + " | SET KEY");
 				isSettingControlup = false;
 				new FlxTimer().start(0.01, function(tmr:FlxTimer)
 					{
@@ -184,7 +193,9 @@ class OptionsMenu extends MusicBeatState
 				if (FlxG.keys.justPressed.ANY)
 				{
 					PlayerSettings.player1.controls.replaceBinding(Control.DOWN, Keys, FlxG.keys.getIsDown()[0].ID, null);
-					trace(FlxG.keys.getIsDown()[0].ID);
+					FlxG.save.data.downBind = FlxG.keys.getIsDown()[0].ID.toString();
+					trace(FlxG.keys.getIsDown()[0].ID + " | PRESSED KEY");
+					trace(FlxG.save.data.downBind + " | SET KEY");
 					isSettingControldown = false;
 					new FlxTimer().start(0.01, function(tmr:FlxTimer)
 						{
@@ -203,7 +214,9 @@ class OptionsMenu extends MusicBeatState
 					if (FlxG.keys.justPressed.ANY)
 					{
 						PlayerSettings.player1.controls.replaceBinding(Control.LEFT, Keys, FlxG.keys.getIsDown()[0].ID, null);
-						trace(FlxG.keys.getIsDown()[0].ID);
+						FlxG.save.data.leftBind = FlxG.keys.getIsDown()[0].ID.toString();
+						trace(FlxG.keys.getIsDown()[0].ID + " | PRESSED KEY");
+					    trace(FlxG.save.data.leftBind + " | SET KEY");
 						isSettingControlleft = false;
 						new FlxTimer().start(0.01, function(tmr:FlxTimer)
 							{
@@ -222,7 +235,9 @@ class OptionsMenu extends MusicBeatState
 						if (FlxG.keys.justPressed.ANY)
 						{
 							PlayerSettings.player1.controls.replaceBinding(Control.RIGHT, Keys, FlxG.keys.getIsDown()[0].ID, null);
-							trace(FlxG.keys.getIsDown()[0].ID);
+							FlxG.save.data.rightBind = FlxG.keys.getIsDown()[0].ID.toString();
+							trace(FlxG.keys.getIsDown()[0].ID + " | PRESSED KEY");
+					        trace(FlxG.save.data.rightBind + " | SET KEY");
 							isSettingControlright = false;
 							new FlxTimer().start(0.01, function(tmr:FlxTimer)
 								{

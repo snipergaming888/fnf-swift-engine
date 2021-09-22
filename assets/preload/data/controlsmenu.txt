@@ -1,5 +1,5 @@
-up
-down
 left
+down
+up
 right
 reset-all

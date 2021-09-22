@@ -26,7 +26,7 @@ class MenuState extends MusicBeatState
 	override function create()
 	{
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		controlsStrings = CoolUtil.coolStringFile('GAMEPLAY' + "\n" + "KEYBINDS" + "\n" + "PERFORMANCE" + "\n" + "MISC");
+		controlsStrings = CoolUtil.coolStringFile('GAMEPLAY' + "\n" + "CONTROLS" + "\n" + "PERFORMANCE" + "\n" + "MISC");
 		
 		trace(controlsStrings);
 
@@ -75,7 +75,7 @@ class MenuState extends MusicBeatState
 					case 0:
 						FlxG.switchState(new GameOptions());
 					case 1:
-						FlxG.switchState(new OptionsMenu());
+						FlxG.switchState(new ControlState());
 					case 2:
 						FlxG.switchState(new PerformanceOptions());
 					case 3:

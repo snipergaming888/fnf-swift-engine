@@ -41,10 +41,10 @@ class MainMenuState extends MusicBeatState
 	var bg:FlxSprite;
 	var versionShit:FlxText;
 	var playanims:Bool = false;
-	public static var sniperengineversion:String = " Sniper Engine 2.8";
-	public static var sniperengineversionA:String = " SE 2.8";
+	public static var sniperengineversion:String = " Sniper Engine 2.9";
+	public static var sniperengineversionA:String = " SE 2.9";
 	public static var gameVer:String = "v0.2.7.1";
-	public static var nightly:String = " | nightly 6";
+	public static var nightly:String = "";
 
 	override function create()
 	{
@@ -57,9 +57,9 @@ class MainMenuState extends MusicBeatState
 			///so I don't get canceled
 
 
-			if (FlxG.random.bool(2))
+			if (FlxG.random.bool(10))
 				{
-					nightly = "| nightly 6 | hi jacob";
+					nightly = " | hi jacob";
 					trace('jacob');
 				}
 
@@ -211,7 +211,7 @@ class MainMenuState extends MusicBeatState
 				});
 				FlxG.camera.follow(camFollow, null, 0.06);	
 
-		var versionShit:FlxText = new FlxText(400, FlxG.height - 18, 0, gameVer + " FNF |" + sniperengineversion + nightly, 12);
+		var versionShit:FlxText = new FlxText(300, FlxG.height - 18, 0, gameVer + " FNF |" + sniperengineversion + nightly + " | Press C to view changelog", 12);
 		versionShit.scrollFactor.set();
 		versionShit.x -= 1000;
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -276,6 +276,12 @@ class MainMenuState extends MusicBeatState
 				FlxG.switchState(new TitleState());
 			}
 
+			if (FlxG.keys.justPressed.C)
+				{
+					FlxG.switchState(new ChangelogSubState());
+					FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
+				}
+
 			if (controls.ACCEPT)
 			{	
 				if (optionShit[curSelected] == 'donate')
@@ -300,7 +306,7 @@ class MainMenuState extends MusicBeatState
 						if (curSelected != spr.ID)
 						{
 							playanims = true;
-							FlxTween.tween(spr, {y: spr.y + 500}, 1, {ease: FlxEase.circOut, startDelay: 0.2});
+							FlxTween.tween(spr, {y: spr.y + 1200}, 1, {ease: FlxEase.circOut, startDelay: 0.2});
 							FlxTween.tween(spr, {alpha: 0}, 0.4, {
 								ease: FlxEase.quadOut, onComplete: function(twn:FlxTween)
 									{
