@@ -1,3 +1,22 @@
+# FNF Sniper Engine
+an engine created for modders who want a nice new engine with lots of fetures.
+Performance and html5 support is my priority - makes the game playable not only on html5 but on low-spec PCs too.
+
+key fetures:
+- key rebinding
+- SE INPUT (basicly default fnf input but with ghost tapping) notes and note trails remain untampered with so you have that original FNF engine feel.
+- advanced scoring system
+- advanced botplay (has note glows)
+- many other fetures
+
+
+
+
+# original readme below:
+
+
+
+
 # Friday Night Funkin
 
 This is the repository for Friday Night Funkin, a game originally made for Ludum Dare 47 "Stuck In a Loop".
