@@ -42,7 +42,7 @@ class TitleStateOld extends FlxTransitionableState
 			transIn = FlxTransitionableState.defaultTransIn;
 			transOut = FlxTransitionableState.defaultTransOut;
 		}
-
+		Conductor.changeBPM(92);
 		persistentUpdate = true;
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('stageback'));

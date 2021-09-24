@@ -68,6 +68,7 @@ class StoryMenuState extends MusicBeatState
 	var sprDifficulty:FlxSprite;
 	var leftArrow:FlxSprite;
 	var rightArrow:FlxSprite;
+	var camZoom:FlxTween;
 
 	override function create()
 	{
@@ -225,6 +226,10 @@ class StoryMenuState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+
+		if (FlxG.sound.music != null)
+            Conductor.songPosition = FlxG.sound.music.time;
+
 		// scoreText.setFormat('VCR OSD Mono', 32);
 		lerpScore = Math.floor(FlxMath.lerp(lerpScore, intendedScore, 0.5));
 
@@ -299,6 +304,7 @@ class StoryMenuState extends MusicBeatState
 			if (stopspamming == false)
 			{
 				FlxG.sound.play(Paths.sound('confirmMenu'));
+				accepted = false;
 
 				grpWeekText.members[curWeek].startFlashing();
 				grpWeekCharacters.members[1].animation.play('bfConfirm');
@@ -459,4 +465,42 @@ class StoryMenuState extends MusicBeatState
 		intendedScore = Highscore.getWeekScore(curWeek, curDifficulty);
 		#end
 	}
+
+
+
+	override function beatHit()
+		{
+			super.beatHit();
+
+
+			if (accepted)
+				{
+					bopOnBeat();
+					///iconBop();
+					trace(curBeat);
+				}
+		}
+
+		function bopOnBeat()
+			{
+				if (accepted)
+				{
+						    if (curBeat % 1 == 0)
+						    	{
+									if (TitleState.old)
+										{
+											trace('no');
+										}
+										else
+											{
+												FlxG.camera.zoom += 0.015;
+												camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+												trace('zoom');
+											}
+							    }
+
+				}
+			}
+
+	var accepted:Bool = true;
 }

@@ -29,7 +29,7 @@ class LatencyState extends FlxState
 			noteGrp.add(note);
 		}
 
-		offsetText = new FlxText(500,700);
+		offsetText = new FlxText(500,600);
 		add(offsetText);
 
 		strumLine = new FlxSprite(FlxG.width / 2, 100).makeGraphic(FlxG.width, 5);
@@ -42,9 +42,9 @@ class LatencyState extends FlxState
 
 	override function update(elapsed:Float)
 	{
-		offsetText.text = "Offset: " + Conductor.offset + "ms | left and right arrow to change, hold down SHIFT to go faster.";
+		offsetText.text = "Offset: " + FlxG.save.data.offset + "ms | left and right arrow to change, hold down SHIFT to go faster. Press SPACE to Reset.";
 
-		Conductor.songPosition = FlxG.sound.music.time - Conductor.offset;
+		Conductor.songPosition = FlxG.sound.music.time - FlxG.save.data.offset;
 
 		var multiply:Float = 1;
 
@@ -52,9 +52,9 @@ class LatencyState extends FlxState
 			multiply = 10;
 
 		if (FlxG.keys.justPressed.RIGHT)
-			Conductor.offset += 1 * multiply;
+			FlxG.save.data.offset += 1 * multiply;
 		if (FlxG.keys.justPressed.LEFT)
-			Conductor.offset -= 1 * multiply;
+			FlxG.save.data.offset -= 1 * multiply;
 
 		if (FlxG.keys.justPressed.SPACE)
 		{
@@ -65,6 +65,7 @@ class LatencyState extends FlxState
 
 		if (FlxG.keys.justPressed.ESCAPE)
 			FlxG.switchState(new GameOptions());
+		
 		if (FlxG.keys.justPressed.ESCAPE)
 			FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
 		if (FlxG.keys.justPressed.ESCAPE)

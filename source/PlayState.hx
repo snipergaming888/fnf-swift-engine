@@ -124,6 +124,7 @@ class PlayState extends MusicBeatState
 	var halloweenBG:FlxSprite;
 	var isHalloween:Bool = false;
 	var scoretxtnotmoved:Bool = true;
+	var addedoffset:Bool = true;
 
 	var phillyCityLights:FlxTypedGroup<FlxSprite>;
 	var wiregroup:FlxTypedGroup<FlxSprite>;
@@ -219,7 +220,6 @@ class PlayState extends MusicBeatState
 
 	override public function create()
 	{
-		trace('trsf 2.0 loves hot sex');
 		songs = CoolUtil.coolTextFile(Paths.txt('songs'));
 		ghost = FlxG.save.data.ghosttapping;
 		debug = FlxG.save.data.debug;
@@ -295,9 +295,6 @@ class PlayState extends MusicBeatState
 
 		if (FlxG.save.data.botplay == null)
 			FlxG.save.data.botplay = false;
-
-		if (FlxG.save.data.offset == null)
-			FlxG.save.data.offset = 0;
 
 		if (FlxG.save.data.offset == null)
 			FlxG.save.data.offset = 0;
@@ -2329,8 +2326,7 @@ class PlayState extends MusicBeatState
 		startedCountdown = true;
 		Conductor.songPosition = 0;
 		Conductor.songPosition -= Conductor.crochet * 5;
-
-		var swagCounter:Int = 0;
+	    var swagCounter:Int = 0;
 
 		startTimer = new FlxTimer().start(Conductor.crochet / 1000, function(tmr:FlxTimer)
 		{
@@ -2433,6 +2429,8 @@ class PlayState extends MusicBeatState
 					trace('sound check');
 	             	vocals.volume = 1;
 					 trace('voice check');
+			        trace('checking offsets...');
+			        trace("your offset is: " + FlxG.save.data.offset);
 			}
 
 			swagCounter += 1;
@@ -2545,7 +2543,7 @@ class PlayState extends MusicBeatState
 
 			for (songNotes in section.sectionNotes)
 			{
-				var daStrumTime:Float = songNotes[0];
+				var daStrumTime:Float = songNotes[0] + FlxG.save.data.offset;
 				var daNoteData:Int = Std.int(songNotes[1] % 4);
 
 				var gottaHitNote:Bool = section.mustHitSection;
@@ -4421,6 +4419,8 @@ class PlayState extends MusicBeatState
 									swagRect.y = daNote.frameHeight - swagRect.height;
 
 									daNote.clipRect = swagRect;
+									///should not be here? is this why they always clip?
+									///nope.
 								}
 							
 							/*else
@@ -4482,13 +4482,15 @@ class PlayState extends MusicBeatState
 							}
 							else
 							{
-								var swagRect = new FlxRect(0, 0, daNote.width / daNote.scale.x, daNote.height / daNote.scale.y);
+								/*var swagRect = new FlxRect(0, 0, daNote.width / daNote.scale.x, daNote.height / daNote.scale.y);
 								swagRect.y = (strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].y
 									+ Note.swagWidth / 2
 									- daNote.y) / daNote.scale.y;
 								swagRect.height -= swagRect.y;
 
-								daNote.clipRect = swagRect;
+								*///daNote.clipRect = swagRect;
+								///maybe this!?!?!??!?!!
+								///YES IT WAS THIS FOR FUTURE REFERANCE
 							}
 						}
 					}
@@ -5504,6 +5506,7 @@ class PlayState extends MusicBeatState
 		if (keyP)
 			goodNoteHit(note);
 	}
+		
 
 	function goodNoteHit(note:Note):Void
 	{

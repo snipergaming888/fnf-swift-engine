@@ -72,6 +72,7 @@ class ChartParser
 
 			if (!pushedInColumn)
 				dopeArray.push(0);
+			trace(dopeArray);
 
 			row++;
 		}

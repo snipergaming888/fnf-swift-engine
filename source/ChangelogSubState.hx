@@ -7,6 +7,7 @@ import flixel.FlxSubState;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.FlxCamera;
+import flixel.math.FlxMath;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import lime.app.Application;
@@ -19,6 +20,8 @@ class ChangelogSubState extends MusicBeatState
 	var camFollow:FlxObject;
 	private var camHUD:FlxCamera;
 	private var camGame:FlxCamera;
+	private var camZooming:Bool = false;
+	var defaultCamZoom:Float = 1;
 
 	
 
@@ -46,7 +49,7 @@ class ChangelogSubState extends MusicBeatState
 		add(changelogtext);
 
 
-		var sniperenginemark = new FlxText(4,700, "Use W and S to zoom in and out and UP, DOWN, LEFT, RIGHT to move.", 12);
+		var sniperenginemark = new FlxText(4,700, "Hold down W and S to zoom in and out and UP, DOWN, LEFT, RIGHT to move.", 12);
 		sniperenginemark.setFormat(Paths.font("vcr.ttf"), 12, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
 		sniperenginemark.scrollFactor.set();
 		if (FlxG.save.data.antialiasing)
@@ -99,7 +102,7 @@ class ChangelogSubState extends MusicBeatState
 					camGame.follow(camFollow, null, 0.06);
 				}
 
-			if (FlxG.keys.justPressed.W)
+			if (FlxG.keys.pressed.W)
 				{
 					FlxTween.tween(camGame, {zoom: 2 }, 0.5, { ease: FlxEase.quadIn, startDelay: 0});
 					///FlxG.camera.zoom += 10;
@@ -112,10 +115,57 @@ class ChangelogSubState extends MusicBeatState
 								trace('do not zoom or shit will break');
 							}
 							else
-								FlxTween.tween(camGame, {zoom: 0 }, 0.5, { ease: FlxEase.quadIn, startDelay: 0});
+								FlxTween.tween(camGame, {zoom: 0 }, 0.0, { ease: FlxEase.quadIn, startDelay: 0});
 						   ///FlxG.camera.zoom -= 10;
 					}
 
+
+	 if (FlxG.sound.music != null)
+		 Conductor.songPosition = FlxG.sound.music.time;
+	     camZooming = true;
+
+		 if (camZooming)
+			{
+				FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, 0.95);
+				camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, 0.95);
+			}
+
 		super.update(elapsed);
 	}
+
+
+	override function beatHit()
+		{
+			super.beatHit();
+				{
+					bopOnBeat();
+					///iconBop();
+					trace(curBeat);
+				}
+		}
+
+		function bopOnBeat()
+			{
+				{
+						    if (curBeat % 2 == 0)
+						    	{
+									if (TitleState.old)
+										{
+											trace('no');
+										}
+										else
+											{
+
+													if (camZooming && FlxG.camera.zoom < 1.35)
+														{
+															FlxG.camera.zoom += 0.005;
+															camHUD.zoom += 0.02;
+															trace('zooming %2 == 0');
+														}
+											}
+										 }
+
+
+				}
+			}
 }

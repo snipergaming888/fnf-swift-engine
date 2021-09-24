@@ -41,11 +41,13 @@ class MainMenuState extends MusicBeatState
 	var bg:FlxSprite;
 	var versionShit:FlxText;
 	var playanims:Bool = false;
+	var defaultCamZoom:Float = 1.05;
+	var camZoom:FlxTween;
 	public static var sniperengineversion:String = " Sniper Engine 2.9";
 	public static var sniperengineversionA:String = " SE 2.9";
 	public static var gameVer:String = "v0.2.7.1";
-	public static var nightly:String = "";
-
+	public static var nightly:String = " | nightly 1";
+	
 	override function create()
 	{
 
@@ -77,6 +79,7 @@ class MainMenuState extends MusicBeatState
 				if (!FlxG.sound.music.playing)
 				{
 					FlxG.sound.playMusic(Paths.music('title'), 0);
+					Conductor.changeBPM(92);
 				}
 				else
 					{
@@ -88,6 +91,7 @@ class MainMenuState extends MusicBeatState
 					if (!FlxG.sound.music.playing)
 						{	
 							FlxG.sound.playMusic(Paths.music('freakyMenu'));
+							Conductor.changeBPM(102);
 						}
 				}
 				
@@ -159,9 +163,10 @@ class MainMenuState extends MusicBeatState
 		logoBl.setGraphicSize(Std.int(logoBl.width - 50));
 		logoBl.setGraphicSize(Std.int(logoBl.height - 50));	
 		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
-		logoBl.animation.play('bump');
+		logoBl.animation.addByPrefix('idle', 'logo idle', 24);
 		logoBl.updateHitbox();
 		logoBl.scrollFactor.set();
+		///logoBl.animation.play('bump');
 		logoBl.cameras = [FlxG.camera];
 		logoBl.x += 1000;
 		add(logoBl);
@@ -241,6 +246,11 @@ class MainMenuState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+
+
+		if (FlxG.sound.music != null)
+            Conductor.songPosition = FlxG.sound.music.time;
+
 		if(keyTimer>0){
 			keyTimer-=elapsed;
 		}
@@ -280,6 +290,7 @@ class MainMenuState extends MusicBeatState
 				{
 					FlxG.switchState(new ChangelogSubState());
 					FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
+					accepted = true;
 				}
 
 			if (controls.ACCEPT)
@@ -295,6 +306,7 @@ class MainMenuState extends MusicBeatState
 				else
 				{
 					selectedSomethin = true;
+					accepted = true;
 					FlxG.sound.play(Paths.sound('confirmMenu'));
 				    ///FlxTween.tween(versionShit, {y: versionShit.y + 1000, alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 1.0});
 				    ///trace('playing anim');
@@ -376,7 +388,48 @@ class MainMenuState extends MusicBeatState
 	override function beatHit()
 		{
 			super.beatHit();
-			
-			
+
+
+			if (accepted)
+				{
+					bopOnBeat();
+					///iconBop();
+					trace(curBeat);
+				}
 		}
+
+		function bopOnBeat()
+			{
+				if (accepted)
+				{
+						    if (curBeat % 1 == 0)
+						    	{
+									if (TitleState.old)
+										{
+											trace('no');
+										}
+										else
+											{
+												FlxG.camera.zoom += 0.015;
+												camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+												trace('zoom');
+											}
+							    }
+
+								if (curBeat % 2 == 0)
+									{
+										if (TitleState.old)
+											{
+												 ///nothing
+											}
+											else
+												{
+													logoBl.animation.play('bump');
+													trace('bump');
+												}
+									}
+				}
+			}
+
+	var accepted:Bool = true;
 }

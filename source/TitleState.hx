@@ -659,6 +659,7 @@ class TitleState extends MusicBeatState
 		}
 	}
 
+
 	public static function resetBinds():Void{
 
         FlxG.save.data.upBind = "UP";

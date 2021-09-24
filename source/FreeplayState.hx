@@ -113,11 +113,6 @@ class FreeplayState extends MusicBeatState
 			iconArray.push(icon);
 			add(icon);
 
-			
-				{
-					icon.setGraphicSize(Std.int(FlxMath.lerp(icon.width, 150, 0.15)));
-				}
-
 			// songText.x += 40;
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 			// songText.screenCenter(X);

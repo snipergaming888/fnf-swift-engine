@@ -11,6 +11,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
+import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
 
@@ -19,6 +20,7 @@ class PerformanceOptions extends MusicBeatState
 	var selector:FlxText;
 	var curSelected:Int = 0;
 	var CYAN:FlxColor = 0xFF00FFFF;
+	var camZoom:FlxTween;
 
 	var controlsStrings:Array<String> = [];
 
@@ -58,6 +60,10 @@ class PerformanceOptions extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+
+		if (FlxG.sound.music != null)
+            Conductor.songPosition = FlxG.sound.music.time;
+
 		super.update(elapsed);
 
 			if (controls.BACK)
@@ -159,4 +165,41 @@ class PerformanceOptions extends MusicBeatState
 			}
 		}
 	}
+
+
+	override function beatHit()
+		{
+			super.beatHit();
+
+
+			if (accepted)
+				{
+					bopOnBeat();
+					///iconBop();
+					trace(curBeat);
+				}
+		}
+
+		function bopOnBeat()
+			{
+				if (accepted)
+				{
+						    if (curBeat % 1 == 0)
+						    	{
+									if (TitleState.old)
+										{
+											trace('no');
+										}
+										else
+											{
+												FlxG.camera.zoom += 0.015;
+												camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+												trace('zoom');
+											}
+							    }
+
+				}
+			}
+
+	var accepted:Bool = true;
 }

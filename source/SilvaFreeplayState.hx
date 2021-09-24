@@ -183,6 +183,11 @@ class SilvaFreeplayState extends MusicBeatState
 				curDifficulty = 2;
 			}
 
+			if (curSelected == 3)
+				{
+					curDifficulty = 2;
+				}
+
 		if (FlxG.sound.music.volume < 0.7)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
@@ -215,23 +220,30 @@ class SilvaFreeplayState extends MusicBeatState
 
 		if (controls.BACK)
 		{
-			FlxG.switchState(new MainMenuState());
+			FlxG.switchState(new FreeplayState());
 		}
 
 		#if windows
 			if (curSelected == 1)
 				   {
-					  diffText.text = "[  HARD ";
+					  diffText.text = "HARD";
 				   }
 			   #end
+
+		 #if windows
+			   if (curSelected == 3)
+				{
+				   diffText.text = "HARD";
+				}
+			#end
 
 		if (accepted)
 		{
          #if windows
-		 if (curSelected == 2)
+		 if (curSelected == 3)
 				{
 					FlxG.switchState(new Cache());
-					diffText.text = "[  HARD ";
+					diffText.text = "HARD";
 				}
 			#end
 
@@ -240,7 +252,7 @@ class SilvaFreeplayState extends MusicBeatState
 			if (curSelected == 1)
 				   {
 					   FlxG.switchState(new CacheRock());
-					   diffText.text = "[  HARD ";
+					   diffText.text = "HARD";
 				   }
 			   #end
 					{

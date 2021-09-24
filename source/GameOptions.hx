@@ -5,6 +5,7 @@ import Controls.Control;
 import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.tweens.FlxTween;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.input.keyboard.FlxKey;
@@ -18,6 +19,7 @@ class GameOptions extends MusicBeatState
 	var selector:FlxText;
 	var curSelected:Int = 0;
 	var CYAN:FlxColor = 0xFF00FFFF;
+	var camZoom:FlxTween;
 
 	var controlsStrings:Array<String> = [];
 
@@ -62,6 +64,10 @@ class GameOptions extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+
+		if (FlxG.sound.music != null)
+            Conductor.songPosition = FlxG.sound.music.time;
+
 		super.update(elapsed);
 
 			if (controls.BACK)
@@ -197,6 +203,7 @@ class GameOptions extends MusicBeatState
 						case 10:
 						grpControls.remove(grpControls.members[curSelected]);
 						FlxG.switchState(new LatencyState());
+						Conductor.changeBPM(120);
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, "EDIT OFFSET");
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 10;
@@ -259,4 +266,43 @@ class GameOptions extends MusicBeatState
 			}
 		}
 	}
+
+
+
+
+	override function beatHit()
+		{
+			super.beatHit();
+
+
+			if (accepted)
+				{
+					bopOnBeat();
+					///iconBop();
+					trace(curBeat);
+				}
+		}
+
+		function bopOnBeat()
+			{
+				if (accepted)
+				{
+						    if (curBeat % 1 == 0)
+						    	{
+									if (TitleState.old)
+										{
+											trace('no');
+										}
+										else
+											{
+												FlxG.camera.zoom += 0.015;
+												camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+												trace('zoom');
+											}
+							    }
+
+				}
+			}
+
+	var accepted:Bool = true;
 }
