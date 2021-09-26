@@ -43,10 +43,10 @@ class MainMenuState extends MusicBeatState
 	var playanims:Bool = false;
 	var defaultCamZoom:Float = 1.05;
 	var camZoom:FlxTween;
-	public static var sniperengineversion:String = " Sniper Engine 2.9";
-	public static var sniperengineversionA:String = " SE 2.9";
+	public static var sniperengineversion:String = " Mona Engine 2.9";
+	public static var sniperengineversionA:String = " ME 2.9";
 	public static var gameVer:String = "v0.2.7.1";
-	public static var nightly:String = " | nightly 1";
+	public static var nightly:String = " | nightly 2";
 	
 	override function create()
 	{
@@ -318,7 +318,7 @@ class MainMenuState extends MusicBeatState
 						if (curSelected != spr.ID)
 						{
 							playanims = true;
-							FlxTween.tween(spr, {y: spr.y + 1200}, 1, {ease: FlxEase.circOut, startDelay: 0.2});
+							FlxTween.tween(spr, {y: spr.y + 1700}, 1, {ease: FlxEase.circOut, startDelay: 0.2});
 							FlxTween.tween(spr, {alpha: 0}, 0.4, {
 								ease: FlxEase.quadOut, onComplete: function(twn:FlxTween)
 									{

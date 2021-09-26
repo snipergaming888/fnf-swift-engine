@@ -25,8 +25,10 @@ class PauseSubState extends MusicBeatSubstate
 	public static var daPixelZoom:Float = 6;
 	private var camHUD:FlxCamera;
 	var startTimer:FlxTimer;
-	
-
+	var iscountingdown:Bool = true;
+	var set:FlxSprite;
+	var ready:FlxSprite;
+	var go:FlxSprite;
 	var pauseMusic:FlxSound;
 
 	var difficultyChoices:Array<String> = ['EASY', 'NORMAL', 'HARD', 'BACK'];
@@ -150,7 +152,7 @@ class PauseSubState extends MusicBeatSubstate
 			switch (daSelected)
 			{
 				case "Resume":
-					      if (FlxG.save.data.pausecount)
+					      if (FlxG.save.data.pausecount && iscountingdown)
 							{
                               /// this is so you dont have to hit enter and instantly go back to your layout to hit one note
 							var swagCounter:Int = 0;
@@ -172,17 +174,32 @@ class PauseSubState extends MusicBeatSubstate
 					
 								var introAlts:Array<String> = introAssets.get('default');
 								var altSuffix:String = "";
+
+								if (PlayState.SONG.song.toLowerCase() == 'senpai' || PlayState.SONG.song.toLowerCase() == 'roses' || PlayState.SONG.song.toLowerCase() == 'thorns')
+									{
+										for (value in introAssets.keys())
+											{
+												{
+													introAlts = introAssets.get(value);
+													altSuffix = '-pixel';
+												}
+											}
+									}
 					
 					
 								switch (swagCounter)
 					
 								{
 									case 0:
+										trace('3');
 										FlxG.sound.play(Paths.sound('intro3' + altSuffix), 0.6);
 									case 1:
-										var ready:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[0]));
+										var ready:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[0] + altSuffix));
 										ready.scrollFactor.set();
 										ready.updateHitbox();
+
+										if (PlayState.SONG.song.toLowerCase() == 'senpai' || PlayState.SONG.song.toLowerCase() == 'roses' || PlayState.SONG.song.toLowerCase() == 'thorns')
+											ready.setGraphicSize(Std.int(ready.width * daPixelZoom));
 					
 					
 										ready.screenCenter();
@@ -195,9 +212,14 @@ class PauseSubState extends MusicBeatSubstate
 											}
 										});
 										FlxG.sound.play(Paths.sound('intro2' + altSuffix), 0.6);
+										trace('2');
 									case 2:
-										var set:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
+										var set:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[1] + altSuffix));
 										set.scrollFactor.set();
+
+										if (PlayState.SONG.song.toLowerCase() == 'senpai' || PlayState.SONG.song.toLowerCase() == 'roses' || PlayState.SONG.song.toLowerCase() == 'thorns')
+											set.setGraphicSize(Std.int(set.width * daPixelZoom));
+					
 					
 										set.screenCenter();
 										add(set);
@@ -209,9 +231,14 @@ class PauseSubState extends MusicBeatSubstate
 											}
 										});
 										FlxG.sound.play(Paths.sound('intro1' + altSuffix), 0.6);
+										trace('1');
 									case 3:
-										var go:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[2]));
+										trace('go');
+										var go:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[2] + altSuffix));
 										go.scrollFactor.set();
+
+										if (PlayState.SONG.song.toLowerCase() == 'senpai' || PlayState.SONG.song.toLowerCase() == 'roses' || PlayState.SONG.song.toLowerCase() == 'thorns')
+											go.setGraphicSize(Std.int(go.width * daPixelZoom));
 					
 										go.updateHitbox();
 					
@@ -225,8 +252,8 @@ class PauseSubState extends MusicBeatSubstate
 											}
 										});
 										FlxG.sound.play(Paths.sound('introGo' + altSuffix), 0.6);
-										close();
 									case 4:
+										close();
 								}
 					
 								swagCounter += 1;
@@ -235,7 +262,7 @@ class PauseSubState extends MusicBeatSubstate
 							}
 							else
 								{
-								close();	
+								close();
 								}
 						
 
@@ -292,7 +319,7 @@ class PauseSubState extends MusicBeatSubstate
 							}	
 						}
 						else
-					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Quick binds', 'Chart Editor', 'Animation Debug Player one', 'Animation Debug dad', 'Animation Debug bf', 'Exit to freeplay menu', 'Exit to main menu'];
+					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Quick binds', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to freeplay menu', 'Exit to main menu'];
 					regenMenu();
 					case "Quick binds":
 						/// sarv engine but better

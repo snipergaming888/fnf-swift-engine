@@ -1565,8 +1565,10 @@ class PlayState extends MusicBeatState
 		doof.finishThing = startCountdown;
 
 		Conductor.songPosition = -5000;
-
+                                  ///50
 		strumLine = new FlxSprite(0, 50).makeGraphic(FlxG.width, 10);
+		strumLine.x = 50;
+		trace(strumLine.x);
 		strumLine.scrollFactor.set();
 
 		if (FlxG.save.data.downscroll)
@@ -2617,7 +2619,7 @@ class PlayState extends MusicBeatState
 	{
 		for (i in 0...4)
 		{
-			trace(i);
+			trace(i);                              ///0
 			var babyArrow:FlxSprite = new FlxSprite(0, strumLine.y);
 
 			switch (curStage)

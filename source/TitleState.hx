@@ -104,7 +104,7 @@ class TitleState extends MusicBeatState
 			FlxG.save.data.offset = 0;
 		
 			
-		FlxG.save.bind('sniperengine', 'snipergaming888');
+		FlxG.save.bind('monaengine', 'snipergaming888');
 
 		Highscore.load();
 		keyCheck();
@@ -160,10 +160,10 @@ class TitleState extends MusicBeatState
 			diamond.destroyOnNoUse = false;
 
 					{
-						FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
-						FlxTransitionableState.defaultTransIn = new TransitionData(FADE, FlxColor.BLACK, 0.7, new FlxPoint(0, -1), {asset: diamond, width: 32, height: 32},
-						new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));
-					FlxTransitionableState.defaultTransOut = new TransitionData(FADE, FlxColor.BLACK, 0.5, new FlxPoint(0, 1),
+						FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);                           ///0.7
+						FlxTransitionableState.defaultTransIn = new TransitionData(FADE, FlxColor.BLACK, 0.4, new FlxPoint(0, -1), {asset: diamond, width: 32, height: 32},
+						new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));             ///0.5
+					FlxTransitionableState.defaultTransOut = new TransitionData(FADE, FlxColor.BLACK, 0.3, new FlxPoint(0, 1),
 						{asset: diamond, width: 32, height: 32}, new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));
 						old = false;
 					}
@@ -494,7 +494,7 @@ class TitleState extends MusicBeatState
 				 // credTextShit.text = 'In association \nwith';
 				 // credTextShit.screenCenter();
 				 case 5:
-					 createCoolText(['sniper engine', 'by']);
+					 createCoolText(['mona engine', 'by']);
 				 case 7:
 					 #if windows
 					 addMoreTextcolorsnipergaming('sniper gaming');
@@ -579,7 +579,7 @@ class TitleState extends MusicBeatState
 					 addMoreText('Funkin'); // credTextShit.text += '\nFunkin';
 
 				case 31:
-					 addMoreText('Sniper Engine'); // credTextShit.text += '\nFunkin';
+					 addMoreText('Mona Engine'); // credTextShit.text += '\nFunkin';
 	 
 				 case 32:
 					 skipIntro();
@@ -602,7 +602,7 @@ class TitleState extends MusicBeatState
 						// credTextShit.text = 'In association \nwith';
 						// credTextShit.screenCenter();
 						case 5:
-							createCoolText(['sniper engine', 'by']);
+							createCoolText(['mona engine', 'by']);
 						case 7:
 							#if windows
 							addMoreTextcolorsnipergaming('sniper gaming');

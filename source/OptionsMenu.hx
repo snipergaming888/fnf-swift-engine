@@ -33,16 +33,24 @@ class OptionsMenu extends MusicBeatState
 	var camZoom:FlxTween;
 
 	var controlsStrings:Array<String> = [];
+	var controlLabel:Alphabet;
 	private var grpControls:FlxTypedGroup<Alphabet>;
+	private var grpControlsnew:FlxTypedGroup<Alphabet>;
+	private var grpControlsnew2:FlxTypedGroup<Alphabet>;
+	private var grpControlsnew3:FlxTypedGroup<Alphabet>;
+	private var grpControlsnew4:FlxTypedGroup<Alphabet>;
 	private var keyalphabet:FlxTypedGroup<Alphabet>;
 	public static var gameVer:String = "0.2.7.1";
 	public static var sniperengineversion:String = "0.1";
 	var versionShit:FlxText;
+	/// be prepared for some horrable code
+	/// i had no idea how to remove alpabets from groups so uhhhh
 	override function create()
 	{
 		TitleState.resetBinds();
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		controlsStrings = CoolUtil.coolTextFile(Paths.txt('controlsmenu'));
+		///controlsStrings = CoolUtil.coolTextFile(Paths.txt('controlsmenu'));
+		controlsStrings = CoolUtil.coolStringFile(FlxG.save.data.leftBind + "\n" + FlxG.save.data.downBind + "\n" + FlxG.save.data.upBind + "\n" + FlxG.save.data.rightBind + "\n" + "reset-all" );
 
 		
 		trace(controlsStrings);
@@ -55,8 +63,16 @@ class OptionsMenu extends MusicBeatState
 		add(menuBG);
 
 		grpControls = new FlxTypedGroup<Alphabet>();
+		grpControlsnew = new FlxTypedGroup<Alphabet>();
+		grpControlsnew2 = new FlxTypedGroup<Alphabet>();
+		grpControlsnew3 = new FlxTypedGroup<Alphabet>();
+		grpControlsnew4 = new FlxTypedGroup<Alphabet>();
 		keyalphabet = new FlxTypedGroup<Alphabet>();
 		add(grpControls);
+		add(grpControlsnew);
+		add(grpControlsnew2);
+		add(grpControlsnew3);
+		add(grpControlsnew4);
 
 		for (i in 0...controlsStrings.length)
 		{
@@ -157,6 +173,7 @@ class OptionsMenu extends MusicBeatState
 							///controls.setKeyboardScheme(Solo);
 							TitleState.resetBinds();
 							FlxG.sound.play(Paths.sound('GF_4'), 0.7);
+							FlxG.switchState(new OptionsMenu());
 					}
 				}
 			
@@ -168,6 +185,83 @@ class OptionsMenu extends MusicBeatState
 	var isSettingControlright:Bool = false;
 	var keytextbool:Bool = false;
 	var abletochange:Bool = true;
+	var isnewmenu:Bool = false;
+	var isnewmenu2:Bool = false;
+	var isnewmenu3:Bool = false;
+	var isnewmenu4:Bool = false;
+
+
+
+	function regenMenu():Void
+		{
+			if (isnewmenu)
+				{
+						remove(grpControlsnew);
+				}
+				if (isnewmenu2)
+					{
+							remove(grpControlsnew2);
+					}
+					if (isnewmenu3)
+						{
+								remove(grpControlsnew3);
+						}
+
+						if (isnewmenu3)
+							{
+								for (i in 0...controlsStrings.length)
+									{
+										var item = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
+										item.isMenuItem = true;
+										item.targetY = i;
+										grpControlsnew4.add(item);
+										isnewmenu4 = true;
+										///add(item);
+									}	
+							}
+
+					if (isnewmenu2)
+						{
+							for (i in 0...controlsStrings.length)
+								{
+									var item = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
+									item.isMenuItem = true;
+									item.targetY = i;
+									grpControlsnew3.add(item);
+									isnewmenu3 = true;
+									///add(item);
+								}	
+						}
+
+				if (isnewmenu)
+					{
+						for (i in 0...controlsStrings.length)
+							{
+								var item = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
+								item.isMenuItem = true;
+								item.targetY = i;
+								grpControlsnew2.add(item);
+								isnewmenu2 = true;
+								///add(item);
+							}	
+					}
+			remove(grpControls);
+			remove(controlLabel);
+			grpControls.remove(controlLabel);
+	
+			for (i in 0...controlsStrings.length)
+			{
+				var item = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
+				item.isMenuItem = true;
+				item.targetY = i;
+				grpControlsnew.add(item);
+				isnewmenu = true;
+				///add(item);
+			}
+	
+			///curSelected = 0;
+			changeSelection();
+		}
 
 
 
@@ -189,6 +283,8 @@ class OptionsMenu extends MusicBeatState
 						remove(keyalphabet);
 						keyalphabet.remove(aming);
 						remove(aming);
+						controlsStrings = [FlxG.save.data.leftBind, FlxG.save.data.downBind, FlxG.save.data.upBind, FlxG.save.data.rightBind, 'reset-all'];
+						regenMenu();
 					});
 			}
 			// PlayerSettings.player1.controls.replaceBinding(Control)
@@ -209,6 +305,8 @@ class OptionsMenu extends MusicBeatState
 							remove(keyalphabet);
 							keyalphabet.remove(aming);
 							remove(aming);
+							controlsStrings = [FlxG.save.data.leftBind, FlxG.save.data.downBind, FlxG.save.data.upBind, FlxG.save.data.rightBind, 'reset-all'];
+							regenMenu();
 						});
 				}
 				// PlayerSettings.player1.controls.replaceBinding(Control)
@@ -230,6 +328,8 @@ class OptionsMenu extends MusicBeatState
 								remove(keyalphabet);
 								keyalphabet.remove(aming);
 								remove(aming);
+								controlsStrings = [FlxG.save.data.leftBind, FlxG.save.data.downBind, FlxG.save.data.upBind, FlxG.save.data.rightBind, 'reset-all'];
+								regenMenu();
 							});
 					}
 					// PlayerSettings.player1.controls.replaceBinding(Control)
@@ -251,6 +351,8 @@ class OptionsMenu extends MusicBeatState
 									remove(keyalphabet);
 									keyalphabet.remove(aming);
 									remove(aming);
+									controlsStrings = [FlxG.save.data.leftBind, FlxG.save.data.downBind, FlxG.save.data.upBind, FlxG.save.data.rightBind, 'reset-all'];
+									regenMenu();
 								});
 						}
 						// PlayerSettings.player1.controls.replaceBinding(Control)
@@ -260,51 +362,228 @@ class OptionsMenu extends MusicBeatState
 	function changeSelection(change:Int = 0)
 	if (abletochange)
 	{
-		#if !switch
-		// NGio.logEvent('Fresh');
-		#end
-		
-		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-
-		curSelected += change;
-
-		if (curSelected < 0)
-			curSelected = grpControls.length - 1;
-		if (curSelected >= grpControls.length)
-			curSelected = 0;
-
-		// selector.y = (70 * curSelected) + 30;
-
-		var bullShit:Int = 0;
-
-		for (item in grpControls.members)
-		{
-			item.targetY = bullShit - curSelected;
-			bullShit++;
-
-			item.alpha = 0.6;
-			#if windows
-			item.color = FlxColor.WHITE;
-            #end
-			// item.setGraphicSize(Std.int(item.width * 0.8));
-
-			if (item.targetY == 0)
+		if (isnewmenu4)
 			{
-				item.alpha = 1;
-				#if windows
-				item.color = FlxColor.RED;
-				#end
-				if (curSelected != 4)
+				FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+
+				curSelected += change;
+		
+				if (curSelected < 0)
+					curSelected = grpControlsnew4.length - 1;
+				if (curSelected >= grpControlsnew4.length)
+					curSelected = 0;
+				
+				// selector.y = (70 * curSelected) + 30;
+		
+				var bullShit:Int = 0;
+		
+				for (item in grpControlsnew4.members)
+				{
+					item.targetY = bullShit - curSelected;
+					bullShit++;
+		
+					item.alpha = 0.6;
+					#if windows
+					item.color = FlxColor.WHITE;
+					#end
+					// item.setGraphicSize(Std.int(item.width * 0.8));
+		
+					if (item.targetY == 0)
 					{
+						item.alpha = 1;
 						#if windows
-						///if debug is current selection
-						/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
-						item.color = FlxColor.CYAN;
+						item.color = FlxColor.RED;
 						#end
+						if (curSelected != 4)
+							{
+								#if windows
+								///if debug is current selection
+								/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
+								item.color = FlxColor.CYAN;
+								#end
+							}
+						// item.setGraphicSize(Std.int(item.width));
 					}
-				// item.setGraphicSize(Std.int(item.width));
+				}
 			}
-		}
+			else if (isnewmenu3)
+				{
+					FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+	
+					curSelected += change;
+			
+					if (curSelected < 0)
+						curSelected = grpControlsnew3.length - 1;
+					if (curSelected >= grpControlsnew3.length)
+						curSelected = 0;
+					
+					// selector.y = (70 * curSelected) + 30;
+			
+					var bullShit:Int = 0;
+			
+					for (item in grpControlsnew3.members)
+					{
+						item.targetY = bullShit - curSelected;
+						bullShit++;
+			
+						item.alpha = 0.6;
+						#if windows
+						item.color = FlxColor.WHITE;
+						#end
+						// item.setGraphicSize(Std.int(item.width * 0.8));
+			
+						if (item.targetY == 0)
+						{
+							item.alpha = 1;
+							#if windows
+							item.color = FlxColor.RED;
+							#end
+							if (curSelected != 4)
+								{
+									#if windows
+									///if debug is current selection
+									/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
+									item.color = FlxColor.CYAN;
+									#end
+								}
+							// item.setGraphicSize(Std.int(item.width));
+						}
+					}
+				}
+				else if (isnewmenu2)
+					{
+							{
+								FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+				
+								curSelected += change;
+						
+								if (curSelected < 0)
+									curSelected = grpControlsnew2.length - 1;
+								if (curSelected >= grpControlsnew2.length)
+									curSelected = 0;
+								
+								// selector.y = (70 * curSelected) + 30;
+						
+								var bullShit:Int = 0;
+						
+								for (item in grpControlsnew2.members)
+								{
+									item.targetY = bullShit - curSelected;
+									bullShit++;
+						
+									item.alpha = 0.6;
+									#if windows
+									item.color = FlxColor.WHITE;
+									#end
+									// item.setGraphicSize(Std.int(item.width * 0.8));
+						
+									if (item.targetY == 0)
+									{
+										item.alpha = 1;
+										#if windows
+										item.color = FlxColor.RED;
+										#end
+										if (curSelected != 4)
+											{
+												#if windows
+												///if debug is current selection
+												/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
+												item.color = FlxColor.CYAN;
+												#end
+											}
+										// item.setGraphicSize(Std.int(item.width));
+									}
+								}
+							}
+					}
+					 else if (isnewmenu)
+					{
+						FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+		
+						curSelected += change;
+				
+						if (curSelected < 0)
+							curSelected = grpControlsnew.length - 1;
+						if (curSelected >= grpControlsnew.length)
+							curSelected = 0;
+						
+						// selector.y = (70 * curSelected) + 30;
+				
+						var bullShit:Int = 0;
+				
+						for (item in grpControlsnew.members)
+						{
+							item.targetY = bullShit - curSelected;
+							bullShit++;
+				
+							item.alpha = 0.6;
+							#if windows
+							item.color = FlxColor.WHITE;
+							#end
+							// item.setGraphicSize(Std.int(item.width * 0.8));
+				
+							if (item.targetY == 0)
+							{
+								item.alpha = 1;
+								#if windows
+								item.color = FlxColor.RED;
+								#end
+								if (curSelected != 4)
+									{
+										#if windows
+										///if debug is current selection
+										/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
+										item.color = FlxColor.CYAN;
+										#end
+									}
+								// item.setGraphicSize(Std.int(item.width));
+							}
+						}
+					}
+					else
+						{
+							FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+		
+							curSelected += change;
+					
+							if (curSelected < 0)
+								curSelected = grpControls.length - 1;
+							if (curSelected >= grpControls.length)
+								curSelected = 0;
+							
+							// selector.y = (70 * curSelected) + 30;
+					
+							var bullShit:Int = 0;
+					
+							for (item in grpControls.members)
+							{
+								item.targetY = bullShit - curSelected;
+								bullShit++;
+					
+								item.alpha = 0.6;
+								#if windows
+								item.color = FlxColor.WHITE;
+								#end
+								// item.setGraphicSize(Std.int(item.width * 0.8));
+					
+								if (item.targetY == 0)
+								{
+									item.alpha = 1;
+									#if windows
+									item.color = FlxColor.RED;
+									#end
+									if (curSelected != 4)
+										{
+											#if windows
+											///if debug is current selection
+											/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
+											item.color = FlxColor.CYAN;
+											#end
+										}
+									// item.setGraphicSize(Std.int(item.width));
+								}
+							}
+						}
 	}
 
 
