@@ -4,7 +4,7 @@ Performance and html5 support is my priority - makes the game playable not only 
 
 key fetures:
 - key rebinding
-- SE INPUT (basicly default fnf input but with ghost tapping) notes and note trails remain untampered with so you have that original FNF engine feel.
+- ME INPUT (basicly default fnf input but with ghost tapping) notes and note trails remain untampered with so you have that original FNF engine feel.
 - advanced scoring system
 - advanced botplay (has note glows)
 - many other fetures
