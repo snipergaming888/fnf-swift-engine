@@ -43,10 +43,10 @@ class MainMenuState extends MusicBeatState
 	var playanims:Bool = false;
 	var defaultCamZoom:Float = 1.05;
 	var camZoom:FlxTween;
-	public static var sniperengineversion:String = " Mona Engine 2.9";
-	public static var sniperengineversionA:String = " ME 2.9";
+	public static var sniperengineversion:String = " Mona Engine 3.0";
+	public static var sniperengineversionA:String = " ME 3.0";
 	public static var gameVer:String = "v0.2.7.1";
-	public static var nightly:String = " | nightly 2";
+	public static var nightly:String = "";
 	
 	override function create()
 	{
@@ -240,7 +240,7 @@ class MainMenuState extends MusicBeatState
 		keyTimer=2;
 		if(code=="secret"){
 			FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
-			FlxG.switchState(new SilvaFreeplayState());
+			///FlxG.switchState(new SilvaFreeplayState());
 		}
 	}
 
@@ -402,6 +402,13 @@ class MainMenuState extends MusicBeatState
 			{
 				if (accepted)
 				{
+					if (Conductor.bpm == 180 && curBeat >= 168 && curBeat < 200)
+						{
+							if (curBeat % 1 == 0)
+								{
+									FlxG.camera.zoom += 0.030;
+								}
+						}
 						    if (curBeat % 1 == 0)
 						    	{
 									if (TitleState.old)

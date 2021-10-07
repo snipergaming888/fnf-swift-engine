@@ -24,7 +24,7 @@ using StringTools;
 class FreeplayState extends MusicBeatState
 {
 	var songs:Array<SongMetadata> = []; ///all bpms up to milf
-	var beatArray:Array<Int> = [100,100,120,180,150,165,130,150,175,165,110,125,180,100,150,159,144,120,190,162];
+	var beatArray:Array<Int> = [100,100,120,180,150,165,130,150,175,165,110,125,180,180,100,150,159,144,120,190,162];
 
 	var selector:FlxText;
 	var curSelected:Int = FlxG.save.data.curselected;
@@ -84,11 +84,10 @@ class FreeplayState extends MusicBeatState
 		addWeek(['Spookeez', 'South', 'Monster'], 2, ['spooky', 'spooky', 'monster']);
 		addWeek(['Pico', 'Philly', 'Blammed'], 3, ['pico']);
 
-		addWeek(['Satin-Panties', 'High', 'Milf'], 4, ['mom']);
+		addWeek(['Satin-Panties', 'High', 'Milf', 'Avidity'], 4, ['mom']);
 		addWeek(['Cocoa', 'Eggnog', 'Winter-Horrorland'], 5, ['parents-christmas', 'parents-christmas', 'monster-christmas']);
 		
 		addWeek(['Senpai', 'Roses', 'Thorns'], 6, ['senpai', 'senpai', 'spirit']);
-		addWeek(['RANDOM SONGS'], 1, ['nothing']);
 		// LOAD MUSIC
 
 		// LOAD CHARACTERS
@@ -198,11 +197,6 @@ class FreeplayState extends MusicBeatState
 		super.update(elapsed);
 
 
-		if (curSelected == 19)
-			{
-				curDifficulty = 2;
-			}
-
 		if (FlxG.sound.music.volume < 0.7)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
@@ -237,24 +231,11 @@ class FreeplayState extends MusicBeatState
 		{
 			FlxG.switchState(new MainMenuState());
 		}
-		#if windows
-			if (curSelected == 19)
-				   {
-					  /// diffText.text = "[  HARD ";
-					  diffText.text = " RANDOM SHIT ";
-				   }
-			   #end
 
 		if (controls.ACCEPT)
 		{
 			accepted = false;
 			
-			if (curSelected == 19)
-				   {
-					   FlxG.switchState(new SilvaFreeplayState());
-					   diffText.text = "LOADING";
-				   }
-				   else
 					{
 						var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
 
@@ -279,12 +260,6 @@ class FreeplayState extends MusicBeatState
 			curDifficulty = 2;
 		if (curDifficulty > 2)
 			curDifficulty = 0;
-
-		if (curSelected == 19)
-			{
-				diffText.text = "[  HARD ";
-				curDifficulty = 2;
-			}
 
 		#if !switch
 		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
@@ -319,17 +294,45 @@ class FreeplayState extends MusicBeatState
 				{
 					if (curSelected == 12)
 						{
-							new FlxTimer().start(2.50, function(tmr:FlxTimer)
-								{
+							
+
 									trace('milf');
 									if (curBeat % 1 == 0)
 										{
-											FlxG.camera.zoom += 0.030;
-											camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+											if (curBeat >= 8 && curBeat < 373)
+											{
+												FlxG.camera.zoom += 0.030;
+												camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+											}
+
+											if (curBeat >= 168 && curBeat < 200)
+												{
+														{
+															FlxG.camera.zoom += 0.030;
+														}
+												}
 										}
+
 					
-								});
+								
 						}
+						else if (curSelected == 13)
+							{
+								
+	
+										trace('avidity');
+										if (curBeat % 1 == 0)
+											{
+												{
+													FlxG.camera.zoom += 0.030;
+													camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+												}
+
+											}
+	
+						
+									
+							}
 						else if (curSelected == 9)
 							{
 								new FlxTimer().start(11.00, function(tmr:FlxTimer)
@@ -385,13 +388,15 @@ class FreeplayState extends MusicBeatState
 		#end
 
 		#if PRELOAD_ALL
-		FlxG.sound.music.stop();
-		songWait.cancel();
-		songWait.start(1, function(tmr:FlxTimer) {
-		FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
-		Conductor.changeBPM(beatArray[curSelected]);
-		trace(Conductor.bpm);
-	    });
+				{
+					FlxG.sound.music.stop();
+					songWait.cancel();
+					songWait.start(1, function(tmr:FlxTimer) {
+					FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
+					Conductor.changeBPM(beatArray[curSelected]);
+					trace(Conductor.bpm);
+					});
+				}
 		#end
 		trace('current selection: ' + curSelected);
 

@@ -147,6 +147,16 @@ class ChangelogSubState extends MusicBeatState
 		function bopOnBeat()
 			{
 				{
+					{
+						if (Conductor.bpm == 180 && curBeat >= 168 && curBeat < 200 && camZooming && FlxG.camera.zoom < 1.35)
+							{
+								if (curBeat % 1 == 0)
+									{
+										FlxG.camera.zoom += 0.030;
+										camHUD.zoom += 0.06;
+									}
+							}
+					}
 						    if (curBeat % 2 == 0)
 						    	{
 									if (TitleState.old)

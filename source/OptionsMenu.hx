@@ -12,22 +12,30 @@ import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
+import flixel.graphics.FlxGraphic;
+import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.group.FlxGroup;
+import flixel.input.gamepad.FlxGamepad;
+import flixel.math.FlxPoint;
+import flixel.math.FlxRect;
 import lime.utils.Assets;
 import flixel.input.FlxInput;
 import flixel.input.actions.FlxAction;
 import flixel.input.actions.FlxActionInput;
 import flixel.input.actions.FlxActionInputDigital;
 import flixel.util.FlxTimer;
+import flixel.addons.display.FlxGridOverlay;
 
 class OptionsMenu extends MusicBeatState
 
 {
 	var selector:FlxText;
-	var curSelected:Int = 0;
+	var curSelected:Int = FlxG.save.data.optionscurselected;
 	var keypress:FlxSprite;
 	var menuBG:FlxSprite;
 	var keytext:FlxText;
 	var aming:Alphabet;
+	var item:Alphabet;
 	var CYAN:FlxColor = 0xFF00FFFF;
 	var LIME:FlxColor = 0xFF00FF00;
 	var camZoom:FlxTween;
@@ -47,7 +55,14 @@ class OptionsMenu extends MusicBeatState
 	/// i had no idea how to remove alpabets from groups so uhhhh
 	override function create()
 	{
-		TitleState.resetBinds();
+		if (FlxG.save.data.optionscurselected == null)
+			FlxG.save.data.optionscurselected = "0";
+		trace('default selected: ' + FlxG.save.data.optionscurselected);
+		curSelected = 0;
+		///should fix zero bug
+		trace('UR BINDS ARE:');
+        trace('${FlxG.save.data.leftBind}-${FlxG.save.data.downBind}-${FlxG.save.data.upBind}-${FlxG.save.data.rightBind}');
+
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		///controlsStrings = CoolUtil.coolTextFile(Paths.txt('controlsmenu'));
 		controlsStrings = CoolUtil.coolStringFile(FlxG.save.data.leftBind + "\n" + FlxG.save.data.downBind + "\n" + FlxG.save.data.upBind + "\n" + FlxG.save.data.rightBind + "\n" + "reset-all" );
@@ -83,6 +98,7 @@ class OptionsMenu extends MusicBeatState
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 		}
 
+		trace("ur binds are not zero, good");
 
 		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, "Press enter on the key you want to rebind then press the key you want to rebind it to.", 12);
 		versionShit.scrollFactor.set();
@@ -137,10 +153,31 @@ class OptionsMenu extends MusicBeatState
 			{
 				if (controls.BACK)
 					FlxG.switchState(new ControlState());
+				if(FlxG.save.data.upBind == "enter"){
+					FlxG.save.data.upBind = "UP";
+					trace("NOT BINDABLE");
+				}
+				if(FlxG.save.data.downBind == "enter"){
+					FlxG.save.data.downBind = "DOWN";
+					trace("NOT BINDABLE");
+				}
+				if(FlxG.save.data.leftBind == "enter"){
+					FlxG.save.data.leftBind = "LEFT";
+					trace("NOT BINDABLE");
+				}
+				if(FlxG.save.data.rightBind == "enter"){
+					FlxG.save.data.rightBind = "RIGHT";
+					trace("NOT BINDABLE");
+				}
 				if (controls.UP_P)
 					changeSelection(-1);
 				if (controls.DOWN_P)
 					changeSelection(1);
+				if (controls.ACCEPT)
+					{
+		
+					}
+
 				if (controls.BACK)
 					{
 						PlayerSettings.player1.controls.loadKeyBinds();
@@ -192,76 +229,23 @@ class OptionsMenu extends MusicBeatState
 
 
 
-	function regenMenu():Void
-		{
-			if (isnewmenu)
-				{
-						remove(grpControlsnew);
-				}
-				if (isnewmenu2)
-					{
-							remove(grpControlsnew2);
-					}
-					if (isnewmenu3)
-						{
-								remove(grpControlsnew3);
-						}
-
-						if (isnewmenu3)
-							{
-								for (i in 0...controlsStrings.length)
-									{
-										var item = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
-										item.isMenuItem = true;
-										item.targetY = i;
-										grpControlsnew4.add(item);
-										isnewmenu4 = true;
-										///add(item);
-									}	
-							}
-
-					if (isnewmenu2)
-						{
-							for (i in 0...controlsStrings.length)
-								{
-									var item = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
-									item.isMenuItem = true;
-									item.targetY = i;
-									grpControlsnew3.add(item);
-									isnewmenu3 = true;
-									///add(item);
-								}	
-						}
-
-				if (isnewmenu)
-					{
-						for (i in 0...controlsStrings.length)
-							{
-								var item = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
-								item.isMenuItem = true;
-								item.targetY = i;
-								grpControlsnew2.add(item);
-								isnewmenu2 = true;
-								///add(item);
-							}	
-					}
-			remove(grpControls);
-			remove(controlLabel);
-			grpControls.remove(controlLabel);
-	
-			for (i in 0...controlsStrings.length)
+		function regenMenu():Void
 			{
-				var item = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
-				item.isMenuItem = true;
-				item.targetY = i;
-				grpControlsnew.add(item);
-				isnewmenu = true;
-				///add(item);
+				for (i in 0...grpControls.members.length)
+					grpControls.remove(grpControls.members[0], true);
+		
+				for (i in 0...controlsStrings.length)
+				{
+					var item = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
+					item.isMenuItem = true;
+					item.targetY = i;
+					grpControls.add(item);
+				}
+		
+				curSelected = FlxG.save.data.optionscurselected;
+				changeSelection();
 			}
-	
-			///curSelected = 0;
-			changeSelection();
-		}
+
 
 
 
@@ -376,6 +360,8 @@ class OptionsMenu extends MusicBeatState
 				// selector.y = (70 * curSelected) + 30;
 		
 				var bullShit:Int = 0;
+
+				FlxG.save.data.optionscurselected = curSelected;
 		
 				for (item in grpControlsnew4.members)
 				{
@@ -550,6 +536,9 @@ class OptionsMenu extends MusicBeatState
 								curSelected = grpControls.length - 1;
 							if (curSelected >= grpControls.length)
 								curSelected = 0;
+
+							FlxG.save.data.optionscurselected = curSelected;
+							
 							
 							// selector.y = (70 * curSelected) + 30;
 					
@@ -605,6 +594,13 @@ class OptionsMenu extends MusicBeatState
 			{
 				if (accepted)
 				{
+					if (Conductor.bpm == 180 && curBeat >= 168 && curBeat < 200)
+						{
+							if (curBeat % 1 == 0)
+								{
+									FlxG.camera.zoom += 0.030;
+								}
+						}
 						    if (curBeat % 1 == 0)
 						    	{
 									if (TitleState.old)

@@ -101,8 +101,8 @@ class ControlState extends MusicBeatState
 					case 5:
 						controls.setKeyboardScheme(KeyboardScheme.Custom, true);
 						FlxG.switchState(new OptionsMenu());
-						FlxG.save.data.controls = false;
-						TitleState.resetBinds();
+						FlxG.save.data.controls = true;
+						///TitleState.resetBinds();
 				}
 			}
 	}
@@ -170,6 +170,13 @@ class ControlState extends MusicBeatState
 			{
 				if (accepted)
 				{
+					if (Conductor.bpm == 180 && curBeat >= 168 && curBeat < 200)
+						{
+							if (curBeat % 1 == 0)
+								{
+									FlxG.camera.zoom += 0.030;
+								}
+						}
 						    if (curBeat % 1 == 0)
 						    	{
 									if (TitleState.old)

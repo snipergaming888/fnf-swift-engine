@@ -689,6 +689,24 @@ class TitleState extends MusicBeatState
             FlxG.save.data.rightBind = "RIGHT";
 			trace("DEFAULT BIND");
         }
+
+		if(FlxG.save.data.upBind == "enter"){
+            FlxG.save.data.upBind = "UP";
+			trace("NOT BINDABLE");
+        }
+        if(FlxG.save.data.downBind == "enter"){
+            FlxG.save.data.downBind = "DOWN";
+			trace("NOT BINDABLE");
+        }
+        if(FlxG.save.data.leftBind == "enter"){
+            FlxG.save.data.leftBind = "LEFT";
+			trace("NOT BINDABLE");
+        }
+        if(FlxG.save.data.rightBind == "enter"){
+            FlxG.save.data.rightBind = "RIGHT";
+			trace("NOT BINDABLE");
+        }
+
 		trace('UR BINDS ARE:');
         trace('${FlxG.save.data.leftBind}-${FlxG.save.data.downBind}-${FlxG.save.data.upBind}-${FlxG.save.data.rightBind}');
     }

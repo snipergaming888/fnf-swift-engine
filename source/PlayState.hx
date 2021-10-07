@@ -184,6 +184,7 @@ class PlayState extends MusicBeatState
 	var notesnotmissed:Float = 0;
 	var notesPassing:Float = 0;
 	var baseText2:String = "Current Accuracy: ";
+	var songRating:String = "?";
 	var baseText:String = " Current Accuracy:";
 	public static var songPosBG:FlxSprite;
 	public static var songPosBar:FlxBar;
@@ -299,12 +300,12 @@ class PlayState extends MusicBeatState
 		if (FlxG.save.data.offset == null)
 			FlxG.save.data.offset = 0;
 
-		if (FlxG.save.data.controls = true)
-			{
+		///if (FlxG.save.data.controls = true)
+			///{
 				controls.loadKeyBinds();
 				PlayerSettings.player1.controls.loadKeyBinds();
 				trace('binds loadeded');
-			}
+			///}
 
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
@@ -670,7 +671,7 @@ class PlayState extends MusicBeatState
 							}
 						  add(street);
 			  }
-		          case 'milf' | 'satin-panties' | 'high':
+		          case 'milf' | 'satin-panties' | 'high' | 'avidity':
 		          {
 		                  curStage = 'limo';
 		                  defaultCamZoom = 0.90;
@@ -1660,7 +1661,7 @@ class PlayState extends MusicBeatState
 				}
 		if (FlxG.save.data.downscroll)
 			{
-				scoreTxt = new FlxText(380, 700, "", 20);
+				scoreTxt = new FlxText(380, 100, "", 20);
 				scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 				scoreTxt.scrollFactor.set();
 				if (FlxG.save.data.antialiasing)
@@ -1675,7 +1676,7 @@ class PlayState extends MusicBeatState
 			}
 			else
 				{
-					scoreTxt = new FlxText(380, 0, "", 20);
+					scoreTxt = new FlxText(380, 698, "", 20);
 					scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 					scoreTxt.scrollFactor.set();
 					if (FlxG.save.data.antialiasing)
@@ -1710,7 +1711,7 @@ class PlayState extends MusicBeatState
 						{
 							if (FlxG.save.data.downscroll)
 								{
-									var sniperenginemark = new FlxText(4,4 - 4,0,SONG.song + " " + (storyDifficulty == 2 ? "Hard" : storyDifficulty == 1 ? "Normal" : "Easy") + " -" + MainMenuState.sniperengineversionA + MainMenuState.nightly, 12);
+									var sniperenginemark = new FlxText(4,700 - 4,0,SONG.song + " " + (storyDifficulty == 2 ? "Hard" : storyDifficulty == 1 ? "Normal" : "Easy") + " -" + MainMenuState.sniperengineversionA + MainMenuState.nightly, 12);
 									sniperenginemark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
 									sniperenginemark.scrollFactor.set();
 									if (FlxG.save.data.antialiasing)
@@ -1726,7 +1727,7 @@ class PlayState extends MusicBeatState
 								}
 									else
 											{
-												var sniperenginemark = new FlxText(4,700 - 4,0,SONG.song + " " + (storyDifficulty == 2 ? "Hard" : storyDifficulty == 1 ? "Normal" : "Easy") + " -" + MainMenuState.sniperengineversionA + MainMenuState.nightly, 12);
+												var sniperenginemark = new FlxText(4,4 - 4,0,SONG.song + " " + (storyDifficulty == 2 ? "Hard" : storyDifficulty == 1 ? "Normal" : "Easy") + " -" + MainMenuState.sniperengineversionA + MainMenuState.nightly, 12);
 												sniperenginemark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
 												sniperenginemark.scrollFactor.set();
 												if (FlxG.save.data.antialiasing)
@@ -1745,7 +1746,7 @@ class PlayState extends MusicBeatState
 						{
 							if (FlxG.save.data.downscroll)
 								{
-									var sniperenginemark = new FlxText(4,4 - 4,0,SONG.song + " " + (storyDifficulty == 2 ? "Hard" : storyDifficulty == 1 ? "Normal" : "Easy") + " -" + MainMenuState.sniperengineversionA + MainMenuState.nightly + "", 12);
+									var sniperenginemark = new FlxText(4,700 - 4,0,SONG.song + " " + (storyDifficulty == 2 ? "Hard" : storyDifficulty == 1 ? "Normal" : "Easy") + " -" + MainMenuState.sniperengineversionA + MainMenuState.nightly + "", 12);
 									sniperenginemark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
 									sniperenginemark.scrollFactor.set();
 									if (FlxG.save.data.antialiasing)
@@ -1775,7 +1776,7 @@ class PlayState extends MusicBeatState
 								}
 								else
 									{
-										var sniperenginemark = new FlxText(4,700 - 4,0,SONG.song + " " + (storyDifficulty == 2 ? "Hard" : storyDifficulty == 1 ? "Normal" : "Easy") + " -" + MainMenuState.sniperengineversionA + MainMenuState.nightly + " | BOTPLAY", 12);
+										var sniperenginemark = new FlxText(4,4 - 4,0,SONG.song + " " + (storyDifficulty == 2 ? "Hard" : storyDifficulty == 1 ? "Normal" : "Easy") + " -" + MainMenuState.sniperengineversionA + MainMenuState.nightly + " | BOTPLAY", 12);
 										sniperenginemark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
 										sniperenginemark.scrollFactor.set();
 										if (FlxG.save.data.antialiasing)
@@ -2074,7 +2075,7 @@ class PlayState extends MusicBeatState
 
 		if (FlxG.save.data.downscroll)
 			{
-				accuracytext = new FlxText(180, 700, "", 20);
+				accuracytext = new FlxText(180, 100, "", 20);
 				accuracytext.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
 				accuracytext.scrollFactor.set();
 				if (FlxG.save.data.antialiasing)
@@ -2089,7 +2090,7 @@ class PlayState extends MusicBeatState
 			}
 			else
 				{
-					accuracytext = new FlxText(180, 0, "", 20);
+					accuracytext = new FlxText(180, 698, "", 20);
 					accuracytext.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
 					accuracytext.scrollFactor.set();
 					if (FlxG.save.data.antialiasing)
@@ -3242,8 +3243,8 @@ class PlayState extends MusicBeatState
 
 		if (boyfriend.animation.curAnim.name.startsWith('sing') && scoretxtnotmoved)
 			{
-			accuracytext.x -= 45;
-			scoreTxt.x -= 45;
+			accuracytext.x -= 25;
+			scoreTxt.x -= 25;
 			scoretxtnotmoved = false;
 			trace("MOVED");		
 			}
@@ -3251,8 +3252,8 @@ class PlayState extends MusicBeatState
 
 		///scoreTxt.text = 'Misses: $misses | Score: $songScore | Combo: $combo';
 		/// so ummm there are two accuracy thinges cuz one is good at calculating it and the other is shit
-		scoreTxt.text = " | Overall Accuracy: " + truncateFloat(accuracy, 2) + "% " + (fc ? "| FC" : misses == 0 ? "| A" : accuracy <= 75 ? "| BAD" : "") + " | Misses: " + misses + " | " + "Score: " + songScore + " | Combo: " + combo + " | Health: " + Math.round(health * 50);
-		accuracytext.text = baseText;
+		scoreTxt.text = " | Overall Accuracy: " + truncateFloat(accuracy, 2) + "% " + (fc ? "| FC" : misses == 0 ? "" : accuracy <= 75 ? "" : "") + " | Rating: " + songRating + " | Misses: " + misses + " | " + "Score: " + songScore + " | Combo: " + combo;
+		accuracytext.text = baseText;                                                      ///(fc ? "| FC" : misses == 0 ? "| A" : accuracy <= 75 ? "| BAD" : "")                                                                                               /// " | Health: " + Math.round(health * 50)                  
 
 		var pauseBtt:Bool = FlxG.keys.justPressed.ENTER;
 		if (Main.woops)
@@ -3309,13 +3310,23 @@ class PlayState extends MusicBeatState
 		
 		if (notesPassing != 0) {
 			baseText = "Current Accuracy:" + Math.round((notesHit/notesPassing) * 100) + "%";
-		} else {
-			baseText = "Current Accuracy:100%";
+		} else if (scoretxtnotmoved)
+		{
+			baseText2 = " Current Accuracy: 0%";
+		}
+		else 
+		{
+			baseText2 = "Current Accuracy: 100%";
 		}
 		
 		if (notesPassing != 0) {
 			baseText2 = "Current Accuracy: " + Math.round((notesHit/notesPassing) * 100) + "%";
-		} else {
+		} else if (scoretxtnotmoved)
+		{
+			baseText2 = " Current Accuracy: 0%";
+		}
+		else 
+		{
 			baseText2 = "Current Accuracy: 100%";
 		}
 
@@ -5221,6 +5232,7 @@ class PlayState extends MusicBeatState
 								if (!inIgnoreList && !ghost)
 									badNoteCheck();
 								updateAccuracy();
+								rating();
 							}
 						}
 					}
@@ -5454,6 +5466,7 @@ class PlayState extends MusicBeatState
 					boyfriend.playAnim('singRIGHTmiss', true);
 			}
 			updateAccuracy();
+			rating();
 		}
 
 	}
@@ -5490,6 +5503,7 @@ class PlayState extends MusicBeatState
 									trace('no input');	
 							
 					updateAccuracy();
+					rating();
 				}
 
 				function updateAccuracy()
@@ -5501,6 +5515,34 @@ class PlayState extends MusicBeatState
 						totalPlayed += 1;
 						accuracy = totalNotesHit / totalPlayed * 100;
 					}
+
+					function rating()
+						{
+							if (accuracy <= 50)
+								{
+									songRating = 'you fucking suck';
+								}
+								else if (accuracy <= 70)
+									{
+										songRating = 'D';
+									}
+								else if (accuracy <= 80)
+									{
+									     songRating = 'C';
+									}
+									else if (accuracy <= 90)
+										{
+											 songRating = 'B';
+										}
+										else if (accuracy <= 95)
+											{
+												 songRating = 'A';
+											}
+											else if (accuracy <= 99.50)
+												{
+													 songRating = 'A+';
+												}
+						}
 
 
 	function noteCheck(keyP:Bool, note:Note):Void
@@ -5523,6 +5565,7 @@ class PlayState extends MusicBeatState
 						trace(combo);
 					}
 			updateAccuracy();
+			rating();
 			if (!note.isSustainNote)
 			{
 				notesPassing += 1;
@@ -5720,6 +5763,18 @@ class PlayState extends MusicBeatState
 
 			// Song duration in a float, useful for the time left feature
 			songLength = FlxG.sound.music.length;
+
+
+			if (curSong.toLowerCase() == 'avidity' && curStep >= 737 && curStep < 768)
+				{
+					if (camZooming && FlxG.camera.zoom < 1.35 && curStep % 2 == 0)
+						{
+							FlxG.camera.zoom += 0.020;
+							camHUD.zoom += 0.04;
+							camHUD2.zoom += 0.04;
+							trace('zooming %1 == 0');
+						}
+				}
 
 
 		if (curStep == 577 && curSong.toLowerCase() == 'glitcher')
@@ -5945,6 +6000,116 @@ class PlayState extends MusicBeatState
 							trace('zooming %1 == 0');
 						}
 				}
+
+				if (curSong.toLowerCase() == 'avidity' && curBeat >= 0 && curBeat < 32)
+					{
+						if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0)
+							{
+								FlxG.camera.zoom += 0.010;
+								camHUD.zoom += 0.02;
+								camHUD2.zoom += 0.02;
+								trace('zooming %1 == 0');
+							}
+					}
+
+					if (curSong.toLowerCase() == 'avidity' && curBeat >= 48 && curBeat < 64)
+						{
+							if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0)
+								{
+									FlxG.camera.zoom += 0.015;
+									camHUD.zoom += 0.03;
+									camHUD2.zoom += 0.03;
+									trace('zooming %1 == 0');
+								}
+						}
+
+						if (curSong.toLowerCase() == 'avidity' && curBeat >= 64 && curBeat < 128)
+							{
+								if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0)
+									{
+										FlxG.camera.zoom += 0.020;
+										camHUD.zoom += 0.04;
+										camHUD2.zoom += 0.04;
+										trace('zooming %1 == 0');
+									}
+							}
+
+							if (curSong.toLowerCase() == 'avidity' && curBeat >= 144 && curBeat < 176)
+								{
+									if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0)
+										{
+											FlxG.camera.zoom += 0.005;
+											camHUD.zoom += 0.01;
+											camHUD2.zoom += 0.01;
+											trace('zooming %1 == 0');
+										}
+								}
+
+								if (curSong.toLowerCase() == 'avidity' && curBeat >= 176 && curBeat < 184)
+									{
+										if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0)
+											{
+												FlxG.camera.zoom += 0.020;
+												camHUD.zoom += 0.04;
+												camHUD2.zoom += 0.04;
+												trace('zooming %1 == 0');
+											}
+									}
+
+									if (curSong.toLowerCase() == 'avidity' && curBeat >= 256 && curBeat < 287)
+										{
+											if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0)
+												{
+													FlxG.camera.zoom += 0.015;
+													camHUD.zoom += 0.03;
+													camHUD2.zoom += 0.03;
+													trace('zooming %1 == 0');
+												}
+										}
+
+										if (curSong.toLowerCase() == 'avidity' && curBeat >= 288 && curBeat < 347)
+											{
+												if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0)
+													{
+														FlxG.camera.zoom += 0.020;
+														camHUD.zoom += 0.04;
+														camHUD2.zoom += 0.04;
+														trace('zooming %1 == 0');
+													}
+											}
+
+											if (curSong.toLowerCase() == 'avidity' && curBeat >= 319 && curBeat < 347)
+												{
+													if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 2 == 0)
+														{
+															FlxG.camera.zoom += 0.010;
+															camHUD.zoom += 0.02;
+															camHUD2.zoom += 0.02;
+															trace('zooming %2 == 0');
+														}
+												}
+
+												if (curSong.toLowerCase() == 'avidity' && curBeat >= 351 && curBeat < 415)
+													{
+														if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 1 == 0)
+															{
+																FlxG.camera.zoom += 0.020;
+																camHUD.zoom += 0.04;
+																camHUD2.zoom += 0.04;
+																trace('zooming %1 == 0');
+															}
+													}
+
+													if (curSong.toLowerCase() == 'avidity' && curBeat >= 416 && curBeat < 480)
+														{
+															if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0)
+																{
+																	FlxG.camera.zoom += 0.010;
+																	camHUD.zoom += 0.02;
+																	camHUD2.zoom += 0.02;
+																	trace('zooming %4 == 0');
+																}
+														}
 
 
 				if (curSong.toLowerCase() == 'fresh' && curBeat >= 112 && curBeat < 144)

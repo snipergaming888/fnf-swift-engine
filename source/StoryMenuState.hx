@@ -25,7 +25,7 @@ class StoryMenuState extends MusicBeatState
 		['Bopeebo', 'Fresh', 'Dadbattle'],
 		['Spookeez', 'South', "Monster"],
 		['Pico', 'Philly', "Blammed"],
-		['Satin-Panties', "High", "Milf"],
+		['Satin-Panties', "High", "Milf", "Avidity"],
 		['Cocoa', 'Eggnog', 'Winter-Horrorland'],
 		['Senpai', 'Roses', 'Thorns']
 	];
@@ -485,6 +485,13 @@ class StoryMenuState extends MusicBeatState
 			{
 				if (accepted)
 				{
+					if (Conductor.bpm == 180 && curBeat >= 168 && curBeat < 200)
+						{
+							if (curBeat % 1 == 0)
+								{
+									FlxG.camera.zoom += 0.030;
+								}
+						}
 						    if (curBeat % 1 == 0)
 						    	{
 									if (TitleState.old)

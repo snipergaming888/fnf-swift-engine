@@ -2,7 +2,7 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="Friday Night Funkin' | Sniper Engine" file="SniperEngine" packageName="com.sniper.sniperengine" package="com.sniper.sniperengine" main="Main" version="0.2.7.1" company="snipergaming" />
+	<app title="Friday Night Funkin' | Mona Engine" file="MonaEngine" packageName="com.sniper.monaengine" package="com.sniper.monaengine" main="Main" version="0.2.7.1" company="snipergaming" />
 
 	<!--Switch Export with Unique ApplicationID and Icon-->
 	<set name="APP_ID" value="0x0100f6c013bbc000" />

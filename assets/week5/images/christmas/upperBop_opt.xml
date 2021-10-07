@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<TextureAtlas imagePath="upperBop_opt.png">
-	<!-- Created with Adobe Animate version 20.0.3.25487 -->
-	<!-- http://www.adobe.com/products/animate.html -->
-	<SubTexture name="Upper Crowd Bob instance 10000" x="0" y="0" width="2225" height="289" pivotX="224.2" pivotY="-262.1" frameX="0" frameY="-16" frameWidth="2225" frameHeight="305"/>
-</TextureAtlas>
