@@ -28,7 +28,7 @@ class GameOptions extends MusicBeatState
 	override function create()
 	{
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll') + "\n" + (FlxG.save.data.middlescroll ? "middlescroll on" : "middlescroll off") + "\n" + (FlxG.save.data.ghosttapping ? "Ghost Tapping" : "No Ghost Tapping") + "\n" + (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD") + "\n" + (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF") + "\n" + (FlxG.save.data.debug ? "debug MODE ON" : "debug MODE OFF") + "\n" + (FlxG.save.data.reset ? "RESET BUTTON ON" : "RESET BUTTON OFF") + "\n" + (FlxG.save.data.pausecount ? "pause counter on" : "pause counter off")+ "\n" + (FlxG.save.data.hittimings ? "MS Timing text ON" : "MS Timing text OFF")+ "\n" + (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION off") + "\n" + "EDIT OFFSET");
+		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll') + "\n" + (FlxG.save.data.middlescroll ? "middlescroll on" : "middlescroll off") + "\n" + (FlxG.save.data.ghosttapping ? "Ghost Tapping" : "No Ghost Tapping") + "\n" + (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD") + "\n" + (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF") + "\n" + (FlxG.save.data.debug ? "debug MODE ON" : "debug MODE OFF") + "\n" + (FlxG.save.data.reset ? "RESET BUTTON ON" : "RESET BUTTON OFF") + "\n" + (FlxG.save.data.pausecount ? "pause counter on" : "pause counter off")+ "\n" + (FlxG.save.data.hittimings ? "MS Timing text ON" : "MS Timing text OFF")+ "\n" + (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION off")+ "\n" + (FlxG.save.data.strumlights ? "STRUM LIGHTS ON" : "STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF") + "\n" + "EDIT OFFSET");
 		
 		trace(controlsStrings);
 
@@ -200,13 +200,33 @@ class GameOptions extends MusicBeatState
 						ctrl.color = FlxColor.CYAN;
 						#end
 						grpControls.add(ctrl);
-						case 10:
+					case 10:
+						grpControls.remove(grpControls.members[curSelected]);
+						FlxG.save.data.strumlights = !FlxG.save.data.strumlights;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.strumlights ? "STRUM LIGHTS ON" : "STRUM LIGHTS OFF"), true, false);
+						ctrl.isMenuItem = true;
+						ctrl.targetY = curSelected - 10;
+						#if windows
+						ctrl.color = FlxColor.CYAN;
+						#end
+							grpControls.add(ctrl);
+					case 11:
+						grpControls.remove(grpControls.members[curSelected]);
+						FlxG.save.data.playerstrumlights = !FlxG.save.data.playerstrumlights;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF"), true, false);
+						ctrl.isMenuItem = true;
+						ctrl.targetY = curSelected - 11;
+						#if windows
+						ctrl.color = FlxColor.CYAN;
+						#end
+						grpControls.add(ctrl);
+						case 12:
 						grpControls.remove(grpControls.members[curSelected]);
 						FlxG.switchState(new LatencyState());
 						Conductor.changeBPM(120);
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, "EDIT OFFSET");
 						ctrl.isMenuItem = true;
-						ctrl.targetY = curSelected - 10;
+						ctrl.targetY = curSelected - 12;
 						#if windows
 						ctrl.color = FlxColor.CYAN;
 						#end

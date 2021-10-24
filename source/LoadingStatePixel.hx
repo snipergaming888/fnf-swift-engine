@@ -37,7 +37,7 @@ class LoadingStatePixel extends MusicBeatState
 	var gfDance:FlxSprite;
 	var loading:FlxSprite;
 	var danceLeft = false;
-	public static var daPixelZoom:Float = 6;
+	public static var daPixelZoom:Float = 1;
 	
 	function new(target:FlxState, stopMusic:Bool)
 	{
@@ -57,7 +57,7 @@ class LoadingStatePixel extends MusicBeatState
 		// logoBl.screenCenter();
 		// logoBl.color = FlxColor.BLACK;
 
-		gfDance = new FlxSprite(300,400);
+		gfDance = new FlxSprite(800,400);
 		gfDance.setGraphicSize(Std.int(	gfDance.width * daPixelZoom * 1.0));
 		gfDance.frames = Paths.getSparrowAtlas('gfPixelLoading');
 		gfDance.animation.addByPrefix('idle', 'GF IDLE', 24);

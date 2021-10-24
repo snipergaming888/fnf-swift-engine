@@ -102,6 +102,17 @@ class TitleState extends MusicBeatState
 
 		if (FlxG.save.data.offset == null)
 			FlxG.save.data.offset = 0;
+
+		if (FlxG.save.data.curselected == null)
+			FlxG.save.data.curselected = "0";
+
+		if (FlxG.save.data.strumlights == null)
+			FlxG.save.data.strumlights = true;
+
+		if (FlxG.save.data.playerstrumlights == null)
+			FlxG.save.data.playerstrumlights = true;
+		
+		trace('default selected: ' + FlxG.save.data.curselected);
 		
 			
 		FlxG.save.bind('monaengine', 'snipergaming888');
@@ -658,6 +669,7 @@ class TitleState extends MusicBeatState
 			skippedIntro = true;
 		}
 	}
+	
 
 
 	public static function resetBinds():Void{

@@ -52,16 +52,6 @@ class LoadingState extends MusicBeatState
 		gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
 		gfDance.antialiasing = true;
 		danceLeft = !danceLeft;
-		
-		new FlxTimer().start(0.50, function(tmr:FlxTimer)
-			{
-					gfDance.animation.play('danceLeft');
-					tmr.reset();
-					new FlxTimer().start(0.50, function(tmr:FlxTimer)
-						{
-						   gfDance.animation.play('danceRight');
-						});
-			});
 		add(gfDance);
 		add(logo);
 
@@ -125,6 +115,14 @@ class LoadingState extends MusicBeatState
 		super.beatHit();
 		
 		logo.animation.play('bump');
+
+		trace(curBeat);
+		danceLeft = !danceLeft;
+
+				if (danceLeft)
+					gfDance.animation.play('danceRight');
+				else
+					gfDance.animation.play('danceLeft');
 	}
 	
 	override function update(elapsed:Float)
@@ -134,6 +132,8 @@ class LoadingState extends MusicBeatState
 		if (FlxG.keys.justPressed.SPACE)
 			trace('fired: ' + callbacks.getFired() + " unfired:" + callbacks.getUnfired());
 		#end
+		if (FlxG.sound.music != null)
+			Conductor.songPosition = FlxG.sound.music.time;
 	}
 	
 	function onLoad()

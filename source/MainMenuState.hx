@@ -59,7 +59,7 @@ class MainMenuState extends MusicBeatState
 			///so I don't get canceled
 
 
-			if (FlxG.random.bool(10))
+			if (FlxG.random.bool(5))
 				{
 					nightly = " | hi jacob";
 					trace('jacob');
@@ -339,8 +339,13 @@ class MainMenuState extends MusicBeatState
 
 									case 'freeplay':
 										FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
+										#if web
+										FlxG.switchState(new FreeplayStateHTML5());
+										trace("Freeplay HTML5 Menu Selected");
+										#else
 										FlxG.switchState(new FreeplayState());
-										trace("Freeplay Menu Selected");	
+										trace("Freeplay Menu Selected");
+										#end	
 									
 									case 'options':
 										FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
