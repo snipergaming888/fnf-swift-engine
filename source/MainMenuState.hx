@@ -44,7 +44,7 @@ class MainMenuState extends MusicBeatState
 	var defaultCamZoom:Float = 1.05;
 	var camZoom:FlxTween;
 	public static var sniperengineversion:String = " Mona Engine 3.0";
-	public static var sniperengineversionA:String = " ME 3.0";
+	public static var sniperengineversionA:String = " ME 3.1";
 	public static var gameVer:String = "v0.2.7.1";
 	public static var nightly:String = "";
 	
