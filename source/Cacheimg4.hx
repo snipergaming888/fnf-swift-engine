@@ -12,7 +12,7 @@ import flixel.util.FlxColor;
 import lime.utils.Assets;
 import flixel.util.FlxTimer;
 
-class Cache extends MusicBeatState
+class Cacheimg4 extends MusicBeatState
 {
 	var selector:FlxText;
 	var curSelected:Int = 0;
@@ -55,19 +55,16 @@ class Cache extends MusicBeatState
 		add(done);
 
 		
-			  var ctrl:Alphabet = new Alphabet(0, (70) + 30, "caching preloaded images");
+			  var ctrl:Alphabet = new Alphabet(0, (70) + 30, "caching week four images");
             #if windows
             ctrl.color = FlxColor.WHITE;
             #end
 			ctrl.screenCenter(X);
 		    add(ctrl);
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
-
-			if (FlxG.mouse.visible)
-				FlxG.mouse.visible = false;
 		
 			
-		var versionShit:FlxText = new FlxText(0, 0 , CachedFrames.progress, 12);
+		var versionShit:FlxText = new FlxText(0, 0 , CachedFramesimg4.progress, 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
@@ -86,12 +83,12 @@ class Cache extends MusicBeatState
 				}
 			}
 
-			if(CachedFrames.loaded)
+			if(CachedFramesimg4.loaded)
 				{
 					///done.visible = true;
 					new FlxTimer().start(0.5, function(tmr:FlxTimer)
 						{
-						   FlxG.switchState(new Cacheimg());
+						   FlxG.switchState(new Cacheimg5());
 						});		
 				}
 	
@@ -104,7 +101,7 @@ class Cache extends MusicBeatState
 
 	function Cache():Void
 		{
-			CachedFrames.loadEverything();
+			CachedFramesimg4.loadEverything();
 		}
 
 

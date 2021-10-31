@@ -117,7 +117,10 @@ class OptionsMenu extends MusicBeatState
 			}
 			else
 				{
-				}	
+				}
+				
+				changeSelection();
+		///so shit gets highlighted
 
 		super.create();
 	}
@@ -385,7 +388,7 @@ class OptionsMenu extends MusicBeatState
 								#if windows
 								///if debug is current selection
 								/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
-								item.color = FlxColor.CYAN;
+								item.color = FlxColor.YELLOW;
 								#end
 							}
 						// item.setGraphicSize(Std.int(item.width));
@@ -429,7 +432,7 @@ class OptionsMenu extends MusicBeatState
 									#if windows
 									///if debug is current selection
 									/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
-									item.color = FlxColor.CYAN;
+									item.color = FlxColor.YELLOW;
 									#end
 								}
 							// item.setGraphicSize(Std.int(item.width));
@@ -474,7 +477,7 @@ class OptionsMenu extends MusicBeatState
 												#if windows
 												///if debug is current selection
 												/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
-												item.color = FlxColor.CYAN;
+												item.color = FlxColor.YELLOW;
 												#end
 											}
 										// item.setGraphicSize(Std.int(item.width));
@@ -519,7 +522,7 @@ class OptionsMenu extends MusicBeatState
 										#if windows
 										///if debug is current selection
 										/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
-										item.color = FlxColor.CYAN;
+										item.color = FlxColor.YELLOW;
 										#end
 									}
 								// item.setGraphicSize(Std.int(item.width));
@@ -566,7 +569,7 @@ class OptionsMenu extends MusicBeatState
 											#if windows
 											///if debug is current selection
 											/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
-											item.color = FlxColor.CYAN;
+											item.color = FlxColor.YELLOW;
 											#end
 										}
 									// item.setGraphicSize(Std.int(item.width));
@@ -607,11 +610,15 @@ class OptionsMenu extends MusicBeatState
 										{
 											trace('no');
 										}
-										else
+										else if (FlxG.save.data.camzooming)
 											{
 												FlxG.camera.zoom += 0.015;
 												camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
 												trace('zoom');
+											}
+											else
+											{
+												trace('no');
 											}
 							    }
 

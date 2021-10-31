@@ -17,15 +17,15 @@ import openfl.display.BitmapData;
 import flixel.graphics.FlxGraphic;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
-class CachedFrames
+class CachedFramesimg4
 {
-    public static var cachedInstance:CachedFrames;
+    public static var cachedInstance:CachedFramesimg4;
 
     function new() {}
 
     public static function loadEverything()
     {
-        cachedInstance = new CachedFrames();
+        cachedInstance = new CachedFramesimg4();
         cachedInstance.loadFrames();
     }
 
@@ -43,7 +43,7 @@ class CachedFrames
 			return frames;
 
 		frames = new FlxAtlasFrames(graphic);
-		var Description = Assets.getText(Paths.file('images/$xmlName.xml'));
+		var Description = Assets.getText(Paths.file('images/$xmlName.xml', 'week4'));
 
 		var data:Access = new Access(Xml.parse(Description).firstElement());
 
@@ -89,7 +89,7 @@ class CachedFrames
 
     public function load(id:String, path:String)
     {
-        var graph = FlxGraphic.fromAssetKey(Paths.image(path));
+        var graph = FlxGraphic.fromAssetKey(Paths.image(path,'week4'));
         graph.persist = true;
         graph.destroyOnNoUse = false;
         cachedGraphics.set(id,graph);
@@ -104,35 +104,16 @@ class CachedFrames
     public function loadFrames()
     {
         sys.thread.Thread.create(() -> {
-            toBeLoaded.set('alphabet','alphabet');
-            toBeLoaded.set('BOYFRIEND','BOYFRIEND');
-            toBeLoaded.set('campaign_menu_UI_assets','campaign_menu_UI_assets');
-            toBeLoaded.set('campaign_menu_UI_characters','campaign_menu_UI_characters');
-            toBeLoaded.set('FNF_main_menu_assets','FNF_main_menu_assets');
-            toBeLoaded.set('gfDanceTitle','gfDanceTitle');
-            toBeLoaded.set('go-pixel','go-pixel');
-            toBeLoaded.set('iconGrid','iconGrid');
-            toBeLoaded.set('logoBumpin','logoBumpin');
-            toBeLoaded.set('menuBG','menuBG');
-            toBeLoaded.set('menuBGBlue','menuBGBlue');
-            toBeLoaded.set('menuBGMagenta','menuBGMagenta');
-            toBeLoaded.set('menuDesat','menuDesat');
-            toBeLoaded.set('newgrounds_logo','newgrounds_logo');
-            toBeLoaded.set('NOTE_assets','NOTE_assets');
-            toBeLoaded.set('num0','num0');
-            toBeLoaded.set('num1','num1');
-            toBeLoaded.set('num2','num2');
-            toBeLoaded.set('num3','num3');
-            toBeLoaded.set('num4','num4');
-            toBeLoaded.set('num5','num5');
-            toBeLoaded.set('num6','num6');
-            toBeLoaded.set('num7','num7');
-            toBeLoaded.set('num8','num9');
-            toBeLoaded.set('num10','num10');
-            toBeLoaded.set('ready-pixel','ready-pixel');
-            toBeLoaded.set('set-pixel','set-pixel');
-            toBeLoaded.set('titleEnter','titleEnter');
-            
+            toBeLoaded.set('bfCar','bfCar');
+            toBeLoaded.set('gfCar','gfCar');
+            toBeLoaded.set('gfCar_catgirl','gfCar_catgirl');
+            toBeLoaded.set('Mom_Assets','Mom_Assets');
+            toBeLoaded.set('momCar','momCar');
+            toBeLoaded.set('bgLimo','limo/bgLimo');
+            toBeLoaded.set('fastCarLol','limo/fastCarLol');
+            toBeLoaded.set('limoDancer','limo/limoDancer');
+            toBeLoaded.set('limoDrive','limo/limoDrive');
+            toBeLoaded.set('limoSunset','limo/limoSunset');
           
             // all the big sprites
             var numba = 0;

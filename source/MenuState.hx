@@ -28,7 +28,7 @@ class MenuState extends MusicBeatState
 	override function create()
 	{
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		controlsStrings = CoolUtil.coolStringFile('GAMEPLAY' + "\n" + "CONTROLS" + "\n" + "PERFORMANCE" + "\n" + "MISC");
+		controlsStrings = CoolUtil.coolStringFile('GAMEPLAY' + "\n" + "APPEARANCE" + "\n" + "CONTROLS" + "\n" + "PERFORMANCE" + "\n" + "MISC");
 		
 		trace(controlsStrings);
 
@@ -50,6 +50,9 @@ class MenuState extends MusicBeatState
 				grpControls.add(controlLabel);
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 		}
+
+		changeSelection();
+		///so shit gets highlighted
 
 		super.create();
 	}
@@ -73,17 +76,17 @@ class MenuState extends MusicBeatState
 
 			if (controls.ACCEPT)
 			{
-				if (curSelected != 4)
-					grpControls.remove(grpControls.members[curSelected]);
 				switch(curSelected)
 				{
 					case 0:
 						FlxG.switchState(new GameOptions());
 					case 1:
-						FlxG.switchState(new ControlState());
+						FlxG.switchState(new ApperanceOptions());
 					case 2:
-						FlxG.switchState(new PerformanceOptions());
+						FlxG.switchState(new ControlState());
 					case 3:
+						FlxG.switchState(new PerformanceOptions());
+					case 4:
 						FlxG.switchState(new MiscOptions());
 				}
 			}
@@ -126,7 +129,7 @@ class MenuState extends MusicBeatState
 			{
 				item.alpha = 1;
 				#if windows
-				item.color = FlxColor.CYAN;
+				item.color = FlxColor.YELLOW;
 				#end
 				// item.setGraphicSize(Std.int(item.width));
 			}
@@ -165,11 +168,15 @@ class MenuState extends MusicBeatState
 										{
 											trace('no');
 										}
-										else
+										else if (FlxG.save.data.camzooming)
 											{
 												FlxG.camera.zoom += 0.015;
 												camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
 												trace('zoom');
+											}
+											else
+											{
+												trace('no');
 											}
 							    }
 

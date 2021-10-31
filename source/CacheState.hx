@@ -5,16 +5,16 @@ import Controls.Control;
 import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.tweens.FlxTween;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
-import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
 
-class MiscOptions extends MusicBeatState
+class CacheState extends MusicBeatState
 {
 	var selector:FlxText;
 	var curSelected:Int = 0;
@@ -28,7 +28,7 @@ class MiscOptions extends MusicBeatState
 	override function create()
 	{
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.healthdrain ? 'Healthdrain on' : 'Healthdrain off') + "\n" + (FlxG.save.data.catgirl ? 'CATGIRL GF ON' : 'CATGIRL GF OFF') + "\n" + (FlxG.save.data.picooverbf ? 'PICO OVER BF ON' : 'PICO OVER BF OFF'));
+		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.imagecache ? 'IMAGE CACHING ON' : 'IMAGE CACHING OFF') + "\n" + (FlxG.save.data.songcache ? 'SONG CACHING ON' : 'SONG CACHING OFF') + "\n" + (FlxG.save.data.soundcache ? 'SOUND CACHING ON' : 'SOUND CACHING OFF') + "\n" + (FlxG.save.data.musiccache ? 'MUSIC CACHING ON' : 'MUSIC CACHING OFF'));
 		
 		trace(controlsStrings);
 
@@ -54,6 +54,11 @@ class MiscOptions extends MusicBeatState
 		changeSelection();
 		///so shit gets highlighted
 
+		versionShit = new FlxText(5, FlxG.height - 18, 0, "WARNING: CHACHING WILL USE LARGE AMOUNTS OF RAM! ENABLE AT YOUR OWN RISK!");
+		versionShit.scrollFactor.set();
+		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		add(versionShit);
+		
 
 		super.create();
 	}
@@ -67,24 +72,22 @@ class MiscOptions extends MusicBeatState
 		super.update(elapsed);
 
 			if (controls.BACK)
-				FlxG.switchState(new MenuState());
+				FlxG.switchState(new PerformanceOptions());
 			if (controls.UP_P)
 				changeSelection(-1);
 			if (controls.DOWN_P)
 				changeSelection(1);
 			if (controls.BACK)
 				FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
-			
 
 			if (controls.ACCEPT)
 			{
-				if (curSelected != 4)
-					grpControls.remove(grpControls.members[curSelected]);
 				switch(curSelected)
 				{
 					case 0:
-						FlxG.save.data.healthdrain = !FlxG.save.data.healthdrain;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.healthdrain ? 'Healthdrain on' : 'Healthdrain off'), true, false);
+						grpControls.remove(grpControls.members[curSelected]);
+						FlxG.save.data.imagecache = !FlxG.save.data.imagecache;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.imagecache ? 'IMAGE CACHING ON' : 'IMAGE CACHING OFF'), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 0;
 						#if windows
@@ -92,23 +95,35 @@ class MiscOptions extends MusicBeatState
 						#end
 						grpControls.add(ctrl);
 					case 1:
-						FlxG.save.data.catgirl = !FlxG.save.data.catgirl;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.catgirl ? 'CATGIRL GF ON' : 'CATGIRL GF OFF'), true, false);
+						grpControls.remove(grpControls.members[curSelected]);
+						FlxG.save.data.songcache = !FlxG.save.data.songcache;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.songcache ? 'SONG CACHING ON' : 'SONG CACHING OFF'), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 1;
 						#if windows
 						ctrl.color = FlxColor.YELLOW;
 						#end
-						grpControls.add(ctrl);		
+						grpControls.add(ctrl);
 					case 2:
-						FlxG.save.data.picooverbf = !FlxG.save.data.picooverbf;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.picooverbf ? 'PICO OVER BF ON' : 'PICO OVER BF OFF'), true, false);
+						grpControls.remove(grpControls.members[curSelected]);
+						FlxG.save.data.soundcache = !FlxG.save.data.soundcache;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.soundcache ? 'SOUND CACHING ON' : 'SOUND CACHING OFF'), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 2;
 						#if windows
 						ctrl.color = FlxColor.YELLOW;
 						#end
-						grpControls.add(ctrl);	
+						grpControls.add(ctrl);
+					case 3:
+						grpControls.remove(grpControls.members[curSelected]);
+						FlxG.save.data.musiccache = !FlxG.save.data.musiccache;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.musiccache ? 'MUSIC CACHING ON' : 'MUSIC CACHING OFF'), true, false);
+						ctrl.isMenuItem = true;
+						ctrl.targetY = curSelected - 3;
+						#if windows
+						ctrl.color = FlxColor.YELLOW;
+						#end
+						grpControls.add(ctrl);						   	
 				}
 			}
 	}
@@ -151,10 +166,21 @@ class MiscOptions extends MusicBeatState
 				#if windows
 				item.color = FlxColor.YELLOW;
 				#end
+				if (curSelected != 3)
+					{
+						#if windows
+						///if debug is current selection
+						/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
+						item.color = FlxColor.YELLOW;
+						#end
+					}
+				
 				// item.setGraphicSize(Std.int(item.width));
 			}
 		}
 	}
+
+
 
 
 	override function beatHit()
@@ -203,25 +229,4 @@ class MiscOptions extends MusicBeatState
 			}
 
 	var accepted:Bool = true;
-
-
-}	
-
-
-
-   class BotPlay extends MiscOptions
-{	
-	public function press():Bool
-	{
-		FlxG.save.data.botplay = !FlxG.save.data.botplay;
-		trace('BotPlay : ' + FlxG.save.data.botplay);
-		updateDisplay();
-		return true;
-	}
-	
-	private function updateDisplay():String
-		return "BotPlay " + (FlxG.save.data.botplay ? "on" : "off");
 }
-
-
-

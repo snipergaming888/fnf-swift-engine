@@ -12,13 +12,11 @@ import flixel.util.FlxColor;
 import lime.utils.Assets;
 import flixel.util.FlxTimer;
 
-class Cache extends MusicBeatState
+class SongCacheState extends MusicBeatState
 {
 	var selector:FlxText;
 	var curSelected:Int = 0;
-	///var songs:Array<String> = [
-		///"glitcher"
-	///];
+	var songs:Array<String> = ["bopeebo", "fresh", "dadbattle", "spookeez", "south", "monster", "pico", "philly", "blammed", "satin-panties", "high", "milf", "avidity", "cocoa", "eggnog", "winter-horrorland", "senpai", "roses", "thorns" ];
 
 	var controlsStrings:Array<String> = [];
 	public static var gameVer:String = "0.2.7.1";
@@ -55,19 +53,16 @@ class Cache extends MusicBeatState
 		add(done);
 
 		
-			  var ctrl:Alphabet = new Alphabet(0, (70) + 30, "caching preloaded images");
+			  var ctrl:Alphabet = new Alphabet(0, (70) + 30, "caching songs");
             #if windows
             ctrl.color = FlxColor.WHITE;
             #end
 			ctrl.screenCenter(X);
 		    add(ctrl);
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
-
-			if (FlxG.mouse.visible)
-				FlxG.mouse.visible = false;
 		
 			
-		var versionShit:FlxText = new FlxText(0, 0 , CachedFrames.progress, 12);
+		var versionShit:FlxText = new FlxText(0, 0 , CachedFramesimg5.progress, 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
@@ -86,12 +81,11 @@ class Cache extends MusicBeatState
 				}
 			}
 
-			if(CachedFrames.loaded)
 				{
 					///done.visible = true;
-					new FlxTimer().start(0.5, function(tmr:FlxTimer)
+					new FlxTimer().start(3.0, function(tmr:FlxTimer)
 						{
-						   FlxG.switchState(new Cacheimg());
+						   FlxG.switchState(new TitleState());
 						});		
 				}
 	
@@ -104,31 +98,20 @@ class Cache extends MusicBeatState
 
 	function Cache():Void
 		{
-			CachedFrames.loadEverything();
+			preloadSongs();
 		}
 
 
-		/*function preloadSongs()
+		function preloadSongs()
 			{
 				for (i in songs) // caching all songs so loading is faster
 				{
 					FlxG.sound.cache(Paths.inst(i));
-					FlxG.sound.cache(Paths.voices(i));
 					trace('Loaded inst');
+					FlxG.sound.cache(Paths.voices(i));
+					trace('Loaded voices');
 				}
 		
 			       // for some reason paths doesn't work???
-		
-				/*new FlxTimer().start(0.1, function(tmr:FlxTimer)
-				{
-					var done:FlxSprite = new FlxSprite(0,-160).loadGraphic(Paths.image('musicdone'));
-								done.scrollFactor.x = 0;
-								done.scrollFactor.y = 0.18;
-								done.setGraphicSize(Std.int(done.width * 1.1));
-								done.updateHitbox();
-								done.antialiasing = true;
-								add(done);
-
-				*///});
-				///}
+			}
 }

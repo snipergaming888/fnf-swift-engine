@@ -45,6 +45,7 @@ class TitleState extends MusicBeatState
 	var LIGHTBLUE:FlxColor = 0xFF00eaff;
 	var logo:FlxSprite;
 	var _controlsSave:FlxSave;
+	public static var abletocache:Bool = false;
 
 	var curWacky:Array<String> = [];
 	var curWacky2:Array<String> = [];
@@ -111,6 +112,49 @@ class TitleState extends MusicBeatState
 
 		if (FlxG.save.data.playerstrumlights == null)
 			FlxG.save.data.playerstrumlights = true;
+
+		if (FlxG.save.data.camzooming == null)
+			FlxG.save.data.camzooming = true;
+
+		if (FlxG.save.data.watermarks == null)
+			FlxG.save.data.watermarks = true;
+
+		if (FlxG.save.data.fps == null)
+			FlxG.save.data.fps = false;
+
+		if (FlxG.save.data.imagecache == null)
+			FlxG.save.data.imagecache = false;
+
+		if (FlxG.save.data.songcache == null)
+			FlxG.save.data.songcache = false;
+
+		if (FlxG.save.data.soundcache == null)
+			FlxG.save.data.soundcache = false;
+
+		if (FlxG.save.data.musiccache == null)
+			FlxG.save.data.musiccache = false;
+
+		if (FlxG.save.data.songPosition == null)
+			FlxG.save.data.songPosition = false;
+
+		if (FlxG.save.data.pausecount == null)
+			FlxG.save.data.pausecount = false;
+
+		if (FlxG.save.data.hittimings == null)
+			FlxG.save.data.hittimings = false;
+
+		if (FlxG.save.data.repeat == null)
+			FlxG.save.data.repeat = false;
+
+		if (FlxG.save.data.imagecache && !CachedFrames.loaded)
+			{
+				abletocache = true;
+			}
+			else
+				{
+					abletocache = false;
+				}
+
 		
 		trace('default selected: ' + FlxG.save.data.curselected);
 		
@@ -119,6 +163,7 @@ class TitleState extends MusicBeatState
 
 		Highscore.load();
 		keyCheck();
+		
 
 		if (FlxG.save.data.weekUnlocked != null)
 		{
@@ -134,26 +179,133 @@ class TitleState extends MusicBeatState
 				StoryMenuState.weekUnlocked[0] = true;
 		}
 
-		#if FREEPLAY
-		FlxG.switchState(new FreeplayState());
-		#elseif CHARTING
-		FlxG.switchState(new ChartingState());
-		#else
-		new FlxTimer().start(1, function(tmr:FlxTimer)
-		{if (FlxG.random.bool(5))
+		if (FlxG.save.data.imagecache)
 			{
-				old = true;
-				trace('old intro');
-				FlxG.switchState(new TitleStateOld());
+				if(abletocache && !CachedFrames.loaded)
+					{
+						FlxG.switchState(new Cache());	
+						abletocache = false;
+					}
+				else
+					{
+						trace('cannot cache');
+							{
+								new FlxTimer().start(1, function(tmr:FlxTimer)
+									{
+										if (FlxG.random.bool(5))
+										{
+											old = true;
+											trace('old intro');
+											FlxG.switchState(new TitleStateOld());
+										}
+										else
+											{
+												startIntro();
+
+												if (FlxG.save.data.soundcache)
+													{
+														FlxG.sound.cache(Paths.soundRandom('missnote', 1, 3));
+														FlxG.sound.cache(Paths.sound('train_passes', 'shared'));
+														FlxG.sound.cache(Paths.sound('pixelText'));
+														FlxG.sound.cache(Paths.sound('clickText'));
+														FlxG.sound.cache(Paths.sound('Lights_Turn_On'));
+														FlxG.sound.cache(Paths.sound('ANGRY'));
+														FlxG.sound.cache(Paths.sound('Senpai_Dies'));
+														FlxG.sound.cache(Paths.sound('intro3'));
+														FlxG.sound.cache(Paths.sound('intro2'));
+														FlxG.sound.cache(Paths.sound('intro3'));
+														FlxG.sound.cache(Paths.sound('introGo'));
+														FlxG.sound.cache(Paths.sound('intro3-pixel'));
+														FlxG.sound.cache(Paths.sound('intro2-pixel'));
+														FlxG.sound.cache(Paths.sound('intro3-pixel'));
+														FlxG.sound.cache(Paths.sound('introGo-pixel'));
+														FlxG.sound.cache(Paths.sound('Lights_Shut_off'));
+														FlxG.sound.cache(Paths.soundRandom('carPass', 0, 1));
+														FlxG.sound.cache(Paths.soundRandom('thunder_', 1, 2));
+														trace('sounds cached');
+														///sounds
+													}
+									
+													if (FlxG.save.data.musiccache)
+														{
+															FlxG.sound.cache(Paths.music('LunchboxScary', 'shared'));
+															FlxG.sound.cache(Paths.music('Lunchbox', 'shared'));
+															FlxG.sound.cache(Paths.music('breakfast'));
+															FlxG.sound.cache(Paths.music('title'));
+															FlxG.sound.cache(Paths.music('freakyMenu'));
+															FlxG.sound.cache(Paths.music('gameOver'));
+															FlxG.sound.cache(Paths.music('gameOverEnd'));
+															FlxG.sound.cache(Paths.music('gameOver-pixel'));
+															FlxG.sound.cache(Paths.music('gameOverEnd-pixel'));
+															trace('music cached');
+														}
+											}
+											
+										
+									});
+									
+							  }
+					}
 			}
 			else
 				{
-					startIntro();
-				}
-				
-			
-		});
-		#end
+					new FlxTimer().start(1, function(tmr:FlxTimer)
+						{
+							if (FlxG.random.bool(5))
+							{
+								old = true;
+								trace('old intro');
+								FlxG.switchState(new TitleStateOld());
+							}
+							else
+								{
+									startIntro();
+
+									if (FlxG.save.data.soundcache)
+										{
+											FlxG.sound.cache(Paths.soundRandom('missnote', 1, 3));
+											FlxG.sound.cache(Paths.sound('train_passes', 'shared'));
+											FlxG.sound.cache(Paths.sound('pixelText'));
+											FlxG.sound.cache(Paths.sound('clickText'));
+											FlxG.sound.cache(Paths.sound('Lights_Turn_On'));
+											FlxG.sound.cache(Paths.sound('ANGRY'));
+											FlxG.sound.cache(Paths.sound('Senpai_Dies'));
+											FlxG.sound.cache(Paths.sound('intro3'));
+											FlxG.sound.cache(Paths.sound('intro2'));
+											FlxG.sound.cache(Paths.sound('intro3'));
+											FlxG.sound.cache(Paths.sound('introGo'));
+											FlxG.sound.cache(Paths.sound('intro3-pixel'));
+											FlxG.sound.cache(Paths.sound('intro2-pixel'));
+											FlxG.sound.cache(Paths.sound('intro3-pixel'));
+											FlxG.sound.cache(Paths.sound('introGo-pixel'));
+											FlxG.sound.cache(Paths.sound('Lights_Shut_off'));
+											FlxG.sound.cache(Paths.soundRandom('carPass', 0, 1));
+											FlxG.sound.cache(Paths.soundRandom('thunder_', 1, 2));
+											trace('sounds cached');
+											///sounds
+										}
+						
+										if (FlxG.save.data.musiccache)
+											{
+												FlxG.sound.cache(Paths.music('LunchboxScary', 'shared'));
+												FlxG.sound.cache(Paths.music('Lunchbox', 'shared'));
+												FlxG.sound.cache(Paths.music('breakfast'));
+												FlxG.sound.cache(Paths.music('title'));
+												FlxG.sound.cache(Paths.music('freakyMenu'));
+												FlxG.sound.cache(Paths.music('gameOver'));
+												FlxG.sound.cache(Paths.music('gameOverEnd'));
+												FlxG.sound.cache(Paths.music('gameOver-pixel'));
+												FlxG.sound.cache(Paths.music('gameOverEnd-pixel'));
+												trace('music cached');
+											}
+								}
+								
+							
+						});
+						
+  				}
+
+
 	}
 
 	var logoBl:FlxSprite;
@@ -172,7 +324,7 @@ class TitleState extends MusicBeatState
 
 					{
 						FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);                           ///0.7
-						FlxTransitionableState.defaultTransIn = new TransitionData(FADE, FlxColor.BLACK, 0.4, new FlxPoint(0, -1), {asset: diamond, width: 32, height: 32},
+						FlxTransitionableState.defaultTransIn = new TransitionData(FADE, FlxColor.BLACK, 0.5, new FlxPoint(0, -1), {asset: diamond, width: 32, height: 32},
 						new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));             ///0.5
 					FlxTransitionableState.defaultTransOut = new TransitionData(FADE, FlxColor.BLACK, 0.3, new FlxPoint(0, 1),
 						{asset: diamond, width: 32, height: 32}, new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));
@@ -341,6 +493,11 @@ class TitleState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+
+		if (FlxG.keys.justPressed.T)
+			{
+				FlxG.switchState(new TestState());
+			}
 			
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
@@ -405,7 +562,6 @@ class TitleState extends MusicBeatState
 			{
 
 			    {
-				  
 					{
 						FlxG.switchState(new MainMenuState());
 					}
@@ -473,7 +629,14 @@ class TitleState extends MusicBeatState
 	{
 		super.beatHit();
 		var pressedEnter:Bool = FlxG.keys.justPressed.ENTER;
-		FlxTween.tween(FlxG.camera, {zoom: 1.05}, 0.3, {ease: FlxEase.quadOut, type: BACKWARD});
+		if (FlxG.save.data.camzooming)
+			{
+				FlxTween.tween(FlxG.camera, {zoom: 1.05}, 0.3, {ease: FlxEase.quadOut, type: BACKWARD});	
+			}
+			else
+				{
+					trace('no zomming');
+				}
 		///poly i thought you used flx camera lerp but i guess not
 		FlxG.log.add(curBeat);
 		danceLeft = !danceLeft;

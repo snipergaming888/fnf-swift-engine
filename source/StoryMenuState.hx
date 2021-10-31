@@ -498,11 +498,15 @@ class StoryMenuState extends MusicBeatState
 										{
 											trace('no');
 										}
-										else
+										else if (FlxG.save.data.camzooming)
 											{
 												FlxG.camera.zoom += 0.015;
 												camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
 												trace('zoom');
+											}
+											else
+											{
+												trace('no');
 											}
 							    }
 

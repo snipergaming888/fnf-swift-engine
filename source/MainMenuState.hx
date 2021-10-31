@@ -43,10 +43,10 @@ class MainMenuState extends MusicBeatState
 	var playanims:Bool = false;
 	var defaultCamZoom:Float = 1.05;
 	var camZoom:FlxTween;
-	public static var sniperengineversion:String = " Mona Engine 3.0";
-	public static var sniperengineversionA:String = " ME 3.1";
+	public static var sniperengineversion:String = " Mona Engine 1.3.1";
+	public static var sniperengineversionA:String = " ME 1.3.1";
 	public static var gameVer:String = "v0.2.7.1";
-	public static var nightly:String = "";
+	public static var nightly:String = " | nightly v106.b8";
 	
 	override function create()
 	{
@@ -95,9 +95,6 @@ class MainMenuState extends MusicBeatState
 						}
 				}
 				
-
-		
-
 		persistentUpdate = persistentDraw = true;
 
 		camFollow = new FlxObject(0, 0, 1, 1);
@@ -238,9 +235,9 @@ class MainMenuState extends MusicBeatState
 	function onKeyDown(event:KeyboardEvent):Void{
 		code = code + String.fromCharCode(event.charCode);
 		keyTimer=2;
-		if(code=="secret"){
+		if(code=="piss"){
 			FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
-			///FlxG.switchState(new SilvaFreeplayState());
+			FlxG.switchState(new JacksonState());
 		}
 	}
 
@@ -420,11 +417,15 @@ class MainMenuState extends MusicBeatState
 										{
 											trace('no');
 										}
-										else
+										else if (FlxG.save.data.camzooming)
 											{
 												FlxG.camera.zoom += 0.015;
 												camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
 												trace('zoom');
+											}
+											else
+											{
+												trace('no');
 											}
 							    }
 
@@ -434,10 +435,15 @@ class MainMenuState extends MusicBeatState
 											{
 												 ///nothing
 											}
-											else
+											else if (FlxG.save.data.camzooming)
 												{
-													logoBl.animation.play('bump');
-													trace('bump');
+													FlxG.camera.zoom += 0.015;
+													camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+													trace('zoom');
+												}
+												else
+												{
+													trace('no');
 												}
 									}
 				}

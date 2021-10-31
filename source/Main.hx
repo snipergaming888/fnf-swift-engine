@@ -1,6 +1,7 @@
 package;
 
 import flixel.FlxGame;
+import flixel.FlxG;
 import flixel.FlxState;
 import openfl.Assets;
 import openfl.Lib;
@@ -17,10 +18,12 @@ class Main extends Sprite
 	var framerate:Int = 138; // How many frames per second the game should run at.
 	var skipSplash:Bool = true; // Whether to skip the flixel splash screen that appears in release mode.
 	var startFullscreen:Bool = false; // Whether to start the game in fullscreen on desktop targets
+	var fpsCounter:FPS;
 	public static var woops:Bool = false;
 	public static var Custom:Bool = false;
 
 	// You can pretty much ignore everything from here on - your code should go in your states.
+
 
 	public static function main():Void
 	{
@@ -65,11 +68,9 @@ class Main extends Sprite
 			gameHeight = Math.ceil(stageHeight / zoom);
 		}
 
-		#if !debug
-		initialState = TitleState;
-		#end
+		
+		addChild(new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen));	
 
-		addChild(new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen));
 
 		var ourSource:String = "assets/videos/DO NOT DELETE OR GAME WILL CRASH/dontDelete.webm";
 
@@ -91,10 +92,21 @@ class Main extends Sprite
 		addChild(webmHandle.webm);
 		*///GlobalVideo.setWebm(webmHandle);
 		#end
+		
 
 		#if !mobile
-		addChild(new FPS(5, 20, 0xFFFFFF));
+		if (FlxG.save.data.fps)
+			{
+		        fpsCounter = new FPS(10, 50, 0xFFFFFF);
+		        addChild(fpsCounter);
+			}
 		///addChild(new FPS(10, 3, 0xFFFFFF));
 		#end
+
 	}
+
+	public function getFPS():Float
+		{
+			return fpsCounter.currentFPS;
+		}
 }

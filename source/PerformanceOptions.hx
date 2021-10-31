@@ -14,6 +14,9 @@ import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
+import flixel.util.FlxStringUtil;
+
+using StringTools;
 
 class PerformanceOptions extends MusicBeatState
 {
@@ -21,6 +24,8 @@ class PerformanceOptions extends MusicBeatState
 	var curSelected:Int = 0;
 	var CYAN:FlxColor = 0xFF00FFFF;
 	var camZoom:FlxTween;
+	private var boyfriend:Boyfriend;
+	var ISWINDOWS:Bool = false;
 
 	var controlsStrings:Array<String> = [];
 
@@ -29,7 +34,13 @@ class PerformanceOptions extends MusicBeatState
 	override function create()
 	{
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		controlsStrings = CoolUtil.coolStringFile("\nAntialiasing " + (FlxG.save.data.antialiasing ? "on" : "off") + "\noptimizations " + (FlxG.save.data.optimizations ? "on" : "off"));
+		#if windows
+		ISWINDOWS = true;
+		#end
+		if (ISWINDOWS)
+		controlsStrings = CoolUtil.coolStringFile("\nAntialiasing " + (FlxG.save.data.antialiasing ? "on" : "off") + "\noptimizations " + (FlxG.save.data.optimizations ? "on" : "off") + "\n" + "CACHING");
+		else
+			controlsStrings = CoolUtil.coolStringFile("\nAntialiasing " + (FlxG.save.data.antialiasing ? "on" : "off") + "\noptimizations " + (FlxG.save.data.optimizations ? "on" : "off"));
 		
 		trace(controlsStrings);
 
@@ -52,14 +63,71 @@ class PerformanceOptions extends MusicBeatState
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 		}
 
+		changeSelection();
+		///so shit gets highlighted
+		
+         #if desktop
+		if (FlxG.save.data.antialiasing)
+			{
+				versionShit = new FlxText(1000, 200, "ANTIALIASING ON", 12);
+				versionShit.scrollFactor.set();
+				versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+				add(versionShit);
+			}
+			else
+				{
+					versionShit = new FlxText(1000, 200, "ANTIALIASING OFF", 12);
+					versionShit.scrollFactor.set();
+					versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+					add(versionShit);
+				}
+				#end
+
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
-
+        #if desktop
+		boyfriend = new Boyfriend(850 ,300 ,"bf-opt");
+		if (FlxG.save.data.antialiasing)
+		 {
+			 boyfriend.antialiasing = true;
+		 }
+		 else
+			 {
+				 boyfriend.antialiasing = false;	
+			 }
+			 boyfriend.visible = false;
+			 add(boyfriend);
+			 #end
 		super.create();
 	}
 
 	override function update(elapsed:Float)
 	{
+        #if desktop
+		if (curSelected == 0)
+			{
+				boyfriend.visible = true;
+				versionShit.visible = true;
+			}
+			else
+				{
+                    boyfriend.visible = false;
+					versionShit.visible = false;
+				}
+
+				if (FlxG.save.data.antialiasing)
+					{
+						boyfriend.antialiasing = true;
+						versionShit.text = "ANTIALIASING ON";
+						versionShit.antialiasing = true;
+					}
+					else
+						{
+							boyfriend.antialiasing = false;
+							versionShit.text = "ANTIALIASING OFF";
+							versionShit.antialiasing = false;	
+						}
+						#end
 
 		if (FlxG.sound.music != null)
             Conductor.songPosition = FlxG.sound.music.time;
@@ -74,51 +142,59 @@ class PerformanceOptions extends MusicBeatState
 				changeSelection(1);
 			if (controls.BACK)
 				FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
-			
+			#if desktop
+			if (FlxG.keys.pressed.K)
+				{
+					boyfriend.playAnim('singUP');
+				}
+			if (FlxG.keys.pressed.S)
+				{
+					boyfriend.playAnim('singDOWN');
+				}
+			if (FlxG.keys.pressed.A)
+				{
+					boyfriend.playAnim('singLEFT');
+				}
+			if (FlxG.keys.pressed.L)
+				{
+					boyfriend.playAnim('singRIGHT');
+				}
+				#end
 
 			if (controls.ACCEPT)
 			{
-				if (curSelected != 4)
-					grpControls.remove(grpControls.members[curSelected]);
+				#if desktop
+		    if (curSelected == 0)
+			    {
+                  remove(boyfriend);
+				  add(boyfriend);
+			    }
+				#end
 				switch(curSelected)
 				{
 					case 0:
+						grpControls.remove(grpControls.members[curSelected]);
 						FlxG.save.data.antialiasing = !FlxG.save.data.antialiasing;
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, "Antialiasing " + (FlxG.save.data.antialiasing ? "on" : "off"), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 0;
 						#if windows
-						ctrl.color = FlxColor.CYAN;
+						ctrl.color = FlxColor.YELLOW;
 						#end
 						grpControls.add(ctrl);
 						
 					case 1:
+						grpControls.remove(grpControls.members[curSelected]);
 						FlxG.save.data.optimizations = !FlxG.save.data.optimizations;
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, "optimizations " + (FlxG.save.data.optimizations ? "on" : "off"), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 1;
 						#if windows
-						ctrl.color = FlxColor.CYAN;
+						ctrl.color = FlxColor.YELLOW;
 						#end
 						grpControls.add(ctrl);
-					case 2:
-						FlxG.save.data.downscroll = !FlxG.save.data.downscroll;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll'), true, false);
-						ctrl.isMenuItem = true;
-						ctrl.targetY = curSelected - 2;
-						#if windows
-						ctrl.color = FlxColor.CYAN;
-						#end
-						grpControls.add(ctrl);
-					case 3:
-						FlxG.save.data.antialiasing = !FlxG.save.data.antialiasing;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, "Antialiasing " + (FlxG.save.data.antialiasing ? "on" : "off"), true, false);
-						ctrl.isMenuItem = true;
-						ctrl.targetY = curSelected - 3;
-						#if windows
-						ctrl.color = FlxColor.CYAN;
-						#end
-						grpControls.add(ctrl);
+						case 2:
+							FlxG.switchState(new CacheState());
 				}
 			}
 	}
@@ -159,7 +235,7 @@ class PerformanceOptions extends MusicBeatState
 			{
 				item.alpha = 1;
 				#if windows
-				item.color = FlxColor.CYAN;
+				item.color = FlxColor.YELLOW;
 				#end
 				// item.setGraphicSize(Std.int(item.width));
 			}
@@ -171,6 +247,19 @@ class PerformanceOptions extends MusicBeatState
 		{
 			super.beatHit();
 
+			
+			if (curSelected == 0)
+				{
+					#if desktop
+					if (curBeat % 2 == 0)
+						{
+									{
+										boyfriend.playAnim('idle');
+										trace('dance');
+									}									
+						}
+						#end
+				}
 
 			if (accepted)
 				{
@@ -197,11 +286,15 @@ class PerformanceOptions extends MusicBeatState
 										{
 											trace('no');
 										}
-										else
+										else if (FlxG.save.data.camzooming)
 											{
 												FlxG.camera.zoom += 0.015;
 												camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
 												trace('zoom');
+											}
+											else
+											{
+												trace('no');
 											}
 							    }
 

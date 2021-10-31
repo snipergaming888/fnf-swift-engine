@@ -230,6 +230,7 @@ class FreeplayState extends MusicBeatState
 
 		if (controls.BACK)
 		{
+			Conductor.changeBPM(beatArray[curSelected]);
 			FlxG.switchState(new MainMenuState());
 		}
 
@@ -293,74 +294,86 @@ class FreeplayState extends MusicBeatState
 			{
 				if (accepted)
 				{
-					if (curSelected == 12)
+					if (FlxG.save.data.camzooming)
 						{
-							
-
-									trace('milf');
-									if (curBeat % 1 == 0)
-										{
-											if (curBeat >= 8 && curBeat < 373)
-											{
-												FlxG.camera.zoom += 0.030;
-												camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
-											}
-
-											if (curBeat >= 168 && curBeat < 200)
+							if (curSelected == 12)
+								{
+									
+		
+											trace('milf');
+											if (curBeat % 1 == 0)
 												{
+													if (curBeat >= 8 && curBeat < 373)
+													{
+														FlxG.camera.zoom += 0.030;
+														camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+													}
+		
+													if (curBeat >= 168 && curBeat < 200)
 														{
-															FlxG.camera.zoom += 0.030;
+																{
+																	FlxG.camera.zoom += 0.030;
+																}
 														}
 												}
-										}
-
-					
-								
-						}
-						else if (curSelected == 13)
-							{
-								
-	
-										trace('avidity');
-										if (curBeat % 1 == 0)
-											{
-												{
-													FlxG.camera.zoom += 0.030;
-													camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
-												}
-
-											}
-	
-						
-									
-							}
-						else if (curSelected == 9)
-							{
-								new FlxTimer().start(11.00, function(tmr:FlxTimer)
-									{
-										trace('blammed');
-										if (curBeat % 4 == 0)
-											{
-												FlxG.camera.zoom += 0.090;
-												camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
-											}
-						
-									});
-							}
-							else if (curSelected == 0)
-								{
-											if (curBeat % 4 == 0)
-												{
-													FlxG.camera.zoom += 0.015;
-													camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
-												}
-								
+		
+							
+										
 								}
-						    else if (curBeat % 4 == 0)
-						    	{
-								    FlxG.camera.zoom += 0.015;
-								    camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
-							    }
+								else if (curSelected == 18)
+									{
+												trace('Roses');
+												if (curBeat % 2 == 0)
+													{
+														FlxG.camera.zoom += 0.015;
+														camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+													}		
+									}
+								else if (curSelected == 13)
+									{
+										
+			
+												trace('avidity');
+												if (curBeat % 1 == 0)
+													{
+														{
+															FlxG.camera.zoom += 0.030;
+															camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+														}
+		
+													}
+			
+								
+											
+									}
+								else if (curSelected == 9)
+									{
+										new FlxTimer().start(11.00, function(tmr:FlxTimer)
+											{
+												trace('blammed');
+												if (curBeat % 4 == 0)
+													{
+														FlxG.camera.zoom += 0.090;
+														camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+													}
+								
+											});
+									}
+									else if (curSelected == 0)
+										{
+													if (curBeat % 4 == 0)
+														{
+															FlxG.camera.zoom += 0.015;
+															camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+														}
+										
+										}
+									else if (curBeat % 4 == 0)
+										{
+											FlxG.camera.zoom += 0.015;
+											camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+										}
+						}
 				}
 			}
 
@@ -416,11 +429,17 @@ class FreeplayState extends MusicBeatState
 			bullShit++;
 
 			item.alpha = 0.6;
+			#if windows
+			item.color = FlxColor.WHITE;
+            #end
 			// item.setGraphicSize(Std.int(item.width * 0.8));
 
 			if (item.targetY == 0)
 			{
 				item.alpha = 1;
+				#if windows
+				item.color = FlxColor.YELLOW;
+				#end
 				// item.setGraphicSize(Std.int(item.width));
 			}
 		}

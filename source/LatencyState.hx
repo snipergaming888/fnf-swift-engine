@@ -9,31 +9,54 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxMath;
+import flixel.util.FlxTimer;
+import flixel.util.FlxColor;
+
 
 class LatencyState extends FlxState
 {
 	var offsetText:FlxText;
 	var noteGrp:FlxTypedGroup<Note>;
 	var strumLine:FlxSprite;
+	var magenta:FlxSprite;
 
 	override function create()
 	{
-		FlxG.sound.playMusic(Paths.sound('soundTest', 'shared'));
+		FlxG.sound.playMusic(Paths.sound('soundTest'));
+
+		magenta = new FlxSprite(-80).loadGraphic(Paths.image('menuDesat'));
+		magenta.scrollFactor.x = 0;
+		magenta.scrollFactor.y = 0.18;
+		magenta.setGraphicSize(Std.int(magenta.width * 1.1));
+		magenta.updateHitbox();
+		magenta.screenCenter();
+		magenta.antialiasing = true;
+		magenta.color = 0xFF00ff51;
+		add(magenta);
 
 		noteGrp = new FlxTypedGroup<Note>();
 		add(noteGrp);
 
+		new FlxTimer().start(15.0, function(tmr:FlxTimer)
+			{
+				FlxG.sound.music.stop();
+
+				FlxG.resetState();
+				tmr.reset();
+			});
+
 		for (i in 0...200)
 		{
 			var note:Note = new Note(Conductor.crochet * i, 1);
-			noteGrp.add(note);
+			noteGrp.add(note);                           ///1
 		}
 
-		offsetText = new FlxText(500,600);
+		offsetText = new FlxText(200,700);
+		offsetText.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(offsetText);
 
-		strumLine = new FlxSprite(FlxG.width / 2, 100).makeGraphic(FlxG.width, 5);
-		add(strumLine);
+		strumLine = new FlxSprite(0, 100).makeGraphic(FlxG.width, 5);
+		add(strumLine);         ///FlxG.width / 2
 
 		Conductor.changeBPM(120);
 
@@ -58,10 +81,15 @@ class LatencyState extends FlxState
 
 		if (FlxG.keys.justPressed.SPACE)
 		{
-			FlxG.sound.music.stop();
-
-			FlxG.resetState();
+			FlxG.save.data.offset = 0;
 		}
+
+		if (FlxG.keys.justPressed.R)
+			{
+			  FlxG.sound.music.stop();
+
+			  FlxG.resetState();
+			}
 
 		if (FlxG.keys.justPressed.ESCAPE)
 			FlxG.switchState(new GameOptions());
@@ -73,7 +101,7 @@ class LatencyState extends FlxState
 		noteGrp.forEach(function(daNote:Note)
 		{
 			daNote.y = (strumLine.y - (Conductor.songPosition - daNote.strumTime) * 0.45);
-			daNote.x = strumLine.x + 30;
+			daNote.x = strumLine.x + 600;
 
 			if (daNote.y < strumLine.y)
 				daNote.kill();

@@ -14,7 +14,7 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
 
-class GameOptions extends MusicBeatState
+class ApperanceOptions extends MusicBeatState
 {
 	var selector:FlxText;
 	var curSelected:Int = 0;
@@ -28,7 +28,7 @@ class GameOptions extends MusicBeatState
 	override function create()
 	{
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll') + "\n" + (FlxG.save.data.middlescroll ? "middlescroll on" : "middlescroll off") + "\n" + (FlxG.save.data.ghosttapping ? "Ghost Tapping" : "No Ghost Tapping") + "\n" + (FlxG.save.data.debug ? "debug MODE ON" : "debug MODE OFF") + "\n" + (FlxG.save.data.reset ? "RESET BUTTON ON" : "RESET BUTTON OFF") + "\n" + (FlxG.save.data.pausecount ? "pause counter on" : "pause counter off") + "\n" + (FlxG.save.data.repeat ? 'loop current song on' : 'loop current song off') + "\n" + (FlxG.save.data.botplay ? 'BOTPLAY ON' : 'BOTPLAY OFF') + "\n" + "EDIT OFFSET");
+		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD") + "\n" + (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF") + "\n" + (FlxG.save.data.hittimings ? "MS Timing text ON" : "MS Timing text OFF")+ "\n" + (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION off")+ "\n" + (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF") + "\n" + (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF") + "\n" + (FlxG.save.data.fps ? "FPS COUNTER ON" : "FPS COUNTER OFF"));
 		
 		trace(controlsStrings);
 
@@ -53,13 +53,7 @@ class GameOptions extends MusicBeatState
 
 		changeSelection();
 		///so shit gets highlighted
-
-		versionShit = new FlxText(5, FlxG.height - 18, 0, "Offset (Left, Right): " + FlxG.save.data.offset, 12);
-		versionShit.scrollFactor.set();
-		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		add(versionShit);
 		
-
 		super.create();
 	}
 
@@ -78,95 +72,77 @@ class GameOptions extends MusicBeatState
 			if (controls.DOWN_P)
 				changeSelection(1);
 			if (controls.BACK)
-				FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
-
-
-
-			if (controls.RIGHT_R)
-				{
-					FlxG.save.data.offset++;
-					versionShit.text = "Offset (Left, Right): " + FlxG.save.data.offset;
-				}
-	
-				if (controls.LEFT_R)
-					{
-						FlxG.save.data.offset--;
-						versionShit.text = "Offset (Left, Right): " + FlxG.save.data.offset;
-					}
-		
-			
+				FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);	
 
 			if (controls.ACCEPT)
 			{
+				if (curSelected != 4)
+					grpControls.remove(grpControls.members[curSelected]);
 				switch(curSelected)
 				{
 					case 0:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.downscroll = !FlxG.save.data.downscroll;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll'), true, false);
+						FlxG.save.data.hideHUD = !FlxG.save.data.hideHUD;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD"), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 0;
 						#if windows
 						ctrl.color = FlxColor.YELLOW;
 						#end
 						grpControls.add(ctrl);
-
-					case 1:
+				    case 1:
 						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.middlescroll = !FlxG.save.data.middlescroll;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.middlescroll ? 'middlescroll on' : 'middlescroll off'), true, false);
+					    FlxG.save.data.cinematic = !FlxG.save.data.cinematic;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF"), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 1;
 						#if windows
 						ctrl.color = FlxColor.YELLOW;
 						#end
 						grpControls.add(ctrl);
-						
-					case 2:
+					 case 2:
 						grpControls.remove(grpControls.members[curSelected]);
-						/// ok but fr why it default to no ghost tappin bruh
-						FlxG.save.data.ghosttapping = !FlxG.save.data.ghosttapping;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.ghosttapping ? "Ghost Tapping" : "No Ghost Tapping"), true, false);
+						FlxG.save.data.hittimings = !FlxG.save.data.hittimings;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.hittimings ? "MS Timing text ON" : "MS Timing text OFF"), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 2;
 						#if windows
 						ctrl.color = FlxColor.YELLOW;
 						#end
 						grpControls.add(ctrl);
-					case 3:
-					   grpControls.remove(grpControls.members[curSelected]);
-					   FlxG.save.data.debug = !FlxG.save.data.debug;
-					   var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.debug ? "debug MODE ON" : "debug MODE OFF"), true, false);
-					   ctrl.isMenuItem = true;
-					   ctrl.targetY = curSelected - 3;
-					   #if windows
-						ctrl.color = FlxColor.RED;
-						#end
-					   grpControls.add(ctrl);
-					 case 4:
-					   grpControls.remove(grpControls.members[curSelected]);
-					   FlxG.save.data.reset = !FlxG.save.data.reset;
-					   var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.reset ? "RESET BUTTON ON" : "RESET BUTTON OFF"), true, false);
-					   ctrl.isMenuItem = true;
-					   ctrl.targetY = curSelected - 4;
-					   #if windows
+					 case 3:
+						grpControls.remove(grpControls.members[curSelected]);
+						FlxG.save.data.songPosition = !FlxG.save.data.songPosition;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION OFF"), true, false);
+						ctrl.isMenuItem = true;
+						ctrl.targetY = curSelected - 3;
+						#if windows
 						ctrl.color = FlxColor.YELLOW;
 						#end
-					   grpControls.add(ctrl);
-					 case 5:
+						grpControls.add(ctrl);
+					case 4:
 						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.pausecount = !FlxG.save.data.pausecount;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.pausecount ? "pause counter on" : "pause counter off"), true, false);
+						FlxG.save.data.strumlights = !FlxG.save.data.strumlights;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF"), true, false);
+						ctrl.isMenuItem = true;
+						ctrl.targetY = curSelected - 4;
+						#if windows
+						ctrl.color = FlxColor.YELLOW;
+						#end
+							grpControls.add(ctrl);
+					case 5:
+						grpControls.remove(grpControls.members[curSelected]);
+						FlxG.save.data.playerstrumlights = !FlxG.save.data.playerstrumlights;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF"), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 5;
 						#if windows
 						ctrl.color = FlxColor.YELLOW;
 						#end
 						grpControls.add(ctrl);
-					 case 6:
+					case 6:
 						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.repeat = !FlxG.save.data.repeat;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.repeat ? "loop current song on" : "loop current song off"), true, false);
+						FlxG.save.data.camzooming = !FlxG.save.data.camzooming;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF"), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 6;
 						#if windows
@@ -175,17 +151,24 @@ class GameOptions extends MusicBeatState
 						grpControls.add(ctrl);
 					case 7:
 						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.botplay = !FlxG.save.data.botplay;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.botplay ? 'BOTPLAY ON' : 'BOTPLAY OFF'), true, false);
+						FlxG.save.data.watermarks = !FlxG.save.data.watermarks;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF"), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 7;
 						#if windows
 						ctrl.color = FlxColor.YELLOW;
 						#end
-						grpControls.add(ctrl);	
-						case 8:
-						LoadingStateLatency.loadAndSwitchState(new LatencyState());
-						Conductor.changeBPM(120);											   	
+						grpControls.add(ctrl);
+					case 8:
+						grpControls.remove(grpControls.members[curSelected]);
+						FlxG.save.data.fps = !FlxG.save.data.fps;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.fps ? "FPS COUNTER ON" : "FPS COUNTER OFF"), true, false);
+						ctrl.isMenuItem = true;
+						ctrl.targetY = curSelected - 8;
+						#if windows
+						ctrl.color = FlxColor.YELLOW;
+						#end
+						grpControls.add(ctrl);										   	
 				}
 			}
 	}
@@ -226,9 +209,9 @@ class GameOptions extends MusicBeatState
 			{
 				item.alpha = 1;
 				#if windows
-				item.color = FlxColor.RED;
+				item.color = FlxColor.YELLOW;
 				#end
-				if (curSelected != 3)
+				if (curSelected != 5)
 					{
 						#if windows
 						///if debug is current selection
