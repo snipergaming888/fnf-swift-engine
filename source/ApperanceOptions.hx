@@ -28,7 +28,7 @@ class ApperanceOptions extends MusicBeatState
 	override function create()
 	{
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD") + "\n" + (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF") + "\n" + (FlxG.save.data.hittimings ? "MS Timing text ON" : "MS Timing text OFF")+ "\n" + (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION off")+ "\n" + (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF") + "\n" + (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF") + "\n" + (FlxG.save.data.fps ? "FPS COUNTER ON" : "FPS COUNTER OFF"));
+		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD") + "\n" + (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF") + "\n" + (FlxG.save.data.hittimings ? "MS Timing text ON" : "MS Timing text OFF")+ "\n" + (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION off")+ "\n" + (FlxG.save.data.transparency ? "hold note transparency ON" : "hold note transparency off")+ "\n" + (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF") + "\n" + (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF")  + "\n" + (FlxG.save.data.minscore ? "minimalize score info ON" : "minimalize score info OFF") + "\n" + (FlxG.save.data.fps ? "FPS COUNTER ON" : "FPS COUNTER OFF"));
 		
 		trace(controlsStrings);
 
@@ -50,6 +50,11 @@ class ApperanceOptions extends MusicBeatState
 				grpControls.add(controlLabel);
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 		}
+
+		versionShit = new FlxText(5, FlxG.height - 18, 0, "", 12);
+		versionShit.scrollFactor.set();
+		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		add(versionShit);
 
 		changeSelection();
 		///so shit gets highlighted
@@ -73,6 +78,40 @@ class ApperanceOptions extends MusicBeatState
 				changeSelection(1);
 			if (controls.BACK)
 				FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);	
+
+			if (curSelected == 0)
+				versionShit.text = "Hide all text and the healthbar.";
+
+			if (curSelected == 1)
+				versionShit.text = "Hide all UI, strumline, and notes.";
+
+			if (curSelected == 2)
+				versionShit.text = "Show in miliseconds how long it took for you to hit a note.";
+
+			if (curSelected == 3)
+				versionShit.text = "Show what position in the song you are.";
+
+			if (curSelected == 4)
+				versionShit.text = "Wether or not to have note trails transparent or not transparent.";
+
+			if (curSelected == 5)
+				versionShit.text = "Wether or not to have the CPU strums light up.";
+
+			if (curSelected == 6)
+				versionShit.text = "Wether or not to have the player strums light up.";
+
+			if (curSelected == 7)
+				versionShit.text = "Wether or not to have the camera zoom in on beat.";
+
+			if (curSelected == 8)
+				versionShit.text = "Wether or not to show engine watermarks (will not remove botplay text).";
+
+			if (curSelected == 9)
+				versionShit.text = "Wether or not to show only score info.";
+
+			if (curSelected == 10)
+				versionShit.text = "Toggle the FPS counter on and off. (applies after restart)";
+
 
 			if (controls.ACCEPT)
 			{
@@ -119,30 +158,30 @@ class ApperanceOptions extends MusicBeatState
 						ctrl.color = FlxColor.YELLOW;
 						#end
 						grpControls.add(ctrl);
-					case 4:
+                     case 4:
 						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.strumlights = !FlxG.save.data.strumlights;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF"), true, false);
+						FlxG.save.data.transparency = !FlxG.save.data.transparency;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.transparency ? "hold note transparency ON" : "hold note transparency off"), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 4;
 						#if windows
 						ctrl.color = FlxColor.YELLOW;
 						#end
-							grpControls.add(ctrl);
+						grpControls.add(ctrl);
 					case 5:
 						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.playerstrumlights = !FlxG.save.data.playerstrumlights;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF"), true, false);
+						FlxG.save.data.strumlights = !FlxG.save.data.strumlights;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF"), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 5;
 						#if windows
 						ctrl.color = FlxColor.YELLOW;
 						#end
-						grpControls.add(ctrl);
+							grpControls.add(ctrl);
 					case 6:
 						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.camzooming = !FlxG.save.data.camzooming;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF"), true, false);
+						FlxG.save.data.playerstrumlights = !FlxG.save.data.playerstrumlights;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF"), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 6;
 						#if windows
@@ -151,8 +190,8 @@ class ApperanceOptions extends MusicBeatState
 						grpControls.add(ctrl);
 					case 7:
 						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.watermarks = !FlxG.save.data.watermarks;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF"), true, false);
+						FlxG.save.data.camzooming = !FlxG.save.data.camzooming;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF"), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 7;
 						#if windows
@@ -161,10 +200,30 @@ class ApperanceOptions extends MusicBeatState
 						grpControls.add(ctrl);
 					case 8:
 						grpControls.remove(grpControls.members[curSelected]);
+						FlxG.save.data.watermarks = !FlxG.save.data.watermarks;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF"), true, false);
+						ctrl.isMenuItem = true;
+						ctrl.targetY = curSelected - 8;
+						#if windows
+						ctrl.color = FlxColor.YELLOW;
+						#end
+						grpControls.add(ctrl);
+					case 9:
+						grpControls.remove(grpControls.members[curSelected]);
+						FlxG.save.data.minscore = !FlxG.save.data.minscore;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.minscore ? "minimalize score info ON" : "minimalize score info OFF"), true, false);
+						ctrl.isMenuItem = true;
+						ctrl.targetY = curSelected - 9;
+						#if windows
+						ctrl.color = FlxColor.YELLOW;
+						#end
+						grpControls.add(ctrl);
+					case 10:
+						grpControls.remove(grpControls.members[curSelected]);
 						FlxG.save.data.fps = !FlxG.save.data.fps;
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.fps ? "FPS COUNTER ON" : "FPS COUNTER OFF"), true, false);
 						ctrl.isMenuItem = true;
-						ctrl.targetY = curSelected - 8;
+						ctrl.targetY = curSelected - 10;
 						#if windows
 						ctrl.color = FlxColor.YELLOW;
 						#end

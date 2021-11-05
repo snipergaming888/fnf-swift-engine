@@ -437,9 +437,6 @@ class FreeplayState extends MusicBeatState
 			if (item.targetY == 0)
 			{
 				item.alpha = 1;
-				#if windows
-				item.color = FlxColor.YELLOW;
-				#end
 				// item.setGraphicSize(Std.int(item.width));
 			}
 		}

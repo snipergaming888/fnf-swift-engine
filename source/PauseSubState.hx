@@ -439,9 +439,6 @@ class PauseSubState extends MusicBeatSubstate
 			if (item.targetY == 0)
 			{
 				item.alpha = 1;
-				#if windows
-				item.color = FlxColor.YELLOW;
-				#end
 				// item.setGraphicSize(Std.int(item.width));
 			}
 		}

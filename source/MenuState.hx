@@ -1,5 +1,9 @@
 package;
 
+#if desktop
+import Discord.DiscordClient;
+import sys.thread.Thread;
+#end
 import Controls.KeyboardScheme;
 import Controls.Control;
 import flash.text.TextField;
@@ -25,6 +29,7 @@ class MenuState extends MusicBeatState
 	var versionShit:FlxText;
 	var camZoom:FlxTween;
 	var CYAN:FlxColor = 0xFF00FFFF;
+	var desc:FlxText;
 	override function create()
 	{
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
@@ -51,8 +56,18 @@ class MenuState extends MusicBeatState
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 		}
 
+		desc = new FlxText(5, FlxG.height - 18, 0, "", 12);
+		desc.scrollFactor.set();
+		desc.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		add(desc);
+
 		changeSelection();
 		///so shit gets highlighted
+
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Looking at the Options Menu", null);
+		#end
 
 		super.create();
 	}
@@ -72,6 +87,21 @@ class MenuState extends MusicBeatState
 				changeSelection(1);
 			if (controls.BACK)
 			FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
+
+			if (curSelected == 0)
+				desc.text = "In-game options menu.";
+
+			if (curSelected == 1)
+				desc.text = "In-game appearance menu.";
+
+			if (curSelected == 2)
+				desc.text = "Configure your controls.";
+
+			if (curSelected == 3)
+				desc.text = "In-game performance menu.";
+
+			if (curSelected == 4)
+				desc.text = "miscellaneous options menu.";
 			
 
 			if (controls.ACCEPT)

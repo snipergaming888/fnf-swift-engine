@@ -11,8 +11,10 @@ import flixel.graphics.frames.FlxFrame.FlxFrameAngle;
 import flixel.graphics.frames.FlxFramesCollection.FlxFrameCollectionType;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
+#if desktop
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.system.FlxAssets.FlxTexturePackerSource;
+#end
 import openfl.display.BitmapData;
 import flixel.graphics.FlxGraphic;
 import flixel.FlxSprite;
@@ -103,6 +105,7 @@ class CachedFrames
 
     public function loadFrames()
     {
+        #if desktop
         sys.thread.Thread.create(() -> {
             toBeLoaded.set('alphabet','alphabet');
             toBeLoaded.set('BOYFRIEND','BOYFRIEND');
@@ -133,6 +136,7 @@ class CachedFrames
             toBeLoaded.set('set-pixel','set-pixel');
             toBeLoaded.set('titleEnter','titleEnter');
             
+            
           
             // all the big sprites
             var numba = 0;
@@ -145,5 +149,6 @@ class CachedFrames
             trace('loaded everythin');
             loaded = true;
         });
+        #end
     }
 }

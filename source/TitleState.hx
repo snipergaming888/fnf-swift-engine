@@ -1,5 +1,9 @@
 package;
 
+#if desktop
+import Discord.DiscordClient;
+import sys.thread.Thread;
+#end
 import Controls.KeyboardScheme;
 import flixel.FlxG;
 import flixel.util.FlxSave;
@@ -142,9 +146,18 @@ class TitleState extends MusicBeatState
 
 		if (FlxG.save.data.hittimings == null)
 			FlxG.save.data.hittimings = false;
+		
+		if (FlxG.save.data.hitsounds == null)
+			FlxG.save.data.hitsounds = false;
 
 		if (FlxG.save.data.repeat == null)
 			FlxG.save.data.repeat = false;
+
+		if (FlxG.save.data.transparency == null)
+			FlxG.save.data.transparency = true;
+
+		if (FlxG.save.data.minscore == null)
+			FlxG.save.data.minscore = false;
 
 		if (FlxG.save.data.imagecache && !CachedFrames.loaded)
 			{
@@ -163,6 +176,14 @@ class TitleState extends MusicBeatState
 
 		Highscore.load();
 		keyCheck();
+
+		#if desktop
+		DiscordClient.initialize();
+		
+		Application.current.onExit.add (function (exitCode) {
+			DiscordClient.shutdown();
+		 });
+		#end
 		
 
 		if (FlxG.save.data.weekUnlocked != null)

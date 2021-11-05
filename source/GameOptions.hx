@@ -28,7 +28,7 @@ class GameOptions extends MusicBeatState
 	override function create()
 	{
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll') + "\n" + (FlxG.save.data.middlescroll ? "middlescroll on" : "middlescroll off") + "\n" + (FlxG.save.data.ghosttapping ? "Ghost Tapping" : "No Ghost Tapping") + "\n" + (FlxG.save.data.debug ? "debug MODE ON" : "debug MODE OFF") + "\n" + (FlxG.save.data.reset ? "RESET BUTTON ON" : "RESET BUTTON OFF") + "\n" + (FlxG.save.data.pausecount ? "pause counter on" : "pause counter off") + "\n" + (FlxG.save.data.repeat ? 'loop current song on' : 'loop current song off') + "\n" + (FlxG.save.data.botplay ? 'BOTPLAY ON' : 'BOTPLAY OFF') + "\n" + "EDIT OFFSET");
+		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll') + "\n" + (FlxG.save.data.middlescroll ? "middlescroll on" : "middlescroll off") + "\n" + (FlxG.save.data.ghosttapping ? "Ghost Tapping" : "No Ghost Tapping") + "\n" + (FlxG.save.data.debug ? "debug MODE ON" : "debug MODE OFF") + "\n" + (FlxG.save.data.reset ? "RESET BUTTON ON" : "RESET BUTTON OFF") + "\n" + (FlxG.save.data.pausecount ? "pause counter on" : "pause counter off") + "\n" + (FlxG.save.data.repeat ? 'loop current song on' : 'loop current song off') + "\n" + (FlxG.save.data.hitsounds ? 'hitsounds on' : 'hitsounds off') + "\n" + (FlxG.save.data.botplay ? 'BOTPLAY ON' : 'BOTPLAY OFF') + "\n" + "EDIT OFFSET");
 		
 		trace(controlsStrings);
 
@@ -54,7 +54,7 @@ class GameOptions extends MusicBeatState
 		changeSelection();
 		///so shit gets highlighted
 
-		versionShit = new FlxText(5, FlxG.height - 18, 0, "Offset (Left, Right): " + FlxG.save.data.offset, 12);
+		versionShit = new FlxText(5, FlxG.height - 18, 0, "", 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
@@ -80,18 +80,39 @@ class GameOptions extends MusicBeatState
 			if (controls.BACK)
 				FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
 
+			if (curSelected == 0)
+				versionShit.text = "If the notes will scroll down or not.";
+			if (curSelected == 1)
+				versionShit.text = "If the notes should appear in the middle of the screen.";
+			if (curSelected == 2)
+				versionShit.text = "Wether or not you should have a health penalty for pressing keys not on a note.";
+			if (curSelected == 3)
+				versionShit.text = "Wether or not debug mode should be enabled.";
+			if (curSelected == 4)
+				versionShit.text = "Wether or not the reset button (R) should be on.";
+			if (curSelected == 5)
+				versionShit.text = "Should there be a 'ready', 'set', 'go!' counter after unpauseing.";
+			if (curSelected == 6)
+				versionShit.text = "Wether or not to play the current song again after it ends.";
+			if (curSelected == 7)
+				versionShit.text = "Wether or not to play sounds when hitting a note. Volume: " + 0 + "." + FlxG.save.data.hitsoundvolume + " (Left, Right)";
+			if (curSelected == 8)
+				versionShit.text = "If a CPU should play the game for you.";
+			if (curSelected == 9)
+				versionShit.text = "Edit Your note timing offset.";
 
 
-			if (controls.RIGHT_R)
+
+			if (controls.RIGHT_R && curSelected == 7)
 				{
-					FlxG.save.data.offset++;
-					versionShit.text = "Offset (Left, Right): " + FlxG.save.data.offset;
+					FlxG.save.data.hitsoundvolume++;
+				versionShit.text = "Wether or not to play sounds when hitting a note. Volume: " + 0 + "." + FlxG.save.data.hitsoundvolume + " (Left, Right)";
 				}
 	
-				if (controls.LEFT_R)
+				if (controls.LEFT_R && curSelected == 7)
 					{
-						FlxG.save.data.offset--;
-						versionShit.text = "Offset (Left, Right): " + FlxG.save.data.offset;
+						FlxG.save.data.hitsoundvolume--;
+					    versionShit.text = "Wether or not to play sounds when hitting a note. Volume: " + 0 + "." + FlxG.save.data.hitsoundvolume + " (Left, Right)";
 					}
 		
 			
@@ -175,15 +196,25 @@ class GameOptions extends MusicBeatState
 						grpControls.add(ctrl);
 					case 7:
 						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.botplay = !FlxG.save.data.botplay;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.botplay ? 'BOTPLAY ON' : 'BOTPLAY OFF'), true, false);
+						FlxG.save.data.hitsounds = !FlxG.save.data.hitsounds;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.hitsounds ? "hitsounds on" : "hitsounds off"), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 7;
 						#if windows
 						ctrl.color = FlxColor.YELLOW;
 						#end
+						grpControls.add(ctrl);
+					case 8:
+						grpControls.remove(grpControls.members[curSelected]);
+						FlxG.save.data.botplay = !FlxG.save.data.botplay;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.botplay ? 'BOTPLAY ON' : 'BOTPLAY OFF'), true, false);
+						ctrl.isMenuItem = true;
+						ctrl.targetY = curSelected - 8;
+						#if windows
+						ctrl.color = FlxColor.YELLOW;
+						#end
 						grpControls.add(ctrl);	
-						case 8:
+						case 9:
 						LoadingStateLatency.loadAndSwitchState(new LatencyState());
 						Conductor.changeBPM(120);											   	
 				}

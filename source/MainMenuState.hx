@@ -43,10 +43,10 @@ class MainMenuState extends MusicBeatState
 	var playanims:Bool = false;
 	var defaultCamZoom:Float = 1.05;
 	var camZoom:FlxTween;
-	public static var sniperengineversion:String = " Mona Engine 1.3.1";
-	public static var sniperengineversionA:String = " ME 1.3.1";
+	public static var sniperengineversion:String = " Mona Engine 1.3.4";
+	public static var sniperengineversionA:String = " ME 1.3.4";
 	public static var gameVer:String = "v0.2.7.1";
-	public static var nightly:String = " | nightly v106.b8";
+	public static var nightly:String = "";
 	
 	override function create()
 	{
@@ -94,7 +94,7 @@ class MainMenuState extends MusicBeatState
 							Conductor.changeBPM(102);
 						}
 				}
-				
+
 		persistentUpdate = persistentDraw = true;
 
 		camFollow = new FlxObject(0, 0, 1, 1);

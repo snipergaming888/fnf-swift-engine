@@ -95,11 +95,19 @@ class Main extends Sprite
 		
 
 		#if !mobile
-		if (FlxG.save.data.fps)
-			{
-		        fpsCounter = new FPS(10, 50, 0xFFFFFF);
-		        addChild(fpsCounter);
-			}
+		
+				if (FlxG.save.data.fps)			
+					{
+						fpsCounter = new FPS(10, 50, 0xFFFFFF);
+						addChild(fpsCounter);
+					}
+					else
+						{
+							fpsCounter = new FPS(10, 50, 0xFFFFFF);
+							fpsCounter.visible = false;
+							addChild(fpsCounter);
+						}
+			
 		///addChild(new FPS(10, 3, 0xFFFFFF));
 		#end
 

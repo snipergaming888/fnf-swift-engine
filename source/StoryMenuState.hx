@@ -1,5 +1,9 @@
 package;
 
+#if desktop
+import Discord.DiscordClient;
+import sys.thread.Thread;
+#end
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.transition.FlxTransitionableState;
@@ -90,6 +94,11 @@ class StoryMenuState extends MusicBeatState
 		}
 
 		persistentUpdate = persistentDraw = true;
+
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Looking at the Story Menu", null);
+		#end
 
 		scoreText = new FlxText(10, 10, 0, "SCORE: 49324858", 36);
 		scoreText.setFormat("VCR OSD Mono", 32);

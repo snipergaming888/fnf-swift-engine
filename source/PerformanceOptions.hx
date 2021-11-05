@@ -31,6 +31,7 @@ class PerformanceOptions extends MusicBeatState
 
 	private var grpControls:FlxTypedGroup<Alphabet>;
 	var versionShit:FlxText;
+	var desc:FlxText;
 	override function create()
 	{
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
@@ -66,7 +67,7 @@ class PerformanceOptions extends MusicBeatState
 		changeSelection();
 		///so shit gets highlighted
 		
-         #if desktop
+         
 		if (FlxG.save.data.antialiasing)
 			{
 				versionShit = new FlxText(1000, 200, "ANTIALIASING ON", 12);
@@ -81,11 +82,16 @@ class PerformanceOptions extends MusicBeatState
 					versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 					add(versionShit);
 				}
-				#end
+
+				desc = new FlxText(5, FlxG.height - 18, 0, "", 12);
+				desc.scrollFactor.set();
+				desc.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+				add(desc);
+				
 
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
-        #if desktop
+        
 		boyfriend = new Boyfriend(850 ,300 ,"bf-opt");
 		if (FlxG.save.data.antialiasing)
 		 {
@@ -97,13 +103,13 @@ class PerformanceOptions extends MusicBeatState
 			 }
 			 boyfriend.visible = false;
 			 add(boyfriend);
-			 #end
+			
 		super.create();
 	}
 
 	override function update(elapsed:Float)
 	{
-        #if desktop
+       
 		if (curSelected == 0)
 			{
 				boyfriend.visible = true;
@@ -127,7 +133,7 @@ class PerformanceOptions extends MusicBeatState
 							versionShit.text = "ANTIALIASING OFF";
 							versionShit.antialiasing = false;	
 						}
-						#end
+						
 
 		if (FlxG.sound.music != null)
             Conductor.songPosition = FlxG.sound.music.time;
@@ -142,7 +148,7 @@ class PerformanceOptions extends MusicBeatState
 				changeSelection(1);
 			if (controls.BACK)
 				FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
-			#if desktop
+			
 			if (FlxG.keys.pressed.K)
 				{
 					boyfriend.playAnim('singUP');
@@ -159,17 +165,26 @@ class PerformanceOptions extends MusicBeatState
 				{
 					boyfriend.playAnim('singRIGHT');
 				}
-				#end
+
+				if (curSelected == 0)
+					desc.text = "Wether or not to smooth out pixels at the cost of performance. off = better performance.";
+
+				if (curSelected == 1)
+					desc.text = "Wether or not to use compressed assets.";
+
+				if (curSelected == 2)
+					desc.text = "Cache assets.";
+				
 
 			if (controls.ACCEPT)
 			{
-				#if desktop
+				
 		    if (curSelected == 0)
 			    {
                   remove(boyfriend);
 				  add(boyfriend);
 			    }
-				#end
+				
 				switch(curSelected)
 				{
 					case 0:
@@ -250,15 +265,13 @@ class PerformanceOptions extends MusicBeatState
 			
 			if (curSelected == 0)
 				{
-					#if desktop
 					if (curBeat % 2 == 0)
 						{
 									{
 										boyfriend.playAnim('idle');
 										trace('dance');
 									}									
-						}
-						#end
+						}	
 				}
 
 			if (accepted)

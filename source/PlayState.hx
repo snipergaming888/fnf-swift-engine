@@ -175,6 +175,7 @@ class PlayState extends MusicBeatState
 	var debuginfo14:FlxText;
 	var botPlayState:FlxText;
 	var downscrollbotplay:FlxText;
+	var songlengthtext:FlxText;
 	///that is alot of FlxTexts am i right
 
 	public static var campaignScore:Int = 0;
@@ -186,14 +187,15 @@ class PlayState extends MusicBeatState
 	var cpunotesHit:Float = 0;
 	var notesnotmissed:Float = 0;
 	var notesPassing:Float = 0;
-	var baseText2:String = "Current Accuracy: ";
+	var baseText2:String = "( Current Accuracy: ";
 	var songRating:String = "?";
-	var baseText:String = " Current Accuracy:";
+	var baseText:String = "( Current Accuracy:";
 	public static var songPosBG:FlxSprite;
 	public static var songPosBar:FlxBar;
 	var songName:FlxText;
 	private var songPositionBar:Float = 0;
 	var songLength:Float = 0;
+	var yomamatime:Float = 0;
 
 	var defaultCamZoom:Float = 1.05;
 
@@ -303,6 +305,9 @@ class PlayState extends MusicBeatState
 		if (FlxG.save.data.offset == null)
 			FlxG.save.data.offset = 0;
 
+		if (FlxG.save.data.hitsoundvolume == null)
+			FlxG.save.data.hitsoundvolume = 0.5;
+
 		if (FlxG.save.data.strumlights == null)
 			FlxG.save.data.strumlights = true;
 
@@ -315,11 +320,20 @@ class PlayState extends MusicBeatState
 		if (FlxG.save.data.hittimings == null)
 			FlxG.save.data.hittimings = false;
 
+		if (FlxG.save.data.hitsounds == null)
+			FlxG.save.data.hitsounds = false;
+
 		if (FlxG.save.data.fps == null)
 			FlxG.save.data.fps = false;
 
 		if (FlxG.save.data.repeat == null)
 			FlxG.save.data.repeat = false;
+
+		if (FlxG.save.data.transparency == null)
+			FlxG.save.data.transparency = true;
+
+		if (FlxG.save.data.minscore == null)
+			FlxG.save.data.minscore = false;
 
 
 		///if (FlxG.save.data.controls = true)
@@ -437,7 +451,7 @@ class PlayState extends MusicBeatState
 		detailsPausedText = "Paused - " + detailsText;
 		
 		// Updating Discord Rich Presence.
-		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")" + " Rating: " + songRating + "\nAcc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses  , iconRPC);
 		#end
 
 		switch (SONG.song.toLowerCase())
@@ -1663,6 +1677,19 @@ class PlayState extends MusicBeatState
 				songPosBar.scrollFactor.set();
 				songPosBar.createFilledBar(FlxColor.BLACK, FlxColor.WHITE);
 				add(songPosBar);
+
+				songlengthtext = new FlxText(550, 600, "", 20);
+				songlengthtext.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+				songlengthtext.scrollFactor.set();
+				if (FlxG.save.data.antialiasing)
+					{
+						songlengthtext.antialiasing = false;
+					}
+					else
+						{
+							songlengthtext.antialiasing = true;
+						}
+
 	
 			}
 
@@ -1695,7 +1722,7 @@ class PlayState extends MusicBeatState
 				}
 		if (FlxG.save.data.downscroll)
 			{
-				scoreTxt = new FlxText(380, 100, "", 20);
+				scoreTxt = new FlxText(460, 100, "", 20);
 				scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 				scoreTxt.scrollFactor.set();
 				if (FlxG.save.data.antialiasing)
@@ -1708,9 +1735,24 @@ class PlayState extends MusicBeatState
 						}
 					add(scoreTxt);
 			}
-			else
+			else if (FlxG.save.data.minscore)
 				{
-					scoreTxt = new FlxText(380, 698, "", 20);
+					scoreTxt = new FlxText(healthBarBG.x + healthBarBG.width - 190, healthBarBG.y + 30, 0, "", 20);
+					scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT);
+					scoreTxt.scrollFactor.set();
+					if (FlxG.save.data.antialiasing)
+						{
+							scoreTxt.antialiasing = false;
+						}
+						else
+							{
+								scoreTxt.antialiasing = true;
+							}
+					add(scoreTxt);
+				}
+				else
+				{
+					scoreTxt = new FlxText(460, 698, "", 20);
 					scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 					scoreTxt.scrollFactor.set();
 					if (FlxG.save.data.antialiasing)
@@ -2143,37 +2185,40 @@ class PlayState extends MusicBeatState
 													debuginfo14.cameras = [camHUD];
 												}
 					
-
-		if (FlxG.save.data.downscroll)
-			{
-				accuracytext = new FlxText(180, 100, "", 20);
-				accuracytext.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
-				accuracytext.scrollFactor.set();
-				if (FlxG.save.data.antialiasing)
-					{
-						accuracytext.antialiasing = false;
-					}
-					else
-						{
-							accuracytext.antialiasing = true;
-						}
-				add(accuracytext);
-			}
-			else
-				{
-					accuracytext = new FlxText(180, 698, "", 20);
-					accuracytext.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
-					accuracytext.scrollFactor.set();
-					if (FlxG.save.data.antialiasing)
-						{
-							accuracytext.antialiasing = false;
-						}
-						else
-							{
-								accuracytext.antialiasing = true;
-							}
-					add(accuracytext);
-				}
+												if (FlxG.save.data.minscore)
+													{
+														trace('no acc');
+													}
+													else if (FlxG.save.data.downscroll)
+														{
+															accuracytext = new FlxText(255, 100, "", 20);
+															accuracytext.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
+															accuracytext.scrollFactor.set();
+															if (FlxG.save.data.antialiasing)
+																{
+																	accuracytext.antialiasing = false;
+																}
+																else
+																	{
+																		accuracytext.antialiasing = true;
+																	}
+															add(accuracytext);
+														}
+														else
+															{
+																accuracytext = new FlxText(255, 698, "", 20);
+																accuracytext.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
+																accuracytext.scrollFactor.set();
+																if (FlxG.save.data.antialiasing)
+																	{
+																		accuracytext.antialiasing = false;
+																	}
+																	else
+																		{
+																			accuracytext.antialiasing = true;
+																		}
+																add(accuracytext);
+															}
 
 		iconP1 = new HealthIcon(SONG.player1, true);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
@@ -2203,6 +2248,7 @@ class PlayState extends MusicBeatState
 		iconP1.cameras = [camHUD];
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
+		if (!FlxG.save.data.minscore)
 		accuracytext.cameras = [camHUD];
 		doof.cameras = [camHUD];
 		if (FlxG.save.data.songPosition)
@@ -2531,7 +2577,6 @@ class PlayState extends MusicBeatState
 		FlxG.sound.music.onComplete = endSong;
 		vocals.play();
 
-		#if desktop
 		// Song duration in a float, useful for the time left feature
 
 
@@ -2556,14 +2601,31 @@ class PlayState extends MusicBeatState
 					songPosBar.scrollFactor.set();
 					songPosBar.createFilledBar(FlxColor.BLACK, FlxColor.WHITE);
 					add(songPosBar);
+
+					songlengthtext = new FlxText(600, 15, "", 20);
+				    songlengthtext.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+				    songlengthtext.scrollFactor.set();
+				    if (FlxG.save.data.antialiasing)
+					{
+						songlengthtext.antialiasing = false;
+					}
+					else
+						{
+							songlengthtext.antialiasing = true;
+						}
+					add(songlengthtext);
+					songlengthtext.alpha = 0;
+					songlengthtext.y -10;
+					FlxTween.tween(songlengthtext, {y: songlengthtext.y + 10, alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 0.2});
 		
 	
 					songPosBG.cameras = [camHUD];
 					songPosBar.cameras = [camHUD];
+					songlengthtext.cameras = [camHUD];
 				}
-
+		#if desktop
 		// Updating Discord Rich Presence (with Time Left)
-		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC, true, songLength);
+		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")" + " Rating: " + songRating + "\nAcc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses  , iconRPC);
 		#end
 	}
 
@@ -2855,7 +2917,7 @@ class PlayState extends MusicBeatState
 			babyArrow.updateHitbox();
 			babyArrow.scrollFactor.set();
 
-			if (!isStoryMode)
+			if (!isStoryMode && !FlxG.save.data.repeat)
 			{
 				babyArrow.y -= 10;
 				babyArrow.alpha = 0;
@@ -2953,7 +3015,7 @@ class PlayState extends MusicBeatState
 			#if desktop
 			if (startTimer.finished)
 			{
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC, true, songLength - Conductor.songPosition);
+				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")" + " Rating: " + songRating + "\nAcc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses , iconRPC, true, songLength - Conductor.songPosition);
 			}
 			else
 			{
@@ -2972,11 +3034,11 @@ class PlayState extends MusicBeatState
 		{
 			if (Conductor.songPosition > 0.0)
 			{
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC, true, songLength - Conductor.songPosition);
+				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")" + " Rating: " + songRating + "\nAcc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses , iconRPC, true, songLength - Conductor.songPosition);
 			}
 			else
 			{
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")" + " Rating: " + songRating + "\nAcc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses , iconRPC);
 			}
 		}
 		#end
@@ -2989,7 +3051,7 @@ class PlayState extends MusicBeatState
 		#if desktop
 		if (health > 0 && !paused)
 		{
-			DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+			DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")" + " Rating: " + songRating + "\nAcc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses , iconRPC);
 		}
 		#end
 
@@ -3035,7 +3097,15 @@ class PlayState extends MusicBeatState
 									spr.centerOffsets();
 								});
 						}
+
+		yomamatime = FlxG.sound.music.length - Conductor.songPosition;
 		
+		#if desktop
+		if (startTimer.finished)
+		{
+			DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")" + " Rating: " + songRating + "\nAcc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses , iconRPC, true, songLength - Conductor.songPosition);
+		}
+		#end
 
 		if (curSong.toLowerCase() == 'rockefeller-street-nightcore' && curStep >= 1405 && curStep < 1516)
 			{
@@ -3317,9 +3387,9 @@ class PlayState extends MusicBeatState
 
 		super.update(elapsed);
 
-		if (boyfriend.animation.curAnim.name.startsWith('sing') && scoretxtnotmoved)
+		if (boyfriend.animation.curAnim.name.startsWith('sing') && scoretxtnotmoved && !FlxG.save.data.minscore)
 			{
-			accuracytext.x -= 25;
+			accuracytext.x -= 40;
 			scoreTxt.x -= 25;
 			scoretxtnotmoved = false;
 			trace("MOVED");		
@@ -3328,8 +3398,21 @@ class PlayState extends MusicBeatState
 
 		///scoreTxt.text = 'Misses: $misses | Score: $songScore | Combo: $combo';
 		/// so ummm there are two accuracy thinges cuz one is good at calculating it and the other is shit
-		scoreTxt.text = " | Overall Accuracy: " + truncateFloat(accuracy, 2) + "% " + (fc ? "| FC" : misses == 0 ? "" : accuracy <= 75 ? "" : "") + " | Rating: " + songRating + " | Misses: " + misses + " | " + "Score: " + songScore + " | Combo: " + combo;
-		accuracytext.text = baseText;                                                      ///(fc ? "| FC" : misses == 0 ? "| A" : accuracy <= 75 ? "| BAD" : "")                                                                                               /// " | Health: " + Math.round(health * 50)                  
+		if (FlxG.save.data.minscore)
+			{
+				scoreTxt.text = "Score:" + songScore;	
+			}
+			else
+				{
+					scoreTxt.text = " | Overall Accuracy: " + truncateFloat(accuracy, 2) + "% " + (fc ? "| FC" : misses == 0 ? "" : accuracy <= 75 ? "" : "") + " | Rating: " + songRating + " | Misses: " + misses + " | " + "Score: " + songScore + " )";
+					accuracytext.text = baseText;
+				}
+
+
+		if (FlxG.save.data.songPosition)
+			{
+				songlengthtext.text = "" + Math.round(yomamatime* 1);  
+			}
 
 		var pauseBtt:Bool = FlxG.keys.justPressed.ENTER;
 		if (Main.woops)
@@ -3377,34 +3460,37 @@ class PlayState extends MusicBeatState
 					debuginfo14.text = "GF Speed: " + gfSpeed;
 				}
 
-		if (health >= 0)
+		if (!FlxG.save.data.minscore)
 			{
-				accuracytext.text = baseText2;
-			}
+				var baseText:String = "( Current Accuracy:";
 
-		var baseText:String = "Current Accuracy:";
-		
-		if (notesPassing != 0) {
-			baseText = "Current Accuracy:" + Math.round((notesHit/notesPassing) * 100) + "%";
-		} else if (scoretxtnotmoved)
-		{
-			baseText2 = " Current Accuracy: 0%";
-		}
-		else 
-		{
-			baseText2 = "Current Accuracy: 100%";
-		}
-		
-		if (notesPassing != 0) {
-			baseText2 = "Current Accuracy: " + Math.round((notesHit/notesPassing) * 100) + "%";
-		} else if (scoretxtnotmoved)
-		{
-			baseText2 = " Current Accuracy: 0%";
-		}
-		else 
-		{
-			baseText2 = "Current Accuracy: 100%";
-		}
+				if (notesPassing != 0) {
+					baseText = "( Current Accuracy:" + Math.round((notesHit/notesPassing) * 100) + "%";
+				} else if (scoretxtnotmoved)
+				{
+					baseText2 = "( Current Accuracy: 0%";
+				}
+				else 
+				{
+					baseText2 = "( Current Accuracy: 100%";
+				}
+				
+				if (notesPassing != 0) {
+					baseText2 = "( Current Accuracy: " + Math.round((notesHit/notesPassing) * 100) + "%";
+				} else if (scoretxtnotmoved)
+				{
+					baseText2 = "( Current Accuracy: 0%";
+				}
+				else 
+				{
+					baseText2 = "( Current Accuracy: 100%";
+				}
+
+				if (health >= 0)
+					{
+						accuracytext.text = baseText2;
+					}
+			}
 
 		if (curSong.toLowerCase() == 'blammed' && curStep == 1)
 			{
@@ -4147,7 +4233,7 @@ class PlayState extends MusicBeatState
 						openSubState(new PauseSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 				
 					#if desktop
-					DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+					DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")" + " Rating: " + songRating + "\nAcc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses , iconRPC);
 					#end
 				}
 		}
@@ -4169,7 +4255,7 @@ class PlayState extends MusicBeatState
 							openSubState(new PauseSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 					
 						#if desktop
-						DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+						DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")" + " Rating: " + songRating + "\nAcc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses , iconRPC);
 						#end
 					}
 			} 
@@ -4788,8 +4874,6 @@ class PlayState extends MusicBeatState
 											
 								}
 						}
-
-						///checks the if cpu missed, (the cpu should not miss) and if it does, do not count as miss.
 
 					daNote.active = false;
 					daNote.visible = false;
@@ -5700,7 +5784,14 @@ class PlayState extends MusicBeatState
 	function noteCheck(keyP:Bool, note:Note):Void
 	{
 		if (keyP)
-			goodNoteHit(note);
+			{
+				goodNoteHit(note);
+				
+				if (FlxG.save.data.hitsounds)
+					{
+						FlxG.sound.play(Paths.sound('normal-hitnormal'), 0. + FlxG.save.data.hitsoundvolume);	
+					}	
+			}
 	}
 		
 
@@ -5708,10 +5799,10 @@ class PlayState extends MusicBeatState
 	{
 		if (!note.wasGoodHit)
 		{
-			if (FlxG.save.data.debug)
-				{
-					trace('note hit');
-				}
+			    if (FlxG.save.data.debug)
+				    {
+					    trace('note hit');	
+				    }
 				if (FlxG.save.data.debug)
 					{
 						trace(combo);
@@ -5723,11 +5814,7 @@ class PlayState extends MusicBeatState
 									spr.animation.play('static');
 									spr.centerOffsets();
 								});
-						}
-								
-																		
-																	
-																
+						}														
 						
 			updateAccuracy();
 			rating();
@@ -5742,7 +5829,9 @@ class PlayState extends MusicBeatState
 				totalNotesHit += 1;
 
 			if (note.noteData >= 0)
-				health += 0.023;
+				{
+					health += 0.023;
+				}
 			else
 				health += 0.004;
 
@@ -6201,7 +6290,11 @@ class PlayState extends MusicBeatState
 			// else
 			// Conductor.changeBPM(SONG.bpm);
 
-			// Dad doesnt interupt his own notes
+			// Dad doesnt interupt his own notes / play him anims for too long
+			 if (curStage == 'stage' && (SONG.notes[Math.floor(curStep / 16)].mustHitSection))
+				{
+					dad.dance();
+				}
 			///if (SONG.notes[Math.floor(curStep / 16)].mustHitSection)
 				///dad.dance();
 

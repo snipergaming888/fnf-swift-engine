@@ -188,7 +188,14 @@ class Note extends FlxSprite
 		if (isSustainNote && prevNote != null)
 		{
 			noteScore * 0.2;
-			alpha = 0.6;
+			if (FlxG.save.data.transparency)
+				{
+					alpha = 0.6;	
+				}
+				else
+					{
+						alpha = 1.0;	
+					}
 
 			x += width / 2;
 
