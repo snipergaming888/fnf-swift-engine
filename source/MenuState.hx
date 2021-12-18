@@ -9,6 +9,7 @@ import Controls.Control;
 import flash.text.TextField;
 import flixel.tweens.FlxTween;
 import flixel.FlxG;
+import flixel.system.FlxSound;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -30,10 +31,16 @@ class MenuState extends MusicBeatState
 	var camZoom:FlxTween;
 	var CYAN:FlxColor = 0xFF00FFFF;
 	var desc:FlxText;
+	var voices:FlxSound;
+	var descBG:FlxSprite;
 	override function create()
 	{
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		controlsStrings = CoolUtil.coolStringFile('GAMEPLAY' + "\n" + "APPEARANCE" + "\n" + "CONTROLS" + "\n" + "PERFORMANCE" + "\n" + "MISC");
+		#if web
+		controlsStrings = CoolUtil.coolStringFile('GAMEPLAY' + "\n" + "APPEARANCE" + "\n" + "KEYBINDS" + "\n" + "PERFORMANCE");
+		#else
+		controlsStrings = CoolUtil.coolStringFile('GAMEPLAY' + "\n" + "APPEARANCE" + "\n" + "KEYBINDS" + "\n" + "PERFORMANCE" + "\n" + "MISC");
+		#end
 		
 		trace(controlsStrings);
 
@@ -52,9 +59,15 @@ class MenuState extends MusicBeatState
 				var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
 				controlLabel.isMenuItem = true;
 				controlLabel.targetY = i;
+				controlLabel.screenCenter(X);
 				grpControls.add(controlLabel);
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 		}
+
+		var descBG:FlxSprite = new FlxSprite(0,  FlxG.height - 18).makeGraphic(Std.int(FlxG.width), 110, 0xFF000000);
+		descBG.alpha = 0.6;
+		descBG.screenCenter(X);
+		add(descBG);
 
 		desc = new FlxText(5, FlxG.height - 18, 0, "", 12);
 		desc.scrollFactor.set();
@@ -77,6 +90,11 @@ class MenuState extends MusicBeatState
 		if (FlxG.sound.music != null)
             Conductor.songPosition = FlxG.sound.music.time;
 
+		for (item in grpControls.members)
+			{
+				item.screenCenter(X);
+			}
+
 		super.update(elapsed);
 
 			if (controls.BACK)
@@ -95,7 +113,7 @@ class MenuState extends MusicBeatState
 				desc.text = "In-game appearance menu.";
 
 			if (curSelected == 2)
-				desc.text = "Configure your controls.";
+				desc.text = "Configure your keybinds.";
 
 			if (curSelected == 3)
 				desc.text = "In-game performance menu.";
@@ -113,7 +131,7 @@ class MenuState extends MusicBeatState
 					case 1:
 						FlxG.switchState(new ApperanceOptions());
 					case 2:
-						FlxG.switchState(new ControlState());
+						FlxG.switchState(new OptionsMenu());
 					case 3:
 						FlxG.switchState(new PerformanceOptions());
 					case 4:
@@ -122,10 +140,36 @@ class MenuState extends MusicBeatState
 			}
 	}
 
+	override public function onFocusLost():Void
+		{
+			#if PRELOAD_ALL
+			if (FreeplayState.voicesplaying)
+				FreeplayState.voices.pause();
+			#end
+			
+			super.onFocusLost();
+		}
+
+		override public function onFocus():Void
+			{
+				#if PRELOAD_ALL
+				if (FreeplayState.voicesplaying)
+					{
+						FreeplayState.voices.play();	
+					}
+				#end	
+
+			   super.onFocus();
+			}
+
 	var isSettingControl:Bool = false;
 
 	function changeSelection(change:Int = 0)
 	{
+		for (item in grpControls.members)
+			{
+				item.screenCenter(X);
+			}
 		#if !switch
 		// NGio.logEvent('Fresh');
 		#end
@@ -146,21 +190,23 @@ class MenuState extends MusicBeatState
 		for (item in grpControls.members)
 		{
 			item.targetY = bullShit - curSelected;
+			item.screenCenter(X);
 			bullShit++;
+			
 
 			item.alpha = 0.6;
 
-			#if windows
+			/*#if windows
 			item.color = FlxColor.WHITE;
-            #end
+           */// #end
 			// item.setGraphicSize(Std.int(item.width * 0.8));
 
 			if (item.targetY == 0)
 			{
 				item.alpha = 1;
-				#if windows
+				/*#if windows
 				item.color = FlxColor.YELLOW;
-				#end
+				 *///#end
 				// item.setGraphicSize(Std.int(item.width));
 			}
 		}

@@ -6,6 +6,7 @@ import Discord.DiscordClient;
 import flash.text.TextField;
 import Song.SwagSong;
 import flixel.FlxG;
+import flixel.system.FlxSound;
 import flixel.FlxState;
 import flixel.FlxCamera;
 import flixel.FlxSprite;
@@ -28,18 +29,24 @@ class FreeplayState extends MusicBeatState
 
 	var selector:FlxText;
 	var curSelected:Int = FlxG.save.data.curselected;
-	var curDifficulty:Int = 1;
+	var curDifficulty:Int = FlxG.save.data.curdifficulty;
 	var icon:HealthIcon;
 	var scoreText:FlxText;
 	var diffText:FlxText;
+	var speedtext:FlxText;
 	var lerpScore:Int = 0;
 	var intendedScore:Int = 0;
 	var songWait:FlxTimer = new FlxTimer();
 	var defaultCamZoom:Float = 1.05;
+	var infotext:FlxText;
+	public static var gamespeed:Float = 1.0;
+	public static var voices:FlxSound;
+	public static var voicesplaying:Bool = false;
 
 	private var grpSongs:FlxTypedGroup<Alphabet>;
 	private var curPlaying:Bool = false;
 	private var camZooming:Bool = false;
+	var playingist:Bool = false;
 
 	var startTimer:FlxTimer;
 
@@ -49,11 +56,15 @@ class FreeplayState extends MusicBeatState
 
 	override function create()
 	{
-		Conductor.changeBPM(110);
 
 		if (FlxG.save.data.curselected == null)
 			FlxG.save.data.curselected = "0";
+
+		if (FlxG.save.data.curdifficulty == null)
+			FlxG.save.data.curdifficulty = "1";
 		trace('default selected: ' + FlxG.save.data.curselected);
+		trace('default difficulty: ' + FlxG.save.data.curdifficulty);
+
 
 		var initSonglist = CoolUtil.coolTextFile(Paths.txt('freeplaySonglist'));
 
@@ -70,10 +81,6 @@ class FreeplayState extends MusicBeatState
 			}
 		 */
 
-		#if desktop
-		// Updating Discord Rich Presence
-		DiscordClient.changePresence("Looking at the Freeplay song list", null);
-		#end
 
 		var isDebug:Bool = false;
 
@@ -104,6 +111,7 @@ class FreeplayState extends MusicBeatState
 			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, songs[i].songName, true, false);
 			songText.isMenuItem = true;
 			songText.targetY = i;
+			songText.screenCenter(X);
 			grpSongs.add(songText);
 
 			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter);
@@ -118,27 +126,52 @@ class FreeplayState extends MusicBeatState
 			// songText.screenCenter(X);
 		}
 
-		scoreText = new FlxText(FlxG.width * 0.7, 5, 0, "", 32);
+		scoreText = new FlxText(FlxG.width * 0.7, 5, 0, "   PERSONAL BEST:" + lerpScore, 32);
+		///scoreText.x += 200;
+		scoreText.screenCenter(X);
 		// scoreText.autoSize = false;
 		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
 		// scoreText.alignment = RIGHT;
-
-		var scoreBG:FlxSprite = new FlxSprite(scoreText.x - 6, 0).makeGraphic(Std.int(FlxG.width * 0.35), 66, 0xFF000000);
+                                                                                                 //66
+		var scoreBG:FlxSprite = new FlxSprite(scoreText.x - 6, 0).makeGraphic(Std.int(FlxG.width), 110, 0xFF000000);
 		scoreBG.alpha = 0.6;
+		scoreBG.screenCenter(X);
 		add(scoreBG);
 
-		diffText = new FlxText(scoreText.x, scoreText.y + 36, 0, "", 24);
+		diffText = new FlxText(scoreText.x + 215, scoreText.y + 36, 0, "", 24);
 		diffText.font = scoreText.font;
+		diffText.x -= 100;
 		add(diffText);
-
+		speedtext = new FlxText(scoreText.x, scoreText.y + 74, "SPEED: " + gamespeed, 24);
+		speedtext.font = diffText.font;
+		speedtext.screenCenter(X);
+		add(speedtext);
 		add(scoreText);
+		
+		var scoreBG:FlxSprite = new FlxSprite(0,  FlxG.height - 18).makeGraphic(Std.int(FlxG.width), 110, 0xFF000000);
+		scoreBG.alpha = 0.6;
+		scoreBG.screenCenter(X);
+		add(scoreBG);
+		#if PRELOAD_ALL
+		infotext = new FlxText(5, FlxG.height - 18, 0, "Press V to play vocals for a song / hold down shift + left or right to change song speed.", 12);
+		#else
+		infotext = new FlxText(5, FlxG.height - 18, 0, "hold down shift + left or right to change song speed.", 12);
+		#end
+		infotext.scrollFactor.set();
+		infotext.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		add(infotext);
 
 		changeSelection();
 		changeDiff();
 
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Looking at the Freeplay song list", null);
+		#end
+
 		// FlxG.sound.playMusic(Paths.music('title'), 0);
 		// FlxG.sound.music.fadeIn(2, 0, 0.8);
-		selector = new FlxText();
+		selector = new FlxText();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
 
 		selector.size = 40;
 		selector.text = ">";
@@ -208,25 +241,72 @@ class FreeplayState extends MusicBeatState
 		if (Math.abs(lerpScore - intendedScore) <= 10)
 			lerpScore = intendedScore;
 
-		scoreText.text = "PERSONAL BEST:" + lerpScore;
+		scoreText.text = "   PERSONAL BEST:" + lerpScore;
 
 		var upP = controls.UP_P;
 		var downP = controls.DOWN_P;
 		///var accepted = controls.ACCEPT;
 
+		if (controls.RIGHT_R && FlxG.keys.pressed.SHIFT)
+			{
+				gamespeed += 0.1;
+				trace(gamespeed);
+			speedtext.text = "SPEED: " + gamespeed;
+			#if desktop
+			// Updating Discord Rich Presence
+			DiscordClient.changePresence("Thinking about playing " + songs[curSelected].songName.toLowerCase() + " " + (curDifficulty == 2 ? "Hard" : curDifficulty == 1 ? "Normal" : "Easy") + " on a speed of " + gamespeed + " (In the freeplay menu)", null);
+			#end
+			}
+
+			if (controls.LEFT_R && FlxG.keys.pressed.SHIFT)
+				{
+					gamespeed -= 0.1;
+				trace(gamespeed);
+			    speedtext.text = "SPEED: " + gamespeed;
+				#if desktop
+				// Updating Discord Rich Presence
+				DiscordClient.changePresence("Thinking about playing " + songs[curSelected].songName.toLowerCase() + " " + (curDifficulty == 2 ? "Hard" : curDifficulty == 1 ? "Normal" : "Easy") + " on a speed of " + gamespeed + " (In the freeplay menu)", null);
+				#end
+			 	}
+
 		if (upP)
 		{
 			changeSelection(-1);
+			if (!FlxG.save.data.freeplaysongs && FlxG.sound.music.playing  && playingist)
+					{
+						FlxG.sound.music.stop();
+					}
 		}
 		if (downP)
 		{
 			changeSelection(1);
+			if (!FlxG.save.data.freeplaysongs && FlxG.sound.music.playing && playingist)
+				{
+					FlxG.sound.music.stop();
+				}
 		}
 
-		if (controls.LEFT_P)
+		if (controls.LEFT_P && !FlxG.keys.pressed.SHIFT)
 			changeDiff(-1);
-		if (controls.RIGHT_P)
+		if (controls.RIGHT_P && !FlxG.keys.pressed.SHIFT)
 			changeDiff(1);
+		#if PRELOAD_ALL
+		if(FlxG.keys.justPressed.V && !voicesplaying)
+			{
+				voices = new FlxSound().loadEmbedded(Paths.voices(songs[curSelected].songName));
+				voicesplaying = true;
+				trace('IS PLAYING ' + voicesplaying);
+				voices.play();
+				if (!FlxG.save.data.freeplaysongs)
+					{
+						FlxG.sound.music.stop();
+						FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
+						playingist = true;
+						Conductor.changeBPM(beatArray[curSelected]);
+						trace(Conductor.bpm);
+					}
+			}
+			#end
 
 		if (controls.BACK)
 		{
@@ -234,9 +314,19 @@ class FreeplayState extends MusicBeatState
 			FlxG.switchState(new MainMenuState());
 		}
 
+		for (item in grpSongs.members)
+			{
+				item.screenCenter(X);
+			}
+
 		if (controls.ACCEPT)
 		{
 			accepted = false;
+			if(voicesplaying)
+				{
+					voicesplaying = false;
+					voices.stop();
+				}
 			
 					{
 						var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
@@ -251,8 +341,32 @@ class FreeplayState extends MusicBeatState
 						trace('CUR WEEK' + PlayState.storyWeek);
 						LoadingState.loadAndSwitchState(new PlayState());
 					}
+						
 		}
+
 	}
+
+	override public function onFocusLost():Void
+		{
+			#if PRELOAD_ALL
+			if (voicesplaying)
+            voices.pause();
+			#end
+			
+			super.onFocusLost();
+		}
+
+		override public function onFocus():Void
+			{
+				#if PRELOAD_ALL
+				if (voicesplaying)
+					{
+						voices.play();	
+					}
+				#end	
+
+			   super.onFocus();
+			}
 
 	function changeDiff(change:Int = 0)
 	{
@@ -262,6 +376,13 @@ class FreeplayState extends MusicBeatState
 			curDifficulty = 2;
 		if (curDifficulty > 2)
 			curDifficulty = 0;
+
+		FlxG.save.data.curdifficulty = curDifficulty;
+
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Thinking about playing " + songs[curSelected].songName.toLowerCase() + " " + (curDifficulty == 2 ? "Hard" : curDifficulty == 1 ? "Normal" : "Easy") + " on a speed of " + gamespeed + " (In the freeplay menu)", null);
+		#end
 
 		#if !switch
 		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
@@ -281,6 +402,11 @@ class FreeplayState extends MusicBeatState
 	override function beatHit()
 		{
 			super.beatHit();
+
+			#if PRELOAD_ALL
+			if (voicesplaying)
+			voices.time = Conductor.songPosition;
+			#end
 		
 			if (accepted)
 				{
@@ -381,6 +507,11 @@ class FreeplayState extends MusicBeatState
 
 	function changeSelection(change:Int = 0)
 	{
+		if (voicesplaying)
+			{
+				voicesplaying = false;
+				voices.stop();	
+			}
 
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 
@@ -400,16 +531,30 @@ class FreeplayState extends MusicBeatState
 
 		#if PRELOAD_ALL
 				{
-					FlxG.sound.music.stop();
-					songWait.cancel();
-					songWait.start(1, function(tmr:FlxTimer) {
-					FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
-					Conductor.changeBPM(beatArray[curSelected]);
-					trace(Conductor.bpm);
-					});
+					if (FlxG.save.data.songcache && FlxG.save.data.freeplaysongs)
+						{
+							FlxG.sound.music.stop();
+							FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
+							Conductor.changeBPM(beatArray[curSelected]);
+							trace(Conductor.bpm);
+						}
+						else if (FlxG.save.data.freeplaysongs)
+							{
+								FlxG.sound.music.stop();
+								songWait.cancel();
+								songWait.start(1, function(tmr:FlxTimer) {
+								FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
+								Conductor.changeBPM(beatArray[curSelected]);
+								trace(Conductor.bpm);
+								});
+							}
 				}
 		#end
 		trace('current selection: ' + curSelected);
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Thinking about playing " + songs[curSelected].songName.toLowerCase() + " " + (curDifficulty == 2 ? "Hard" : curDifficulty == 1 ? "Normal" : "Easy") + " on a speed of " + gamespeed + " (In the freeplay menu)", null);
+		#end
 
 		var bullShit:Int = 0;
 
@@ -427,6 +572,7 @@ class FreeplayState extends MusicBeatState
 		{
 			item.targetY = bullShit - curSelected;
 			bullShit++;
+			item.screenCenter(X);
 
 			item.alpha = 0.6;
 			#if windows

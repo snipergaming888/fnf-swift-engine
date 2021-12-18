@@ -1,5 +1,9 @@
 package;
 
+#if desktop
+import Discord.DiscordClient;
+import sys.thread.Thread;
+#end
 import Controls.KeyboardScheme;
 import Controls.Control;
 import flash.text.TextField;
@@ -26,6 +30,7 @@ class PerformanceOptions extends MusicBeatState
 	var camZoom:FlxTween;
 	private var boyfriend:Boyfriend;
 	var ISWINDOWS:Bool = false;
+	var descBG:FlxSprite;
 
 	var controlsStrings:Array<String> = [];
 
@@ -60,9 +65,16 @@ class PerformanceOptions extends MusicBeatState
 				var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
 				controlLabel.isMenuItem = true;
 				controlLabel.targetY = i;
+				controlLabel.screenCenter(X);
 				grpControls.add(controlLabel);
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 		}
+
+		var descBG:FlxSprite = new FlxSprite(0,  FlxG.height - 18).makeGraphic(Std.int(FlxG.width), 110, 0xFF000000);
+		descBG.alpha = 0.6;
+		descBG.screenCenter(X);
+		add(descBG);
+
 
 		changeSelection();
 		///so shit gets highlighted
@@ -103,6 +115,11 @@ class PerformanceOptions extends MusicBeatState
 			 }
 			 boyfriend.visible = false;
 			 add(boyfriend);
+
+			 #if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Looking at the Peformance Options Menu", null);
+		#end
 			
 		super.create();
 	}
@@ -133,6 +150,11 @@ class PerformanceOptions extends MusicBeatState
 							versionShit.text = "ANTIALIASING OFF";
 							versionShit.antialiasing = false;	
 						}
+
+						for (item in grpControls.members)
+							{
+								item.screenCenter(X);
+							}
 						
 
 		if (FlxG.sound.music != null)
@@ -194,7 +216,7 @@ class PerformanceOptions extends MusicBeatState
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 0;
 						#if windows
-						ctrl.color = FlxColor.YELLOW;
+						///ctrl.color = FlxColor.YELLOW;
 						#end
 						grpControls.add(ctrl);
 						
@@ -205,7 +227,7 @@ class PerformanceOptions extends MusicBeatState
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 1;
 						#if windows
-						ctrl.color = FlxColor.YELLOW;
+						///ctrl.color = FlxColor.YELLOW;
 						#end
 						grpControls.add(ctrl);
 						case 2:
@@ -218,6 +240,10 @@ class PerformanceOptions extends MusicBeatState
 
 	function changeSelection(change:Int = 0)
 	{
+		for (item in grpControls.members)
+			{
+				item.screenCenter(X);
+			}
 		#if !switch
 		// NGio.logEvent('Fresh');
 		#end
@@ -238,20 +264,21 @@ class PerformanceOptions extends MusicBeatState
 		for (item in grpControls.members)
 		{
 			item.targetY = bullShit - curSelected;
+			item.screenCenter(X);
 			bullShit++;
 
 			item.alpha = 0.6;
 			#if windows
-			item.color = FlxColor.WHITE;
+			//item.color = FlxColor.WHITE;
             #end
-			// item.setGraphicSize(Std.int(item.width * 0.8));
+			 //item.setGraphicSize(Std.int(item.width * 0.8));
 
 			if (item.targetY == 0)
 			{
 				item.alpha = 1;
-				#if windows
-				item.color = FlxColor.YELLOW;
-				#end
+			#if windows
+			// item.color = FlxColor.YELLOW;
+             #end
 				// item.setGraphicSize(Std.int(item.width));
 			}
 		}

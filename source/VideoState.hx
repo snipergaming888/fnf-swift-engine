@@ -42,11 +42,7 @@ class VideoState extends MusicBeatState
 		autoPause = autopause;
 		
 		leSource = source;
-		transClass = toTrans;///why is this even here
-		///if (frameSkipLimit != -1 && GlobalVideo.isWebm)
-		///{
-			///GlobalVideo.getWebm().webm.SKIP_STEP_LIMIT = frameSkipLimit;	
-		///}
+		transClass = toTrans;
 	}
 	
 	override function create()

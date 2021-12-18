@@ -7,6 +7,8 @@ import flixel.FlxState;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.util.FlxTimer;
+import flixel.tweens.FlxTween;
+import flixel.util.FlxColor;
 
 import openfl.utils.Assets;
 import lime.utils.Assets as LimeAssets;
@@ -27,6 +29,11 @@ class LoadingState extends MusicBeatState
 	var gfDance:FlxSprite;
 	var loading:FlxSprite;
 	var danceLeft = false;
+	var peroid:FlxSprite;
+	var peroid2:FlxSprite;
+	var peroid3:FlxSprite;
+	var loadingA:Alphabet;
+	var ctrl:Alphabet;
 	
 	function new(target:FlxState, stopMusic:Bool)
 	{
@@ -37,6 +44,8 @@ class LoadingState extends MusicBeatState
 	
 	override function create()
 	{
+		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.WHITE);
+		add(bg);
 		logo = new FlxSprite(-150, -100);
 		logo.frames = Paths.getSparrowAtlas('logoBumpin');
 		logo.antialiasing = true;
@@ -55,9 +64,43 @@ class LoadingState extends MusicBeatState
 		add(gfDance);
 		add(logo);
 
-		var loading:FlxSprite = new FlxSprite(-5, 622).loadGraphic(Paths.image('loading'));
-		loading.antialiasing = true;
-		add(loading);
+		//var loading:FlxSprite = new FlxSprite(-5, 622).loadGraphic(Paths.image('loading'));
+		//loading.antialiasing = true;
+		//add(loading);
+
+		var loadingA:Alphabet = new Alphabet(0, 650, "loading", true, false);
+		add(loadingA);
+
+		var peroid = new FlxSprite(350, 700);
+		peroid.frames = Paths.getSparrowAtlas('alphabet');
+		peroid.animation.addByPrefix('sex', 'period', 24);
+		peroid.animation.play('sex');
+        if (FlxG.save.data.antialiasing)
+		peroid.antialiasing = true;
+	    add(peroid);
+
+		var peroid2 = new FlxSprite(375, 700);
+		peroid2.frames = Paths.getSparrowAtlas('alphabet');
+		peroid2.animation.addByPrefix('sex', 'period', 24);
+		peroid2.animation.play('sex');
+        if (FlxG.save.data.antialiasing)
+		peroid2.antialiasing = true;
+	    add(peroid2);
+
+		var peroid3 = new FlxSprite(400, 700);
+		peroid3.frames = Paths.getSparrowAtlas('alphabet');
+		peroid3.animation.addByPrefix('sex', 'period', 24);
+		peroid3.animation.play('sex');
+        if (FlxG.save.data.antialiasing)
+		peroid3.antialiasing = true;
+	    add(peroid3);
+
+	   var ctrl:Alphabet = new Alphabet(-5, 530, "(esc to cancel)");
+	   if (FlxG.save.data.antialiasing)
+		ctrl.setGraphicSize(Std.int(ctrl.width * -1.0));
+	   ctrl.setGraphicSize(Std.int(ctrl.width * -1.0));
+		ctrl.antialiasing = true;
+	   add(ctrl);
 		
 		initSongsManifest().onComplete
 		(
@@ -134,6 +177,16 @@ class LoadingState extends MusicBeatState
 		#end
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
+
+		if (FlxG.keys.justPressed.ESCAPE)
+			if (PlayState.isStoryMode)
+				FlxG.switchState(new StoryMenuState());
+			else
+				#if web
+			FlxG.switchState(new FreeplayStateHTML5());
+			#else
+			FlxG.switchState(new FreeplayState());
+			#end	
 	}
 	
 	function onLoad()

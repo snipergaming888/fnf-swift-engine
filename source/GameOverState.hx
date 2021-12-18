@@ -32,25 +32,7 @@ class GameOverState extends FlxTransitionableState
 			// add(loser); */
 
 		var bf:Boyfriend = new Boyfriend(bfX, bfY);
-		var bfsecret:Boyfriend = new Boyfriend(bfX, bfY, 'bf-defeat-secret');
-		var bfdefeat:Boyfriend = new Boyfriend(bfX, bfY, 'bf-defeat-death');
 		// bf.scrollFactor.set();
-
-		if (PlayState.SONG.song.toLowerCase() == 'defeat')
-			{
-				trace('defeat');
-				if(FlxG.random.bool(5))	
-					{
-						add(bfsecret)
-						bfsecret.playAnim('firstDeath');
-					}
-					else
-						{
-							add(bfdefeat)
-							bfdefeat.playAnim('firstDeath');
-						}
-			}
-			else
 				{
 					add(bf);
 					bf.playAnim('firstDeath');

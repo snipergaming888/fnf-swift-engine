@@ -4,6 +4,7 @@ package;
 import Discord.DiscordClient;
 #end
 import flixel.FlxG;
+import flixel.system.FlxSound;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.addons.transition.FlxTransitionableState;
@@ -33,7 +34,7 @@ class MainMenuState extends MusicBeatState
 	#else
 	var optionShit:Array<String> = ['story mode', 'freeplay', 'options'];
 	#end
-
+	var voices:FlxSound;
 	var magenta:FlxSprite;
 	var logoBl:FlxSprite;
 	var logo:FlxSprite;
@@ -43,8 +44,8 @@ class MainMenuState extends MusicBeatState
 	var playanims:Bool = false;
 	var defaultCamZoom:Float = 1.05;
 	var camZoom:FlxTween;
-	public static var sniperengineversion:String = " Mona Engine 1.3.4";
-	public static var sniperengineversionA:String = " ME 1.3.4";
+	public static var sniperengineversion:String = " Mona Engine 1.4.1";
+	public static var sniperengineversionA:String = " ME 1.4.1";
 	public static var gameVer:String = "v0.2.7.1";
 	public static var nightly:String = "";
 	
@@ -64,6 +65,13 @@ class MainMenuState extends MusicBeatState
 					nightly = " | hi jacob";
 					trace('jacob');
 				}
+				#if web
+				else if (FlxG.random.bool(1))
+					{
+						nightly = " | Super Idol 的笑容 都没你的甜 八月正午的阳光 都没你耀眼 热爱 105 °C 的你 滴滴清纯的蒸馏水";
+						trace('Super Idol 的笑容 都没你的甜 八月正午的阳光 都没你耀眼 热爱 105 °C 的你 滴滴清纯的蒸馏水');
+					}
+				#end
 
 
 			
@@ -122,26 +130,6 @@ class MainMenuState extends MusicBeatState
 		bg.screenCenter();
 		bg.antialiasing = true;
 		add(bg);
-
-
-		logo = new FlxSprite(750, 220).loadGraphic(Paths.image('logo'));
-		logo.antialiasing = true;
-		logo.setGraphicSize(Std.int(logo.width + 100));
-		logo.setGraphicSize(Std.int(logo.height + 100));	
-		logo.updateHitbox();
-		logo.scrollFactor.set();
-		logo.cameras = [FlxG.camera];
-		logo.x += 1000;
-		add(logo);
-		FlxTween.tween(logo, {x: logo.x - 1000, alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 0.3});
-	    FlxTween.angle(logo, logo.angle, 4, 4, {ease: FlxEase.quartInOut});
-		new FlxTimer().start(0.50, function(tmr:FlxTimer)
-			{
-				if(logo.angle == -4) 
-					FlxTween.angle(logo, logo.angle, 4, 4, {ease: FlxEase.quartInOut});
-				if (logo.angle == 4) 
-					FlxTween.angle(logo, logo.angle, -4, 4, {ease: FlxEase.quartInOut});
-			}, 0);
 	}
 	else
 		{
@@ -153,30 +141,6 @@ class MainMenuState extends MusicBeatState
 			bg.screenCenter();
 			bg.antialiasing = true;
 			add(bg);
-
-          	logoBl = new FlxSprite(680, 100);
-		logoBl.frames = Paths.getSparrowAtlas('logoBumpin');
-		logoBl.antialiasing = true;
-		logoBl.setGraphicSize(Std.int(logoBl.width - 50));
-		logoBl.setGraphicSize(Std.int(logoBl.height - 50));	
-		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
-		logoBl.animation.addByPrefix('idle', 'logo idle', 24);
-		logoBl.updateHitbox();
-		logoBl.scrollFactor.set();
-		///logoBl.animation.play('bump');
-		logoBl.cameras = [FlxG.camera];
-		logoBl.x += 1000;
-		add(logoBl);
-		FlxTween.tween(logoBl, {x: logoBl.x - 1000, alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 0.3});
-		///FlxTween.tween(logoBl, {y: 325 }, 2, { type: FlxTween.PINGPONG, ease: FlxEase.quadInOut, startDelay: 1, loopDelay: 0.0});
-	    FlxTween.angle(logoBl, logoBl.angle, 4, 4, {ease: FlxEase.quartInOut});
-		new FlxTimer().start(0.50, function(tmr:FlxTimer)
-			{
-				if(logoBl.angle == -4) 
-					FlxTween.angle(logoBl, logoBl.angle, 4, 4, {ease: FlxEase.quartInOut});
-				if (logoBl.angle == 4) 
-					FlxTween.angle(logoBl, logoBl.angle, -4, 4, {ease: FlxEase.quartInOut});
-			}, 0);
 		}
 			
 		// magenta.scrollFactor.set();                                          //////quadInOut            ///1
@@ -185,21 +149,23 @@ class MainMenuState extends MusicBeatState
 		add(menuItems);
 
 		var tex = Paths.getSparrowAtlas('FNF_main_menu_assets');
-
-		for (i in 0...optionShit.length)
-			{
-				var menuItem:FlxSprite = new FlxSprite(0, 60 + (i * 160));///160
-				menuItem.frames = tex;
-				menuItem.animation.addByPrefix('idle', optionShit[i] + " basic", 24);
-				menuItem.animation.addByPrefix('selected', optionShit[i] + " white", 24);
-				menuItem.animation.play('idle');
-				menuItem.ID = i;
-				menuItems.add(menuItem);
-				menuItem.scrollFactor.set();
-				menuItem.antialiasing = true;
-				menuItem.y -= 1000;
-				FlxTween.tween(menuItem, {y: menuItem.y + 1000, alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 0.3});
-			}
+		
+			for (i in 0...optionShit.length)
+				{
+					var menuItem:FlxSprite = new FlxSprite(0, 60 + (i * 160));
+					menuItem.frames = tex;
+					menuItem.animation.addByPrefix('idle', optionShit[i] + " basic", 24);
+					menuItem.animation.addByPrefix('selected', optionShit[i] + " white", 24);
+					menuItem.animation.play('idle');
+					menuItem.ID = i;
+					menuItem.screenCenter(X);
+					menuItems.add(menuItem);
+					menuItem.scrollFactor.set();
+					menuItem.antialiasing = true;
+					menuItem.y -= 1000;
+					FlxTween.tween(menuItem, {y: menuItem.y + 1000, alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 0.3});
+				}
+			
 		
 			new FlxTimer().start(0.001, function(tmr:FlxTimer)
 				{
@@ -213,11 +179,9 @@ class MainMenuState extends MusicBeatState
 				});
 				FlxG.camera.follow(camFollow, null, 0.06);	
 
-		var versionShit:FlxText = new FlxText(300, FlxG.height - 18, 0, gameVer + " FNF |" + sniperengineversion + nightly + " | Press C to view changelog", 12);
+		var versionShit:FlxText = new FlxText(350, FlxG.height - 18, 0, gameVer + " FNF |" + sniperengineversion + nightly + " | Press C to view changelog", 12);
 		versionShit.scrollFactor.set();
-		versionShit.x -= 1000;
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		FlxTween.tween(versionShit, {x: versionShit.x + 1000, alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 0.3});
 		add(versionShit);	
 
 		// NG.core.calls.event.logEvent('swag').send();
@@ -235,9 +199,10 @@ class MainMenuState extends MusicBeatState
 	function onKeyDown(event:KeyboardEvent):Void{
 		code = code + String.fromCharCode(event.charCode);
 		keyTimer=2;
-		if(code=="piss"){
+		if(code=="whatdadogdoin"){
 			FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
-			FlxG.switchState(new JacksonState());
+			FlxG.sound.music.stop();
+			FlxG.switchState(new VideoState('assets/videos/dog/very-serious-question.webm', new CrashState()));
 		}
 	}
 
@@ -361,7 +326,34 @@ class MainMenuState extends MusicBeatState
 
 		super.update(elapsed);
 
+		menuItems.forEach(function(spr:FlxSprite)
+			{
+				spr.screenCenter(X);
+			});
+
 	}
+
+	override public function onFocusLost():Void
+		{
+			#if PRELOAD_ALL
+			if (FreeplayState.voicesplaying)
+            FreeplayState.voices.pause();
+			#end
+			
+			super.onFocusLost();
+		}
+
+		override public function onFocus():Void
+			{
+				#if PRELOAD_ALL
+				if (FreeplayState.voicesplaying)
+					{
+						FreeplayState.voices.play();	
+					}
+				#end	
+
+			   super.onFocus();
+			}
 
 	function changeItem(huh:Int = 0)
 	{

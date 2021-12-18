@@ -12,6 +12,8 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 
 using StringTools;
 
@@ -30,6 +32,8 @@ class FreeplayStateHTML5 extends MusicBeatState
 
 	private var grpSongs:FlxTypedGroup<Alphabet>;
 	private var curPlaying:Bool = false;
+	private var camZooming:Bool = false;
+	var camZoom:FlxTween;
 
 	private var iconArray:Array<HealthIcon> = [];
 
@@ -98,6 +102,7 @@ class FreeplayStateHTML5 extends MusicBeatState
 			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, songs[i].songName, true, false);
 			songText.isMenuItem = true;
 			songText.targetY = i;
+			songText.screenCenter(X);
 			grpSongs.add(songText);
 
 			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter);
@@ -112,19 +117,21 @@ class FreeplayStateHTML5 extends MusicBeatState
 			// songText.screenCenter(X);
 		}
 
-		scoreText = new FlxText(FlxG.width * 0.7, 5, 0, "", 32);
+		scoreText = new FlxText(FlxG.width * 0.7, 5, 0, "   PERSONAL BEST:", 32);
 		// scoreText.autoSize = false;
 		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
+		scoreText.screenCenter(X);
 		// scoreText.alignment = RIGHT;
 
-		var scoreBG:FlxSprite = new FlxSprite(scoreText.x - 6, 0).makeGraphic(Std.int(FlxG.width * 0.35), 66, 0xFF000000);
+		var scoreBG:FlxSprite = new FlxSprite(scoreText.x - 6, 0).makeGraphic(Std.int(FlxG.width), 66, 0xFF000000);
 		scoreBG.alpha = 0.6;
+		scoreBG.screenCenter(X);
 		add(scoreBG);
 
-		diffText = new FlxText(scoreText.x, scoreText.y + 36, 0, "", 24);
+		diffText = new FlxText(scoreText.x + 215, scoreText.y + 36, 0, "", 24);
 		diffText.font = scoreText.font;
+		diffText.x -= 100;
 		add(diffText);
-
 		add(scoreText);
 
 		changeSelection();
@@ -189,19 +196,22 @@ class FreeplayStateHTML5 extends MusicBeatState
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 		}
 
+		if (FlxG.sound.music != null)
+            Conductor.songPosition = FlxG.sound.music.time;
+
 		lerpScore = Math.floor(FlxMath.lerp(lerpScore, intendedScore, 0.4));
 
 		if (Math.abs(lerpScore - intendedScore) <= 10)
 			lerpScore = intendedScore;
 
-		scoreText.text = "PERSONAL BEST:" + lerpScore;
+		scoreText.text = "   PERSONAL BEST:" + lerpScore;
 
 		var upP = controls.UP_P;
 		var downP = controls.DOWN_P;
 		var accepted = controls.ACCEPT;
 
 		if (upP)
-		{
+		{ 
 			changeSelection(-1);
 		}
 		if (downP)
@@ -219,6 +229,11 @@ class FreeplayStateHTML5 extends MusicBeatState
 		{
 			FlxG.switchState(new MainMenuState());
 		}
+
+		for (item in grpSongs.members)
+			{
+				item.screenCenter(X);
+			}
 
 		if (accepted)
 		{
@@ -296,6 +311,7 @@ class FreeplayStateHTML5 extends MusicBeatState
 		{
 			item.targetY = bullShit - curSelected;
 			bullShit++;
+			item.screenCenter(X);
 
 			item.alpha = 0.6;
 			// item.setGraphicSize(Std.int(item.width * 0.8));
@@ -307,6 +323,35 @@ class FreeplayStateHTML5 extends MusicBeatState
 			}
 		}
 	}
+
+	override function beatHit()
+		{
+			super.beatHit();
+		
+			if (accepted)
+				{
+					bopOnBeat();
+					///iconBop();
+					trace(curBeat);
+				}
+		}
+
+		function bopOnBeat()
+			{
+				if (accepted)
+				{
+					if (FlxG.save.data.camzooming)
+						{
+									 if (curBeat % 1 == 0)
+										{
+											FlxG.camera.zoom += 0.015;
+											camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
+										}
+						}
+				}
+			}
+
+	var accepted:Bool = true;
 }
 
 class SongMetadataHTML5

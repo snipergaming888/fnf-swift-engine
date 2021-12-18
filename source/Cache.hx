@@ -1,5 +1,8 @@
 package;
 
+#if desktop
+import Discord.DiscordClient;
+#end
 import Controls.KeyboardScheme;
 import Controls.Control;
 import flash.text.TextField;
@@ -28,22 +31,16 @@ class Cache extends MusicBeatState
 	var magenta:FlxSprite;
 	override function create()
 	{
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Loading up the game", null);
+		#end
 			{
 				new FlxTimer().start(0.5, function(tmr:FlxTimer)
 					{
 						Cache();
 					});	
 			}
-		
-			magenta = new FlxSprite(-80).loadGraphic(Paths.image('menuDesat'));
-			magenta.scrollFactor.x = 0;
-			magenta.scrollFactor.y = 0.18;
-			magenta.setGraphicSize(Std.int(magenta.width * 1.1));
-			magenta.updateHitbox();
-			magenta.screenCenter();
-			magenta.antialiasing = true;
-			magenta.color = 0xFF00ff51;
-			add(magenta);
 		
 		var done:FlxSprite = new FlxSprite(0,-80).loadGraphic(Paths.image('imagesdone'));
 		done.scrollFactor.x = 0;
@@ -54,12 +51,9 @@ class Cache extends MusicBeatState
 		done.visible = false;
 		add(done);
 
-		
-			  var ctrl:Alphabet = new Alphabet(0, (70) + 30, "caching preloaded images");
-            #if windows
-            ctrl.color = FlxColor.WHITE;
-            #end
-			ctrl.screenCenter(X);
+		var ctrl:Alphabet = new Alphabet(0, (70) + 30, "caching preloaded images", true, false);
+		 ///var ctrl:Alphabet = new Alphabet(0, (70) + 30, "caching preloaded images");
+			ctrl.screenCenter();
 		    add(ctrl);
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 

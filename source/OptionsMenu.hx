@@ -1,5 +1,9 @@
 package;
 
+#if desktop
+import Discord.DiscordClient;
+import sys.thread.Thread;
+#end
 import Controls.KeyboardScheme;
 import Controls.Control;
 import flash.text.TextField;
@@ -51,6 +55,7 @@ class OptionsMenu extends MusicBeatState
 	public static var gameVer:String = "0.2.7.1";
 	public static var sniperengineversion:String = "0.1";
 	var versionShit:FlxText;
+	var descBG:FlxSprite;
 	/// be prepared for some horrable code
 	/// i had no idea how to remove alpabets from groups so uhhhh
 	override function create()
@@ -94,11 +99,18 @@ class OptionsMenu extends MusicBeatState
 				var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
 				controlLabel.isMenuItem = true;
 				controlLabel.targetY = i;
+				controlLabel.screenCenter(X);
 				grpControls.add(controlLabel);
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 		}
 
-		trace("ur binds are not zero, good");
+		TitleState.keyCheck();
+		trace('CHECKING BINDS');
+
+		var descBG:FlxSprite = new FlxSprite(0,  FlxG.height - 18).makeGraphic(Std.int(FlxG.width), 110, 0xFF000000);
+		descBG.alpha = 0.6;
+		descBG.screenCenter(X);
+		add(descBG);
 
 		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, "Press enter on the key you want to rebind then press the key you want to rebind it to.", 12);
 		versionShit.scrollFactor.set();
@@ -108,6 +120,7 @@ class OptionsMenu extends MusicBeatState
 		var aming:Alphabet = new Alphabet(0, (70 * curSelected) + 30, ('press-any-key'), true, false);
 								aming.isMenuItem = false;
 								aming.targetY = curSelected - 0;
+								aming.screenCenter(X);
 								#if windows
 								aming.color = FlxColor.LIME;
 								#end
@@ -120,7 +133,13 @@ class OptionsMenu extends MusicBeatState
 				}
 				
 				changeSelection();
+				trace("ur binds are not zero, good");
 		///so shit gets highlighted
+
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Rebinding Keys", null);
+		#end
 
 		super.create();
 	}
@@ -155,7 +174,7 @@ class OptionsMenu extends MusicBeatState
 							}
 			{
 				if (controls.BACK)
-					FlxG.switchState(new ControlState());
+					FlxG.switchState(new MenuState());
 				if(FlxG.save.data.upBind == "enter"){
 					FlxG.save.data.upBind = "UP";
 					trace("NOT BINDABLE");
@@ -172,14 +191,19 @@ class OptionsMenu extends MusicBeatState
 					FlxG.save.data.rightBind = "RIGHT";
 					trace("NOT BINDABLE");
 				}
-				if (controls.UP_P)
+				if (FlxG.keys.justPressed.UP)
 					changeSelection(-1);
-				if (controls.DOWN_P)
+				if (FlxG.keys.justPressed.DOWN)
 					changeSelection(1);
 				if (controls.ACCEPT)
 					{
 		
 					}
+
+					for (item in grpControls.members)
+						{
+							item.screenCenter(X);
+						}
 
 				if (controls.BACK)
 					{
@@ -188,6 +212,8 @@ class OptionsMenu extends MusicBeatState
 						FlxG.save.data.controls = true;
 						FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
 					}
+
+					
 			}
 			if (controls.ACCEPT)
 				{
@@ -272,6 +298,10 @@ class OptionsMenu extends MusicBeatState
 						remove(aming);
 						controlsStrings = [FlxG.save.data.leftBind, FlxG.save.data.downBind, FlxG.save.data.upBind, FlxG.save.data.rightBind, 'reset-all'];
 						regenMenu();
+						#if desktop
+						// Updating Discord Rich Presence
+						DiscordClient.changePresence("Rebinding Keys to " + '${FlxG.save.data.leftBind}-${FlxG.save.data.downBind}-${FlxG.save.data.upBind}-${FlxG.save.data.rightBind}', null);
+						#end
 					});
 			}
 			// PlayerSettings.player1.controls.replaceBinding(Control)
@@ -294,6 +324,10 @@ class OptionsMenu extends MusicBeatState
 							remove(aming);
 							controlsStrings = [FlxG.save.data.leftBind, FlxG.save.data.downBind, FlxG.save.data.upBind, FlxG.save.data.rightBind, 'reset-all'];
 							regenMenu();
+							#if desktop
+							// Updating Discord Rich Presence
+							DiscordClient.changePresence("Rebinding Keys to " + '${FlxG.save.data.leftBind}-${FlxG.save.data.downBind}-${FlxG.save.data.upBind}-${FlxG.save.data.rightBind}', null);
+							#end
 						});
 				}
 				// PlayerSettings.player1.controls.replaceBinding(Control)
@@ -317,6 +351,10 @@ class OptionsMenu extends MusicBeatState
 								remove(aming);
 								controlsStrings = [FlxG.save.data.leftBind, FlxG.save.data.downBind, FlxG.save.data.upBind, FlxG.save.data.rightBind, 'reset-all'];
 								regenMenu();
+								#if desktop
+								// Updating Discord Rich Presence
+								DiscordClient.changePresence("Rebinding Keys to " + '${FlxG.save.data.leftBind}-${FlxG.save.data.downBind}-${FlxG.save.data.upBind}-${FlxG.save.data.rightBind}', null);
+								#end
 							});
 					}
 					// PlayerSettings.player1.controls.replaceBinding(Control)
@@ -340,6 +378,10 @@ class OptionsMenu extends MusicBeatState
 									remove(aming);
 									controlsStrings = [FlxG.save.data.leftBind, FlxG.save.data.downBind, FlxG.save.data.upBind, FlxG.save.data.rightBind, 'reset-all'];
 									regenMenu();
+									#if desktop
+									// Updating Discord Rich Presence
+									DiscordClient.changePresence("Rebinding Keys to " + '${FlxG.save.data.leftBind}-${FlxG.save.data.downBind}-${FlxG.save.data.upBind}-${FlxG.save.data.rightBind}', null);
+									#end
 								});
 						}
 						// PlayerSettings.player1.controls.replaceBinding(Control)
@@ -373,7 +415,7 @@ class OptionsMenu extends MusicBeatState
 		
 					item.alpha = 0.6;
 					#if windows
-					item.color = FlxColor.WHITE;
+					//item.color = FlxColor.WHITE;
 					#end
 					// item.setGraphicSize(Std.int(item.width * 0.8));
 		
@@ -388,7 +430,7 @@ class OptionsMenu extends MusicBeatState
 								#if windows
 								///if debug is current selection
 								/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
-								item.color = FlxColor.YELLOW;
+								//item.color = FlxColor.YELLOW;
 								#end
 							}
 						// item.setGraphicSize(Std.int(item.width));
@@ -522,7 +564,7 @@ class OptionsMenu extends MusicBeatState
 										#if windows
 										///if debug is current selection
 										/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
-										item.color = FlxColor.YELLOW;
+										///item.color = FlxColor.YELLOW;
 										#end
 									}
 								// item.setGraphicSize(Std.int(item.width));
@@ -551,6 +593,7 @@ class OptionsMenu extends MusicBeatState
 							{
 								item.targetY = bullShit - curSelected;
 								bullShit++;
+								item.screenCenter(X);
 					
 								item.alpha = 0.6;
 								#if windows
@@ -562,14 +605,14 @@ class OptionsMenu extends MusicBeatState
 								{
 									item.alpha = 1;
 									#if windows
-									item.color = FlxColor.RED;
+									///item.color = FlxColor.RED;
 									#end
-									if (curSelected != 4)
+									if (curSelected == 4)
 										{
 											#if windows
 											///if debug is current selection
 											/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
-											item.color = FlxColor.YELLOW;
+											item.color = FlxColor.RED;
 											#end
 										}
 									// item.setGraphicSize(Std.int(item.width));

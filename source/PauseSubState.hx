@@ -20,7 +20,11 @@ import flixel.FlxCamera;
 class PauseSubState extends MusicBeatSubstate
 {
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
-	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Change Difficulty', 'Quick binds', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to freeplay menu', 'Exit to main menu'];
+	#if debug
+	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Change Difficulty', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to freeplay menu', 'Exit to main menu'];
+	#else
+	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Change Difficulty', 'Chart Editor', 'Exit to freeplay menu', 'Exit to main menu'];
+	#end
 	var curSelected:Int = 0;
 	public static var daPixelZoom:Float = 6;
 	private var camHUD:FlxCamera;
@@ -37,24 +41,27 @@ class PauseSubState extends MusicBeatSubstate
 	{
 		super();
         ///thanks small things engine (there engine is cool): https://github.com/AyeTSG/Funkin_SmallThings/blob/master/source/PauseSubState.hx
+		#if debug
 		if (PlayState.isStoryMode) {
 			if (PlayState.storyPlaylist.length != 1) {
-				menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'Quick binds', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to storymode menu', 'Exit to main menu'];
+				menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to storymode menu', 'Exit to main menu'];
 			}
 			else
 				{
-					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Quick binds', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to freeplay menu', 'Exit to main menu'];
+					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to freeplay menu', 'Exit to main menu'];
 				}
 		}
-        if (PlayState.SONG.song.toLowerCase() == 'diva')
-			{
-				pauseMusic = new FlxSound().loadEmbedded(Paths.music('breakfastb3'), true, true);
-				pauseMusic.volume = 0;
-				pauseMusic.play(false, FlxG.random.int(0, Std.int(pauseMusic.length / 2)));
-		
-				FlxG.sound.list.add(pauseMusic);
+		#else
+		if (PlayState.isStoryMode) {
+			if (PlayState.storyPlaylist.length != 1) {
+				menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'Chart Editor', 'Exit to storymode menu', 'Exit to main menu'];
 			}
 			else
+				{
+					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Chart Editor', 'Exit to freeplay menu', 'Exit to main menu'];
+				}
+		}
+		#end
 				{
 					pauseMusic = new FlxSound().loadEmbedded(Paths.music('breakfast'), true, true);
 					pauseMusic.volume = 0;
@@ -67,6 +74,20 @@ class PauseSubState extends MusicBeatSubstate
 		bg.alpha = 0;
 		bg.scrollFactor.set();
 		add(bg);
+
+		grpMenuShit = new FlxTypedGroup<Alphabet>();
+		add(grpMenuShit);
+
+		for (i in 0...menuItems.length)
+		{
+			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, menuItems[i], true, false);
+			songText.isMenuItem = true;
+			songText.targetY = i;
+			songText.screenCenter(X);
+			grpMenuShit.add(songText);
+		}
+
+		changeSelection();
 
 		var levelInfo:FlxText = new FlxText(20, 15, 0, "", 32);
 		levelInfo.text += PlayState.SONG.song;
@@ -91,19 +112,8 @@ class PauseSubState extends MusicBeatSubstate
 		FlxTween.tween(bg, {alpha: 0.6}, 0.4, {ease: FlxEase.quartInOut});
 		FlxTween.tween(levelInfo, {alpha: 1, y: 20}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.3});
 		FlxTween.tween(levelDifficulty, {alpha: 1, y: levelDifficulty.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.5});
-
-		grpMenuShit = new FlxTypedGroup<Alphabet>();
-		add(grpMenuShit);
-
-		for (i in 0...menuItems.length)
-		{
-			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, menuItems[i], true, false);
-			songText.isMenuItem = true;
-			songText.targetY = i;
-			grpMenuShit.add(songText);
-		}
-
-		changeSelection();
+		levelInfo.screenCenter(X);
+		levelDifficulty.screenCenter(X);
 
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 	}
@@ -118,6 +128,7 @@ class PauseSubState extends MusicBeatSubstate
 				var item = new Alphabet(0, (70 * i) + 30, menuItems[i], true, false);
 				item.isMenuItem = true;
 				item.targetY = i;
+				item.screenCenter(X);
 				grpMenuShit.add(item);
 			}
 	
@@ -136,6 +147,11 @@ class PauseSubState extends MusicBeatSubstate
 		var downP = controls.DOWN_P;
 		var accepted = controls.ACCEPT;
 
+		for (item in grpMenuShit.members)
+			{
+				item.screenCenter(X);
+			}
+
 		if (upP)
 		{
 			changeSelection(-1);
@@ -152,6 +168,10 @@ class PauseSubState extends MusicBeatSubstate
 			switch (daSelected)
 			{
 				case "Resume":
+					if (FlxG.save.data.cinematic)
+						{
+							PlayState.camHUD.visible = false;
+						}
 					      if (FlxG.save.data.pausecount && iscountingdown)
 							{
                               /// this is so you dont have to hit enter and instantly go back to your layout to hit one note
@@ -267,6 +287,7 @@ class PauseSubState extends MusicBeatSubstate
 						
 
 				///close();
+				#if debug
 				case "Chart Editor":
 					FlxG.switchState(new ChartingState());	
 				case "Restart Song":
@@ -294,9 +315,18 @@ class PauseSubState extends MusicBeatSubstate
 					FlxG.switchState(new StoryMenuState());
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
 					case "Exit to freeplay menu":
-					FlxG.switchState(new FreeplayState());
+						#if web
+						trace("Freeplay HTML5");
+						FlxG.switchState(new FreeplayStateHTML5());
+						FlxG.timeScale = 1;
+						#else
+						FlxG.switchState(new FreeplayState());
+						trace("Freeplay Menu");
+						FlxG.timeScale = 1;
+						#end	
 				case "Exit to main menu":
 					FlxG.switchState(new MainMenuState());
+					FlxG.timeScale = 1;
 					case "Animation Debug dad":
 						FlxG.switchState(new AnimationDebug(PlayState.SONG.player2));
 					case "Animation Debug bf":
@@ -314,17 +344,13 @@ class PauseSubState extends MusicBeatSubstate
 					if (PlayState.isStoryMode)
 						{
 							if (PlayState.storyPlaylist.length != 1) {
-								menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'Quick binds', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to storymode menu', 'Exit to main menu'];
+								menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to storymode menu', 'Exit to main menu'];
 								regenMenu();
 							}	
 						}
 						else
-					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Quick binds', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to freeplay menu', 'Exit to main menu'];
+					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to freeplay menu', 'Exit to main menu'];
 					regenMenu();
-					case "Quick binds":
-						/// sarv engine but better
-						menuItems = ['DFJK', 'WASD', 'ZX TWO THREE', 'ASKL', 'ARROWS', 'BACK'];
-						regenMenu();
                 case "DFJK":
 					controls.setKeyboardScheme(KeyboardScheme.Duo(true), true);
 					FlxG.save.data.controls = false;
@@ -332,70 +358,78 @@ class PauseSubState extends MusicBeatSubstate
 					if (PlayState.isStoryMode)
 						{
 							if (PlayState.storyPlaylist.length != 1) {
-								menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'Quick binds', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to storymode menu', 'Exit to main menu'];
+								menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to storymode menu', 'Exit to main menu'];
 								regenMenu();
 							}	
 						}
 						else
-					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Quick binds', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to freeplay menu', 'Exit to main menu'];
+					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to freeplay menu', 'Exit to main menu'];
 					regenMenu();
-				case "ARROWS":
-					controls.setKeyboardScheme(KeyboardScheme.Solo, true);
-					FlxG.save.data.controls = false;
-					Main.Custom = false;
+				#else
+				case "Chart Editor":
+					FlxG.switchState(new ChartingState());	
+				case "Restart Song":
+					FlxG.resetState();
+				case "Skip Song":
+					PlayState.storyPlaylist.remove(PlayState.storyPlaylist[0]);
+
+					var difficulty:String = "";
+
+					if (PlayState.storyDifficulty == 0) {
+						difficulty = '-easy';
+					}
+
+					if (PlayState.storyDifficulty == 2) {
+						difficulty = '-hard';
+					}
+
+					trace('LOADING NEXT SONG');
+					trace(PlayState.storyPlaylist[0].toLowerCase() + difficulty);
+
+					PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0].toLowerCase() + difficulty, PlayState.storyPlaylist[0]);
+					FlxG.sound.music.stop();
+					LoadingState.loadAndSwitchState(new PlayState());
+				case "Exit to storymode menu":
+					FlxG.switchState(new StoryMenuState());
+					FlxG.sound.playMusic(Paths.music('freakyMenu'));
+					case "Exit to freeplay menu":
+						#if web
+						trace("Freeplay HTML5");
+						FlxG.switchState(new FreeplayStateHTML5());
+						FlxG.timeScale = 1;
+						#else
+						FlxG.switchState(new FreeplayState());
+						trace("Freeplay Menu");
+						FlxG.timeScale = 1;
+						#end
+				case "Exit to main menu":
+					FlxG.switchState(new MainMenuState());
+					FlxG.timeScale = 1;
+					case "Animation Debug dad":
+						FlxG.switchState(new AnimationDebug(PlayState.SONG.player2));
+					case "Animation Debug bf":
+						FlxG.switchState(new AnimationDebug(PlayState.SONG.player1));	
+				case "Change Difficulty":
+					menuItems = difficultyChoices;
+					regenMenu();
+				case "EASY" | "NORMAL" | "HARD":
+					PlayState.SONG = Song.loadFromJson(Highscore.formatSong(PlayState.SONG.song.toLowerCase(), curSelected),
+						PlayState.SONG.song.toLowerCase());
+					PlayState.storyDifficulty = curSelected;
+					FlxG.resetState();
+					trace('changing difficulty to' + curSelected);
+				case "BACK":
 					if (PlayState.isStoryMode)
 						{
 							if (PlayState.storyPlaylist.length != 1) {
-								menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'Quick binds', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to storymode menu', 'Exit to main menu'];
+								menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'Chart Editor', 'Exit to storymode menu', 'Exit to main menu'];
 								regenMenu();
 							}	
 						}
 						else
-					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Quick binds', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to freeplay menu', 'Exit to main menu'];
+					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Chart Editor', 'Exit to freeplay menu', 'Exit to main menu'];
 					regenMenu();
-				case "WASD":
-					controls.setKeyboardScheme(KeyboardScheme.Duo(false), true);
-					FlxG.save.data.controls = false;
-					Main.Custom = false;
-					if (PlayState.isStoryMode)
-						{
-							if (PlayState.storyPlaylist.length != 1) {
-								menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'Quick binds', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to storymode menu', 'Exit to main menu'];
-								regenMenu();
-							}	
-						}
-						else
-					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Quick binds', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to freeplay menu', 'Exit to main menu'];
-					regenMenu();
-				case "ZX TWO THREE":
-					controls.setKeyboardScheme(KeyboardScheme.Woops, true);
-					FlxG.save.data.controls = false;
-					Main.Custom = false;
-					if (PlayState.isStoryMode)
-						{
-							if (PlayState.storyPlaylist.length != 1) {
-								menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'Quick binds', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to storymode menu', 'Exit to main menu'];
-								regenMenu();
-							}	
-						}
-						else
-					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Quick binds', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to freeplay menu', 'Exit to main menu'];
-					regenMenu();
-					case "ASKL":
-					controls.setKeyboardScheme(KeyboardScheme.Augustine, true);
-					FlxG.save.data.controls = false;
-					Main.Custom = false;
-					if (PlayState.isStoryMode)
-						{
-							if (PlayState.storyPlaylist.length != 1) {
-								menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'Quick binds', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to storymode menu', 'Exit to main menu'];
-								regenMenu();
-							}	
-						}
-						else
-					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Quick binds', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'Exit to freeplay menu', 'Exit to main menu'];
-					regenMenu();
-				
+					#end
 			}
 		}
 
@@ -429,6 +463,7 @@ class PauseSubState extends MusicBeatSubstate
 		{
 			item.targetY = bullShit - curSelected;
 			bullShit++;
+			item.screenCenter(X);
 
 			item.alpha = 0.6;
 			#if windows

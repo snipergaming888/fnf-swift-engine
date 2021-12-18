@@ -22,6 +22,7 @@ class CacheState extends MusicBeatState
 	var camZoom:FlxTween;
 
 	var controlsStrings:Array<String> = [];
+	var descBG:FlxSprite;
 
 	private var grpControls:FlxTypedGroup<Alphabet>;
 	var versionShit:FlxText;
@@ -47,12 +48,18 @@ class CacheState extends MusicBeatState
 				var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
 				controlLabel.isMenuItem = true;
 				controlLabel.targetY = i;
+				controlLabel.screenCenter(X);
 				grpControls.add(controlLabel);
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 		}
 
 		changeSelection();
 		///so shit gets highlighted
+
+		var descBG:FlxSprite = new FlxSprite(0,  FlxG.height - 18).makeGraphic(Std.int(FlxG.width), 110, 0xFF000000);
+		descBG.alpha = 0.6;
+		descBG.screenCenter(X);
+		add(descBG);
 
 		versionShit = new FlxText(5, FlxG.height - 18, 0, "WARNING: CHACHING WILL USE LARGE AMOUNTS OF RAM! ENABLE AT YOUR OWN RISK!");
 		versionShit.scrollFactor.set();
@@ -80,6 +87,11 @@ class CacheState extends MusicBeatState
 			if (controls.BACK)
 				FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
 
+			for (item in grpControls.members)
+				{
+					item.screenCenter(X);
+				}
+
 			if (controls.ACCEPT)
 			{
 				switch(curSelected)
@@ -91,7 +103,7 @@ class CacheState extends MusicBeatState
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 0;
 						#if windows
-						ctrl.color = FlxColor.YELLOW;
+						//ctrl.color = FlxColor.YELLOW;
 						#end
 						grpControls.add(ctrl);
 					case 1:
@@ -101,7 +113,7 @@ class CacheState extends MusicBeatState
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 1;
 						#if windows
-						ctrl.color = FlxColor.YELLOW;
+						//ctrl.color = FlxColor.YELLOW;
 						#end
 						grpControls.add(ctrl);
 					case 2:
@@ -111,7 +123,7 @@ class CacheState extends MusicBeatState
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 2;
 						#if windows
-						ctrl.color = FlxColor.YELLOW;
+						//ctrl.color = FlxColor.YELLOW;
 						#end
 						grpControls.add(ctrl);
 					case 3:
@@ -121,7 +133,7 @@ class CacheState extends MusicBeatState
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 3;
 						#if windows
-						ctrl.color = FlxColor.YELLOW;
+						//ctrl.color = FlxColor.YELLOW;
 						#end
 						grpControls.add(ctrl);						   	
 				}
@@ -153,10 +165,11 @@ class CacheState extends MusicBeatState
 		{
 			item.targetY = bullShit - curSelected;
 			bullShit++;
+			item.screenCenter(X);
 
 			item.alpha = 0.6;
 			#if windows
-			item.color = FlxColor.WHITE;
+			//item.color = FlxColor.WHITE;
             #end
 			// item.setGraphicSize(Std.int(item.width * 0.8));
 
@@ -164,14 +177,14 @@ class CacheState extends MusicBeatState
 			{
 				item.alpha = 1;
 				#if windows
-				item.color = FlxColor.YELLOW;
+				//item.color = FlxColor.YELLOW;
 				#end
 				if (curSelected != 3)
 					{
 						#if windows
 						///if debug is current selection
 						/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
-						item.color = FlxColor.YELLOW;
+						//item.color = FlxColor.YELLOW;
 						#end
 					}
 				

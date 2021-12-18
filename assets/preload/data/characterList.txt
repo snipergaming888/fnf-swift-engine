@@ -12,13 +12,7 @@ bf-christmas
 gf-christmas
 monster
 bf-pixel
+gf-pixel
 senpai
 senpai-angry
 spirit
-picoplayable
-toby
-hexWIRE
-bfWIRE
-hexvirus
-bf-glitcher
-gf-glitcher

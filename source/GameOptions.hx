@@ -1,5 +1,9 @@
 package;
 
+#if desktop
+import Discord.DiscordClient;
+import sys.thread.Thread;
+#end
 import Controls.KeyboardScheme;
 import Controls.Control;
 import flash.text.TextField;
@@ -20,6 +24,9 @@ class GameOptions extends MusicBeatState
 	var curSelected:Int = 0;
 	var CYAN:FlxColor = 0xFF00FFFF;
 	var camZoom:FlxTween;
+	var HITVOL:Float = 0.5;
+	var scrollspeed:Float = 1;
+	var descBG:FlxSprite;
 
 	var controlsStrings:Array<String> = [];
 
@@ -27,8 +34,17 @@ class GameOptions extends MusicBeatState
 	var versionShit:FlxText;
 	override function create()
 	{
+			 if (FlxG.save.data.hitsoundvolume = null)
+				{
+					FlxG.save.data.hitsoundvolume = 1.0;
+					HITVOL = 1.0;
+				}
+				else
+					{
+						HITVOL = FlxG.save.data.hitsoundvolume;	
+					}
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll') + "\n" + (FlxG.save.data.middlescroll ? "middlescroll on" : "middlescroll off") + "\n" + (FlxG.save.data.ghosttapping ? "Ghost Tapping" : "No Ghost Tapping") + "\n" + (FlxG.save.data.debug ? "debug MODE ON" : "debug MODE OFF") + "\n" + (FlxG.save.data.reset ? "RESET BUTTON ON" : "RESET BUTTON OFF") + "\n" + (FlxG.save.data.pausecount ? "pause counter on" : "pause counter off") + "\n" + (FlxG.save.data.repeat ? 'loop current song on' : 'loop current song off') + "\n" + (FlxG.save.data.hitsounds ? 'hitsounds on' : 'hitsounds off') + "\n" + (FlxG.save.data.botplay ? 'BOTPLAY ON' : 'BOTPLAY OFF') + "\n" + "EDIT OFFSET");
+		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll') + "\n" + (FlxG.save.data.middlescroll ? "middlescroll on" : "middlescroll off") + "\n" + (FlxG.save.data.ghosttapping ? "Ghost Tapping" : "No Ghost Tapping") + "\n" + (FlxG.save.data.oldinput ? "OLD INPUT ON" : "OLD INPUT OFF") + "\n" + (FlxG.save.data.antimash ? "anti mash ON" : " anti mash OFF") + "\n" + (FlxG.save.data.debug ? "debug MODE ON" : "debug MODE OFF") + "\n" + (FlxG.save.data.reset ? "RESET BUTTON ON" : "RESET BUTTON OFF") + "\n" + (FlxG.save.data.pausecount ? "pause counter on" : "pause counter off") + "\n" + (FlxG.save.data.repeat ? 'loop current song on' : 'loop current song off') + "\n" + (FlxG.save.data.hitsounds ? 'hitsounds on' : 'hitsounds off')  + "\n" + (FlxG.save.data.songspeed ? 'SET SCROLL SPEED ON' : 'SET SCROLL SPEED OFF') + "\n" + (FlxG.save.data.botplay ? 'BOTPLAY ON' : 'BOTPLAY OFF') + "\n" + "EDIT OFFSET");
 		
 		trace(controlsStrings);
 
@@ -47,6 +63,7 @@ class GameOptions extends MusicBeatState
 				var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
 				controlLabel.isMenuItem = true;
 				controlLabel.targetY = i;
+				controlLabel.screenCenter(X);
 				grpControls.add(controlLabel);
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 		}
@@ -54,10 +71,21 @@ class GameOptions extends MusicBeatState
 		changeSelection();
 		///so shit gets highlighted
 
+		var descBG:FlxSprite = new FlxSprite(0,  FlxG.height - 18).makeGraphic(Std.int(FlxG.width), 110, 0xFF000000);
+		descBG.alpha = 0.6;
+		descBG.screenCenter(X);
+		add(descBG);
+
 		versionShit = new FlxText(5, FlxG.height - 18, 0, "", 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
+
+
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Looking at the Game Options Menu", null);
+		#end
 		
 
 		super.create();
@@ -73,6 +101,21 @@ class GameOptions extends MusicBeatState
 
 			if (controls.BACK)
 				FlxG.switchState(new MenuState());
+			if (FlxG.keys.justPressed.ESCAPE)
+				{
+					FlxG.save.data.hitsoundvolume = HITVOL;
+					trace(FlxG.save.data.hitsoundvolume);
+					FlxG.save.data.speedamount = scrollspeed;
+					trace(FlxG.save.data.speedamount);
+				}
+
+			if (FlxG.keys.justPressed.BACKSPACE)
+				{
+				    FlxG.save.data.hitsoundvolume = HITVOL;
+					trace(FlxG.save.data.hitsoundvolume);
+					FlxG.save.data.speedamount = scrollspeed;
+					trace(FlxG.save.data.speedamount);
+				}
 			if (controls.UP_P)
 				changeSelection(-1);
 			if (controls.DOWN_P)
@@ -87,33 +130,64 @@ class GameOptions extends MusicBeatState
 			if (curSelected == 2)
 				versionShit.text = "Wether or not you should have a health penalty for pressing keys not on a note.";
 			if (curSelected == 3)
-				versionShit.text = "Wether or not debug mode should be enabled.";
+				versionShit.text = "Weather or not to use old input. (default FNF input)";
 			if (curSelected == 4)
-				versionShit.text = "Wether or not the reset button (R) should be on.";
+				versionShit.text = "Wether or not to allow spamming of keys with ghost tapping.";
 			if (curSelected == 5)
-				versionShit.text = "Should there be a 'ready', 'set', 'go!' counter after unpauseing.";
+				versionShit.text = "Wether or not debug mode should be enabled.";
 			if (curSelected == 6)
-				versionShit.text = "Wether or not to play the current song again after it ends.";
+				versionShit.text = "Wether or not the reset button (R) should be on.";
 			if (curSelected == 7)
-				versionShit.text = "Wether or not to play sounds when hitting a note. Volume: " + 0 + "." + FlxG.save.data.hitsoundvolume + " (Left, Right)";
+				versionShit.text = "Should there be a 'ready', 'set', 'go!' counter after unpauseing.";
 			if (curSelected == 8)
-				versionShit.text = "If a CPU should play the game for you.";
+				versionShit.text = "Wether or not to play the current song again after it ends.";
 			if (curSelected == 9)
+				versionShit.text = "Wether or not to play sounds when hitting a note. Volume: " + truncateFloat(HITVOL, 2) + " (Left, Right)";
+			if (curSelected == 10)
+				versionShit.text = "Wether or not to enable an editable scroll speed. scroll speed: " + truncateFloat(scrollspeed, 2) + " (Left, Right)";
+			if (curSelected == 11)
+				versionShit.text = "If a CPU should play the game for you.";
+			if (curSelected == 12)
 				versionShit.text = "Edit Your note timing offset.";
 
 
 
-			if (controls.RIGHT_R && curSelected == 7)
+			if (controls.RIGHT_R && curSelected == 9)
 				{
-					FlxG.save.data.hitsoundvolume++;
-				versionShit.text = "Wether or not to play sounds when hitting a note. Volume: " + 0 + "." + FlxG.save.data.hitsoundvolume + " (Left, Right)";
+					HITVOL += 0.1;
+					FlxG.save.data.hitsoundvolume = HITVOL;
+					trace(HITVOL);
+				versionShit.text = "Wether or not to play sounds when hitting a note. Volume: " + truncateFloat(HITVOL, 2) + " (Left, Right)";
 				}
 	
-				if (controls.LEFT_R && curSelected == 7)
+				if (controls.LEFT_R && curSelected == 9)
 					{
-						FlxG.save.data.hitsoundvolume--;
-					    versionShit.text = "Wether or not to play sounds when hitting a note. Volume: " + 0 + "." + FlxG.save.data.hitsoundvolume + " (Left, Right)";
+						HITVOL -= 0.1;
+						trace(HITVOL);
+						FlxG.save.data.hitsoundvolume = HITVOL;
+					    versionShit.text = "Wether or not to play sounds when hitting a note. Volume: " + truncateFloat(HITVOL, 2) + " (Left, Right)";
 					}
+
+					if (controls.RIGHT_R && curSelected == 10)
+						{
+							scrollspeed += 0.1;
+							FlxG.save.data.speedamount = scrollspeed;
+							trace(scrollspeed);
+							versionShit.text = "Wether or not to enable an editable scroll speed. scroll speed: " + truncateFloat(scrollspeed, 2) + " (Left, Right)";
+						}
+			
+						if (controls.LEFT_R && curSelected == 10)
+							{
+								scrollspeed -= 0.1;
+								trace(scrollspeed);
+								FlxG.save.data.speedamount = scrollspeed;
+								versionShit.text = "Wether or not to enable an editable scroll speed. scroll speed: " + truncateFloat(scrollspeed, 2) + " (Left, Right)";
+							}
+
+					for (item in grpControls.members)
+						{
+							item.screenCenter(X);
+						}
 		
 			
 
@@ -128,7 +202,7 @@ class GameOptions extends MusicBeatState
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 0;
 						#if windows
-						ctrl.color = FlxColor.YELLOW;
+						//ctrl.color = FlxColor.YELLOW;
 						#end
 						grpControls.add(ctrl);
 
@@ -139,7 +213,7 @@ class GameOptions extends MusicBeatState
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 1;
 						#if windows
-						ctrl.color = FlxColor.YELLOW;
+						//ctrl.color = FlxColor.YELLOW;
 						#end
 						grpControls.add(ctrl);
 						
@@ -151,70 +225,104 @@ class GameOptions extends MusicBeatState
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 2;
 						#if windows
-						ctrl.color = FlxColor.YELLOW;
+						//ctrl.color = FlxColor.YELLOW;
 						#end
 						grpControls.add(ctrl);
+
 					case 3:
+						grpControls.remove(grpControls.members[curSelected]);
+						/// ok but fr why it default to no ghost tappin bruh
+						FlxG.save.data.oldinput = !FlxG.save.data.oldinput;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.oldinput ? "old input on" : "old input off"), true, false);
+						ctrl.isMenuItem = true;
+						ctrl.targetY = curSelected - 3;
+						#if windows
+						//ctrl.color = FlxColor.YELLOW;
+						#end
+						grpControls.add(ctrl);
+
+					case 4:
+						grpControls.remove(grpControls.members[curSelected]);
+						/// ok but fr why it default to no ghost tappin bruh
+						FlxG.save.data.antimash = !FlxG.save.data.antimash;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.antimash ? "anti mash ON" : "anti mash OFF"), true, false);
+						ctrl.isMenuItem = true;
+						ctrl.targetY = curSelected - 4;
+						#if windows
+						//ctrl.color = FlxColor.YELLOW;
+						#end
+						grpControls.add(ctrl);
+					case 5:
 					   grpControls.remove(grpControls.members[curSelected]);
 					   FlxG.save.data.debug = !FlxG.save.data.debug;
 					   var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.debug ? "debug MODE ON" : "debug MODE OFF"), true, false);
 					   ctrl.isMenuItem = true;
-					   ctrl.targetY = curSelected - 3;
+					   ctrl.targetY = curSelected - 5;
 					   #if windows
 						ctrl.color = FlxColor.RED;
 						#end
 					   grpControls.add(ctrl);
-					 case 4:
+					 case 6:
 					   grpControls.remove(grpControls.members[curSelected]);
 					   FlxG.save.data.reset = !FlxG.save.data.reset;
 					   var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.reset ? "RESET BUTTON ON" : "RESET BUTTON OFF"), true, false);
 					   ctrl.isMenuItem = true;
-					   ctrl.targetY = curSelected - 4;
+					   ctrl.targetY = curSelected - 6;
 					   #if windows
-						ctrl.color = FlxColor.YELLOW;
+						//ctrl.color = FlxColor.YELLOW;
 						#end
 					   grpControls.add(ctrl);
-					 case 5:
+					 case 7:
 						grpControls.remove(grpControls.members[curSelected]);
 						FlxG.save.data.pausecount = !FlxG.save.data.pausecount;
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.pausecount ? "pause counter on" : "pause counter off"), true, false);
 						ctrl.isMenuItem = true;
-						ctrl.targetY = curSelected - 5;
+						ctrl.targetY = curSelected - 7;
 						#if windows
-						ctrl.color = FlxColor.YELLOW;
+						//ctrl.color = FlxColor.YELLOW;
 						#end
 						grpControls.add(ctrl);
-					 case 6:
+					 case 8:
 						grpControls.remove(grpControls.members[curSelected]);
 						FlxG.save.data.repeat = !FlxG.save.data.repeat;
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.repeat ? "loop current song on" : "loop current song off"), true, false);
 						ctrl.isMenuItem = true;
-						ctrl.targetY = curSelected - 6;
+						ctrl.targetY = curSelected - 8;
 						#if windows
-						ctrl.color = FlxColor.YELLOW;
+						//ctrl.color = FlxColor.YELLOW;
 						#end
 						grpControls.add(ctrl);
-					case 7:
+					case 9:
 						grpControls.remove(grpControls.members[curSelected]);
 						FlxG.save.data.hitsounds = !FlxG.save.data.hitsounds;
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.hitsounds ? "hitsounds on" : "hitsounds off"), true, false);
 						ctrl.isMenuItem = true;
-						ctrl.targetY = curSelected - 7;
+						ctrl.targetY = curSelected - 9;
 						#if windows
-						ctrl.color = FlxColor.YELLOW;
+						//ctrl.color = FlxColor.YELLOW;
 						#end
 						grpControls.add(ctrl);
-					case 8:
+					case 10:
+						grpControls.remove(grpControls.members[curSelected]);
+						FlxG.save.data.songspeed = !FlxG.save.data.songspeed;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.songspeed ? "SET SCROLL SPEED ON" : "SET SCROLL SPEED OFF"), true, false);
+						ctrl.isMenuItem = true;
+						ctrl.targetY = curSelected - 10;
+						#if windows
+						//ctrl.color = FlxColor.YELLOW;
+						#end
+						grpControls.add(ctrl);
+					case 11:
 						grpControls.remove(grpControls.members[curSelected]);
 						FlxG.save.data.botplay = !FlxG.save.data.botplay;
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.botplay ? 'BOTPLAY ON' : 'BOTPLAY OFF'), true, false);
 						ctrl.isMenuItem = true;
-						ctrl.targetY = curSelected - 8;
+						ctrl.targetY = curSelected - 11;
 						#if windows
-						ctrl.color = FlxColor.YELLOW;
+						///ctrl.color = FlxColor.YELLOW;
 						#end
 						grpControls.add(ctrl);	
-						case 9:
+						case 12:
 						LoadingStateLatency.loadAndSwitchState(new LatencyState());
 						Conductor.changeBPM(120);											   	
 				}
@@ -246,6 +354,7 @@ class GameOptions extends MusicBeatState
 		{
 			item.targetY = bullShit - curSelected;
 			bullShit++;
+			item.screenCenter(X);
 
 			item.alpha = 0.6;
 			#if windows
@@ -257,21 +366,28 @@ class GameOptions extends MusicBeatState
 			{
 				item.alpha = 1;
 				#if windows
-				item.color = FlxColor.RED;
+				item.color = FlxColor.WHITE;
 				#end
-				if (curSelected != 3)
+				if (curSelected == 5)
 					{
 						#if windows
 						///if debug is current selection
 						/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
-						item.color = FlxColor.YELLOW;
+						item.color = FlxColor.RED;
 						#end
 					}
-				
 				// item.setGraphicSize(Std.int(item.width));
 			}
 		}
 	}
+
+
+	function truncateFloat( number : Float, precision : Int): Float {
+		var num = number;
+		num = num * Math.pow(10, precision);
+		num = Math.round( num ) / Math.pow(10, precision);
+		return num;
+		}
 
 
 

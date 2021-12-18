@@ -35,16 +35,6 @@ class Cacheimg5 extends MusicBeatState
 					});	
 			}
 		
-			magenta = new FlxSprite(-80).loadGraphic(Paths.image('menuDesat'));
-			magenta.scrollFactor.x = 0;
-			magenta.scrollFactor.y = 0.18;
-			magenta.setGraphicSize(Std.int(magenta.width * 1.1));
-			magenta.updateHitbox();
-			magenta.screenCenter();
-			magenta.antialiasing = true;
-			magenta.color = 0xFF00ff51;
-			add(magenta);
-		
 		var done:FlxSprite = new FlxSprite(0,-80).loadGraphic(Paths.image('imagesdone'));
 		done.scrollFactor.x = 0;
 		done.scrollFactor.y = 0.18;
@@ -55,11 +45,8 @@ class Cacheimg5 extends MusicBeatState
 		add(done);
 
 		
-			  var ctrl:Alphabet = new Alphabet(0, (70) + 30, "caching week five images");
-            #if windows
-            ctrl.color = FlxColor.WHITE;
-            #end
-			ctrl.screenCenter(X);
+		var ctrl:Alphabet = new Alphabet(0, (70) + 30, "caching week five images", true, false);
+			ctrl.screenCenter();
 		    add(ctrl);
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 		

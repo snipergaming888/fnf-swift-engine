@@ -1,5 +1,9 @@
 package;
 
+#if desktop
+import Discord.DiscordClient;
+import sys.thread.Thread;
+#end
 import Controls.KeyboardScheme;
 import Controls.Control;
 import flash.text.TextField;
@@ -47,11 +51,17 @@ class ControlState extends MusicBeatState
 				var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
 				controlLabel.isMenuItem = true;
 				controlLabel.targetY = i;
+				controlLabel.screenCenter(X);
 				grpControls.add(controlLabel);
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 		}
 		changeSelection();
 		///so shit gets highlighted
+
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Looking at the Control Options Menu", null);
+		#end
 
 		super.create();
 	}
@@ -71,7 +81,12 @@ class ControlState extends MusicBeatState
 			if (controls.DOWN_P)
 				changeSelection(1);
 			if (controls.BACK)
-			FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);			
+			FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
+			
+			for (item in grpControls.members)
+				{
+					item.screenCenter(X);
+				}
 			
 			if (controls.ACCEPT)
 			{
@@ -79,28 +94,82 @@ class ControlState extends MusicBeatState
 				{
 					case 0:
 						controls.setKeyboardScheme(KeyboardScheme.Duo(true), true);
+						FlxG.save.data.DFJK = true;
+						FlxG.save.data.WASD = false;
+						FlxG.save.data.ZX23 = false;
+						FlxG.save.data.ASKL = false;
+						FlxG.save.data.ARROWS = false;
+						trace('DFJK = ' + FlxG.save.data.DFJK);
+						trace('WASD = ' + FlxG.save.data.WASD);
+						trace('ZX23 = ' + FlxG.save.data.ZX23);
+						trace('ASKL = ' + FlxG.save.data.ASKL);
+						trace('ARROWS = ' + FlxG.save.data.ARROWS);
 						FlxG.switchState(new ControlState());
-						FlxG.save.data.controls = false;
 					case 1:
 						controls.setKeyboardScheme(KeyboardScheme.Duo(false), true);
+						FlxG.save.data.WASD = true;
+						FlxG.save.data.DFJK = false;
+						FlxG.save.data.ZX23 = false;
+						FlxG.save.data.ASKL = false;
+						FlxG.save.data.ARROWS = false;
+						trace('DFJK = ' + FlxG.save.data.DFJK);
+						trace('WASD = ' + FlxG.save.data.WASD);
+						trace('ZX23 = ' + FlxG.save.data.ZX23);
+						trace('ASKL = ' + FlxG.save.data.ASKL);
+						trace('ARROWS = ' + FlxG.save.data.ARROWS);
 						FlxG.switchState(new ControlState());
-						FlxG.save.data.controls = false;
 					case 2:
 						controls.setKeyboardScheme(KeyboardScheme.Woops, true);
+						FlxG.save.data.ZX23 = true;
+						FlxG.save.data.DFJK = false;
+						FlxG.save.data.WASD = false;
+						FlxG.save.data.ASKL = false;
+						FlxG.save.data.ARROWS = false;
+						trace('DFJK = ' + FlxG.save.data.DFJK);
+						trace('WASD = ' + FlxG.save.data.WASD);
+						trace('ZX23 = ' + FlxG.save.data.ZX23);
+						trace('ASKL = ' + FlxG.save.data.ASKL);
+						trace('ARROWS = ' + FlxG.save.data.ARROWS);
 						FlxG.switchState(new ControlState());
-						FlxG.save.data.controls = false;
 					case 3:
 						controls.setKeyboardScheme(KeyboardScheme.Augustine, true);
+						FlxG.save.data.ASKL = true;
+						FlxG.save.data.DFJK = false;
+						FlxG.save.data.WASD = false;
+						FlxG.save.data.ZX23 = false;
+						FlxG.save.data.ARROWS = false;
+						trace('DFJK = ' + FlxG.save.data.DFJK);
+						trace('WASD = ' + FlxG.save.data.WASD);
+						trace('ZX23 = ' + FlxG.save.data.ZX23);
+						trace('ASKL = ' + FlxG.save.data.ASKL);
+						trace('ARROWS = ' + FlxG.save.data.ARROWS);
 						FlxG.switchState(new ControlState());
-						FlxG.save.data.controls = false;
 					case 4:
 						controls.setKeyboardScheme(KeyboardScheme.Solo, true);
+						FlxG.save.data.ARROWS = true;
+						FlxG.save.data.DFJK = false;
+						FlxG.save.data.WASD = false;
+						FlxG.save.data.ZX23 = false;
+						FlxG.save.data.ASKL = false;
+						trace('DFJK = ' + FlxG.save.data.DFJK);
+						trace('WASD = ' + FlxG.save.data.WASD);
+						trace('ZX23 = ' + FlxG.save.data.ZX23);
+						trace('ASKL = ' + FlxG.save.data.ASKL);
+						trace('ARROWS = ' + FlxG.save.data.ARROWS);
 						FlxG.switchState(new ControlState());
-						FlxG.save.data.controls = false;
 					case 5:
 						controls.setKeyboardScheme(KeyboardScheme.Custom, true);
+						FlxG.save.data.DFJK = false;
+						FlxG.save.data.WASD = false;
+						FlxG.save.data.ZX23 = false;
+						FlxG.save.data.ASKL = false;
+						FlxG.save.data.ARROWS = false;
+						trace('DFJK = ' + FlxG.save.data.DFJK);
+						trace('WASD = ' + FlxG.save.data.WASD);
+						trace('ZX23 = ' + FlxG.save.data.ZX23);
+						trace('ASKL = ' + FlxG.save.data.ASKL);
+						trace('ARROWS = ' + FlxG.save.data.ARROWS);
 						FlxG.switchState(new OptionsMenu());
-						FlxG.save.data.controls = true;
 						///TitleState.resetBinds();
 				}
 			}
@@ -131,11 +200,12 @@ class ControlState extends MusicBeatState
 		{
 			item.targetY = bullShit - curSelected;
 			bullShit++;
+			item.screenCenter(X);
 
 			item.alpha = 0.6;
 
 			#if windows
-			item.color = FlxColor.WHITE;
+			//item.color = FlxColor.WHITE;
             #end
 			// item.setGraphicSize(Std.int(item.width * 0.8));
 
@@ -143,7 +213,7 @@ class ControlState extends MusicBeatState
 			{
 				item.alpha = 1;
 				#if windows
-				item.color = FlxColor.YELLOW;
+				//item.color = FlxColor.YELLOW;
 				#end
 				// item.setGraphicSize(Std.int(item.width));
 			}

@@ -34,6 +34,7 @@ class StoryMenuState extends MusicBeatState
 		['Senpai', 'Roses', 'Thorns']
 	];
 	var curDifficulty:Int = 1;
+	var Diffstring:String = "";
 
 	public static var weekUnlocked:Array<Bool> = [true, true, true, true, true, true, true];
 
@@ -60,6 +61,7 @@ class StoryMenuState extends MusicBeatState
 	var txtWeekTitle:FlxText;
 
 	var curWeek:Int = 0;
+	var weekstring:String = "";
 
 	var txtTracklist:FlxText;
 
@@ -370,6 +372,57 @@ class StoryMenuState extends MusicBeatState
 		if (curDifficulty > 2)
 			curDifficulty = 0;
 
+		if (curDifficulty == 0)
+			Diffstring = "Easy";
+		else if (curDifficulty == 1)
+			Diffstring = "Normal";
+		else if (curDifficulty == 2)
+			Diffstring = "Hard";
+
+		#if desktop
+		if (curWeek == 0)
+			{
+				weekstring = "Tutorial";
+				DiscordClient.changePresence("Thinking about playing " + weekstring + " " + Diffstring , null);	
+			}
+
+		if (curWeek == 1)
+			{
+				weekstring = "Week 1";					
+				DiscordClient.changePresence("Thinking about playing " + weekstring + " " + Diffstring , null);	
+			}
+
+		if (curWeek == 2)
+			{
+				weekstring = "Week 2";					
+				DiscordClient.changePresence("Thinking about playing " + weekstring + " " + Diffstring , null);	
+			}
+
+		if (curWeek == 3)
+			{
+				weekstring = "Week 3";					
+				DiscordClient.changePresence("Thinking about playing " + weekstring + " " + Diffstring , null);	
+			}
+
+		if (curWeek == 4)
+			{
+				weekstring = "Week 4";					
+				DiscordClient.changePresence("Thinking about playing " + weekstring + " " + Diffstring , null);	
+			}
+
+			if (curWeek == 5)
+				{
+					weekstring = "Week 5";					
+					DiscordClient.changePresence("Thinking about playing " + weekstring + " " + Diffstring , null);	
+				}
+
+			if (curWeek == 6)
+				{
+					weekstring = "Week 6";					
+					DiscordClient.changePresence("Thinking about playing " + weekstring + " " + Diffstring , null);	
+				}
+			#end
+
 		sprDifficulty.offset.x = 0;
 
 		switch (curDifficulty)
@@ -409,6 +462,61 @@ class StoryMenuState extends MusicBeatState
 			curWeek = 0;
 		if (curWeek < 0)
 			curWeek = weekData.length - 1;
+
+		if (curDifficulty == 0)
+			Diffstring = "Easy";
+		else if (curDifficulty == 1)
+			Diffstring = "Normal";
+		else if (curDifficulty == 2)
+			Diffstring = "Hard";
+
+		#if desktop
+		if (curWeek == 0)
+			{
+				weekstring = "Tutorial";
+				DiscordClient.changePresence("Thinking about playing " + weekstring + " " + Diffstring , null);	
+			}
+
+		if (curWeek == 1)
+			{
+				weekstring = "Week 1";					
+				DiscordClient.changePresence("Thinking about playing " + weekstring + " " + Diffstring , null);	
+			}
+
+		if (curWeek == 2)
+			{
+				weekstring = "Week 2";					
+				DiscordClient.changePresence("Thinking about playing " + weekstring + " " + Diffstring , null);	
+			}
+
+		if (curWeek == 3)
+			{
+				weekstring = "Week 3";					
+				DiscordClient.changePresence("Thinking about playing " + weekstring + " " + Diffstring , null);	
+			}
+
+		if (curWeek == 4)
+			{
+				weekstring = "Week 4";					
+				DiscordClient.changePresence("Thinking about playing " + weekstring + " " + Diffstring , null);	
+			}
+
+			if (curWeek == 5)
+				{
+					weekstring = "Week 5";					
+					DiscordClient.changePresence("Thinking about playing " + weekstring + " " + Diffstring , null);	
+				}
+
+			if (curWeek == 6)
+				{
+					weekstring = "Week 6";					
+					DiscordClient.changePresence("Thinking about playing " + weekstring + " " + Diffstring , null);	
+				}
+
+			
+		// Updating Discord Rich Presence
+		//DiscordClient.changePresence("Thinking about playing " + curWeek + " " + curDifficulty , null);
+		#end
 
 		var bullShit:Int = 0;
 

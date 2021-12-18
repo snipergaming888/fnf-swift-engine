@@ -51,6 +51,11 @@ class LatencyState extends FlxState
 			noteGrp.add(note);                           ///1
 		}
 
+		var descBG:FlxSprite = new FlxSprite(0,  FlxG.height - 18).makeGraphic(Std.int(FlxG.width), 110, 0xFF000000);
+		descBG.alpha = 0.6;
+		descBG.screenCenter(X);
+		add(descBG);
+
 		offsetText = new FlxText(200,700);
 		offsetText.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(offsetText);

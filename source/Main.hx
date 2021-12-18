@@ -10,7 +10,10 @@ import openfl.display.Sprite;
 import openfl.events.Event;
 
 class Main extends Sprite
-{
+{   #if desktop
+	var memoryMonitor:MemoryMonitor;
+	#end
+
 	var gameWidth:Int = 1280; // Width of the game in pixels (might be less / more in actual pixels depending on your zoom).
 	var gameHeight:Int = 720; // Height of the game in pixels (might be less / more in actual pixels depending on your zoom).
 	var initialState:Class<FlxState> = TitleState; // The FlxState the game starts with.
@@ -71,7 +74,6 @@ class Main extends Sprite
 		
 		addChild(new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen));	
 
-
 		var ourSource:String = "assets/videos/DO NOT DELETE OR GAME WILL CRASH/dontDelete.webm";
 
 		#if web
@@ -83,30 +85,41 @@ class Main extends Sprite
 		vHandler.init2();
 		GlobalVideo.setVid(vHandler);
 		vHandler.source(ourSource);
-		#else/*if desktop
+		#elseif desktop
 		var str1:String = "WEBM SHIT"; 
 		var webmHandle = new WebmHandler();
 		webmHandle.source(ourSource);
 		webmHandle.makePlayer();
 		webmHandle.webm.name = str1;
 		addChild(webmHandle.webm);
-		*///GlobalVideo.setWebm(webmHandle);
+		GlobalVideo.setWebm(webmHandle);
 		#end
 		
 
 		#if !mobile
 		
-				if (FlxG.save.data.fps)			
-					{
-						fpsCounter = new FPS(10, 50, 0xFFFFFF);
-						addChild(fpsCounter);
-					}
-					else
-						{
-							fpsCounter = new FPS(10, 50, 0xFFFFFF);
-							fpsCounter.visible = false;
-							addChild(fpsCounter);
-						}
+		if (FlxG.save.data.fps)			
+			{
+		 	 fpsCounter = new FPS(2, 2, 0xFFFFFF);
+			 addChild(fpsCounter);
+		    }
+			else
+			{
+			 fpsCounter = new FPS(10, 10, 0xFFFFFF);
+			 fpsCounter.visible = false;
+			 addChild(fpsCounter);
+			}
+		 #end
+
+		#if (!web && !mobile)
+		if (FlxG.save.data.memoryMonitor)
+			{
+				memoryMonitor = new MemoryMonitor(2, 2, 0xffffff);
+				addChild(memoryMonitor);
+			}
+			
+		#else
+		js.Browser.console.warn("MemoryMonitor can't work on JavaScript for some strange reason...");
 			
 		///addChild(new FPS(10, 3, 0xFFFFFF));
 		#end
