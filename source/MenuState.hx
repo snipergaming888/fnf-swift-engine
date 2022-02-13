@@ -18,6 +18,8 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
+import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
+import flixel.addons.transition.FlxTransitionableState;
 
 class MenuState extends MusicBeatState
 {
@@ -35,7 +37,10 @@ class MenuState extends MusicBeatState
 	var descBG:FlxSprite;
 	override function create()
 	{
+		
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
+		if (FlxG.save.data.optimizations)
+		menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat-opt'));
 		#if web
 		controlsStrings = CoolUtil.coolStringFile('GAMEPLAY' + "\n" + "APPEARANCE" + "\n" + "KEYBINDS" + "\n" + "PERFORMANCE");
 		#else
@@ -59,7 +64,6 @@ class MenuState extends MusicBeatState
 				var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
 				controlLabel.isMenuItem = true;
 				controlLabel.targetY = i;
-				controlLabel.screenCenter(X);
 				grpControls.add(controlLabel);
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 		}
@@ -90,15 +94,14 @@ class MenuState extends MusicBeatState
 		if (FlxG.sound.music != null)
             Conductor.songPosition = FlxG.sound.music.time;
 
-		for (item in grpControls.members)
-			{
-				item.screenCenter(X);
-			}
-
 		super.update(elapsed);
 
 			if (controls.BACK)
-				FlxG.switchState(new MainMenuState());
+				{
+					FlxTransitionableState.skipNextTransIn = false;
+					FlxTransitionableState.skipNextTransOut = false;
+					FlxG.switchState(new MainMenuState());
+				}
 			if (controls.UP_P)
 				changeSelection(-1);
 			if (controls.DOWN_P)
@@ -124,6 +127,8 @@ class MenuState extends MusicBeatState
 
 			if (controls.ACCEPT)
 			{
+				FlxTransitionableState.skipNextTransIn = true;
+				FlxTransitionableState.skipNextTransOut = true;
 				switch(curSelected)
 				{
 					case 0:
@@ -166,10 +171,6 @@ class MenuState extends MusicBeatState
 
 	function changeSelection(change:Int = 0)
 	{
-		for (item in grpControls.members)
-			{
-				item.screenCenter(X);
-			}
 		#if !switch
 		// NGio.logEvent('Fresh');
 		#end
@@ -190,7 +191,6 @@ class MenuState extends MusicBeatState
 		for (item in grpControls.members)
 		{
 			item.targetY = bullShit - curSelected;
-			item.screenCenter(X);
 			bullShit++;
 			
 

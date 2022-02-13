@@ -6,6 +6,10 @@ import flixel.FlxSubState;
 import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
+import flixel.FlxCamera;
+import flixel.FlxSprite;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 
 class GameOverSubstate extends MusicBeatSubstate
 {
@@ -13,9 +17,11 @@ class GameOverSubstate extends MusicBeatSubstate
 	var camFollow:FlxObject;
 
 	var stageSuffix:String = "";
+	public static var bfneedstofade:Bool = false;
 
 	public function new(x:Float, y:Float)
 	{
+		bfneedstofade = false;
 		var daStage = PlayState.curStage;
 		var daBf:String = '';
 		switch (daStage)
@@ -58,13 +64,27 @@ class GameOverSubstate extends MusicBeatSubstate
 		if (controls.ACCEPT)
 		{
 			endBullshit();
+			bfneedstofade = true;
 		}
+
+		if (bfneedstofade)
+			{
+           	//bf.alpha -= 0.004;
+				//trace(bf.alpha);
+				FlxTween.tween(bf, {alpha: 0}, 1.3, {
+					onComplete: function(tween:FlxTween)
+					{
+				
+					},	
+			});
+			}
+
 
 		if (controls.BACK)
 		{
 			FlxG.sound.music.stop();
 
-			if (PlayState.isStoryMode)
+			if (StoryMenuState.isStoryMode)
 				{
 					FlxG.switchState(new StoryMenuState());
 					FlxG.timeScale = 1;
@@ -114,11 +134,24 @@ class GameOverSubstate extends MusicBeatSubstate
 			FlxG.sound.play(Paths.music('gameOverEnd' + stageSuffix));
 			new FlxTimer().start(0.7, function(tmr:FlxTimer)
 			{
-				FlxG.camera.fade(FlxColor.BLACK, 2, false, function()
-				{
-					LoadingState.loadAndSwitchState(new PlayState());
-				});
+				new FlxTimer().start(2.0, function(tmr:FlxTimer)
+					{
+						if (FlxG.save.data.usedeprecatedloading)
+							LoadingState.loadAndSwitchState(new PlayState());
+							else
+								PlayState.instance.restart();	
+					});
+					
+					
 			});
 		}
+
+		/*FlxG.camera.fade(FlxColor.BLACK, 2, false, function()
+			{
+				if (FlxG.save.data.usedeprecatedloading)
+				LoadingState.loadAndSwitchState(new PlayState());
+				else
+					PlayState.instance.restart();
+			});*/
 	}
 }

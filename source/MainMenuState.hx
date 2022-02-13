@@ -44,37 +44,14 @@ class MainMenuState extends MusicBeatState
 	var playanims:Bool = false;
 	var defaultCamZoom:Float = 1.05;
 	var camZoom:FlxTween;
-	public static var sniperengineversion:String = " Mona Engine 1.4.1";
-	public static var sniperengineversionA:String = " ME 1.4.1";
+	public static var sniperengineversion:String = " Swift Engine 1.4.5";
+	public static var sniperengineversionA:String = " SE 1.4.5";
 	public static var gameVer:String = "v0.2.7.1";
 	public static var nightly:String = "";
+	public static var testbuild:String = "PUBLIC TEST BUILD";
 	
 	override function create()
-	{
-
-		/*if (FlxG.random.bool(2))
-			{
-				sniperengineversion = " Sniper Engine 2.7 | LIAM IS STUPID";
-				trace('stupid liam');
-			*///}
-			///so I don't get canceled
-
-
-			if (FlxG.random.bool(5))
-				{
-					nightly = " | hi jacob";
-					trace('jacob');
-				}
-				#if web
-				else if (FlxG.random.bool(1))
-					{
-						nightly = " | Super Idol 的笑容 都没你的甜 八月正午的阳光 都没你耀眼 热爱 105 °C 的你 滴滴清纯的蒸馏水";
-						trace('Super Idol 的笑容 都没你的甜 八月正午的阳光 都没你耀眼 热爱 105 °C 的你 滴滴清纯的蒸馏水');
-					}
-				#end
-
-
-			
+	{	
 		#if desktop
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("Looking at the Menu", null);
@@ -142,8 +119,6 @@ class MainMenuState extends MusicBeatState
 			bg.antialiasing = true;
 			add(bg);
 		}
-			
-		// magenta.scrollFactor.set();                                          //////quadInOut            ///1
 
 		menuItems = new FlxTypedGroup<FlxSprite>();
 		add(menuItems);
@@ -179,7 +154,7 @@ class MainMenuState extends MusicBeatState
 				});
 				FlxG.camera.follow(camFollow, null, 0.06);	
 
-		var versionShit:FlxText = new FlxText(350, FlxG.height - 18, 0, gameVer + " FNF |" + sniperengineversion + nightly + " | Press C to view changelog", 12);
+		var versionShit:FlxText = new FlxText(350, FlxG.height - 18, 0, gameVer + " FNF |" + sniperengineversion + " | Press C to view changelog", 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);	

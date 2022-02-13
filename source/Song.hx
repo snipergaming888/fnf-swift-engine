@@ -4,6 +4,7 @@ import Section.SwagSection;
 import haxe.Json;
 import haxe.format.JsonParser;
 import lime.utils.Assets;
+import flixel.FlxG;
 
 using StringTools;
 
@@ -50,8 +51,8 @@ class Song
 		// FIX THE CASTING ON WINDOWS/NATIVE
 		// Windows???
 		// trace(songData);
-
-		// trace('LOADED FROM JSON: ' + songData.notes);
+         if (FlxG.save.data.debug)
+		 trace('LOADED FROM JSON: ' + rawJson);
 		/* 
 			for (i in 0...songData.notes.length)
 			{

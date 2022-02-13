@@ -34,7 +34,27 @@ class LoadingState extends MusicBeatState
 	var peroid3:FlxSprite;
 	var loadingA:Alphabet;
 	var ctrl:Alphabet;
-	
+	public static var weekDataweb:Array<Dynamic> = [
+		['Tutorial'],
+		['Fresh'],
+		['South'],
+		['Philly'],
+		["High"],
+		['Eggnog'],
+		['Roses']
+	];
+	public static var weekDataweb2:Array<Dynamic> = [
+		['Tutorial'],
+		['Dadbattle'],
+		["Monster"],
+		["Blammed"],
+		["Milf"],
+		['Winter-Horrorland'],
+		['Thorns']
+	];
+	//public static var stringThing:Array<String> = weekDataweb[StoryMenuState.curWeek];
+	public static var stringThing:String = weekDataweb[StoryMenuState.curWeek];
+
 	function new(target:FlxState, stopMusic:Bool)
 	{
 		super();
@@ -111,6 +131,16 @@ class LoadingState extends MusicBeatState
 				checkLoadSong(getSongPath());
 				if (PlayState.SONG.needsVoices)
 					checkLoadSong(getVocalPath());
+				if (!FlxG.save.data.usedeprecatedloading)
+					{
+						checkLoadSong(getSongPath2());
+						if (PlayState.SONG.needsVoices)
+						checkLoadSong(getVocalPath2());
+						checkLoadSong(getSongPath3());
+						if (PlayState.SONG.needsVoices)
+						checkLoadSong(getVocalPath3());
+						//hope its the last or else the rest won't get voices...
+					}
 				checkLibrary("shared");
 				if (PlayState.storyWeek > 0)
 					checkLibrary("week" + PlayState.storyWeek);
@@ -138,7 +168,7 @@ class LoadingState extends MusicBeatState
 			Assets.loadSound(path).onComplete(function (_) { callback(); });
 		}
 	}
-	
+
 	function checkLibrary(library:String)
 	{
 		trace(Assets.hasLibrary(library));
@@ -179,7 +209,7 @@ class LoadingState extends MusicBeatState
 			Conductor.songPosition = FlxG.sound.music.time;
 
 		if (FlxG.keys.justPressed.ESCAPE)
-			if (PlayState.isStoryMode)
+			if (StoryMenuState.isStoryMode)
 				FlxG.switchState(new StoryMenuState());
 			else
 				#if web
@@ -206,6 +236,51 @@ class LoadingState extends MusicBeatState
 	{
 		return Paths.voices(PlayState.SONG.song);
 	}
+
+	static function getVocalPath2()
+		{
+			return Paths.voices(StoryMenuState.song2);
+			/*for (i in stringThing)
+				{
+					return Paths.voices(i);
+					trace('RETURNED ' + i);
+					trace('CURWEEK IS ' + StoryMenuState.curWeek);
+				}*/
+		}
+
+	static function getSongPath2()
+		{
+			return Paths.inst(StoryMenuState.song2);
+			/*for (i in stringThing)
+				{
+				   return Paths.inst(i);
+				   trace('RETURNED ' + i);
+				   	trace('CURWEEK IS ' + StoryMenuState.curWeek);
+				}*/
+		}
+
+		static function getVocalPath3()
+			{
+				return Paths.voices(StoryMenuState.song3);
+				/*for (i in stringThing)
+					{
+						return Paths.voices(i);
+						trace('RETURNED ' + i);
+						trace('CURWEEK IS ' + StoryMenuState.curWeek);
+					}*/
+			}
+	
+		static function getSongPath3()
+			{
+				return Paths.inst(StoryMenuState.song3);
+				/*for (i in stringThing)
+					{
+					   return Paths.inst(i);
+					   trace('RETURNED ' + i);
+						   trace('CURWEEK IS ' + StoryMenuState.curWeek);
+					}*/
+			}
+
 	
 	inline static public function loadAndSwitchState(target:FlxState, stopMusic = false)
 	{

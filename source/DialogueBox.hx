@@ -47,6 +47,20 @@ class DialogueBox extends FlxSpriteGroup
 				FlxG.sound.playMusic(Paths.music('LunchboxScary', 'shared'), 0);
 				FlxG.sound.music.fadeIn(1, 0, 0.8);
 		}
+        if (StoryMenuState.isStoryMode)
+			{
+				switch (PlayState.SONG.song.toLowerCase())
+				{
+					case 'senpai' | 'roses' | 'thorns':
+						new FlxTimer().start(0.36, function(tmr:FlxTimer)
+							{
+								PlayState.healthBarBG.alpha -= 1 / 5 * 1;
+								PlayState.healthBar.alpha -= 1 / 5 * 1;
+								PlayState.iconP1.alpha -= 1 / 5 * 1;
+								PlayState.iconP2.alpha -= 1 / 5 * 1;
+							}, 5);
+				}
+			}
 
 		bgFade = new FlxSprite(-200, -200).makeGraphic(Std.int(FlxG.width * 1.3), Std.int(FlxG.height * 1.3), 0xFFB3DFd8);
 		bgFade.scrollFactor.set();
@@ -83,13 +97,12 @@ class DialogueBox extends FlxSpriteGroup
 				box.frames = Paths.getSparrowAtlas('weeb/pixelUI/dialogueBox-evil', 'shared');
 				box.animation.addByPrefix('normalOpen', 'Spirit Textbox spawn', 24, false);
 				box.animation.addByIndices('normal', 'Spirit Textbox spawn', [11], "", 24);
-
-				var face:FlxSprite = new FlxSprite(320, 170).loadGraphic(Paths.image('weeb/spiritFaceForward', 'shared'));
-				face.setGraphicSize(Std.int(face.width * 6));
-				add(face);
 		}
 
 		this.dialogueList = dialogueList;
+
+		if (hasDialog)
+			trace('dialogue found! | ' + dialogueList);
 		
 		if (!hasDialog)
 			return;
@@ -111,6 +124,13 @@ class DialogueBox extends FlxSpriteGroup
 		portraitRight.scrollFactor.set();
 		add(portraitRight);
 		portraitRight.visible = false;
+
+		if (PlayState.SONG.song.toLowerCase() == 'thorns')
+			{
+			var face:FlxSprite = new FlxSprite(320, 170).loadGraphic(Paths.image('weeb/spiritFaceForward', 'shared'));
+			face.setGraphicSize(Std.int(face.width * 6));
+			add(face);	
+			}
 		
 		box.animation.play('normalOpen');
 		box.setGraphicSize(Std.int(box.width * PlayState.daPixelZoom * 0.9));
@@ -122,7 +142,6 @@ class DialogueBox extends FlxSpriteGroup
 
 		handSelect = new FlxSprite(FlxG.width * 0.9, FlxG.height * 0.9).loadGraphic(Paths.image('weeb/pixelUI/hand_textbox', 'shared'));
 		add(handSelect);
-
 
 		if (!talkingRight)
 		{
@@ -175,6 +194,7 @@ class DialogueBox extends FlxSpriteGroup
 		{
 			startDialogue();
 			dialogueStarted = true;
+			trace(':' + curCharacter + ': ' + dialogueList[0]);
 		}
 
 		if (FlxG.keys.justPressed.ANY  && dialogueStarted == true)
@@ -200,12 +220,22 @@ class DialogueBox extends FlxSpriteGroup
 						portraitRight.visible = false;
 						swagDialogue.alpha -= 1 / 5;
 						dropText.alpha = swagDialogue.alpha;
+						PlayState.healthBarBG.alpha += 1 / 5 * 1;
+						PlayState.healthBar.alpha += 1 / 5 * 1;
+						PlayState.iconP1.alpha += 1 / 5 * 1;
+						PlayState.iconP2.alpha += 1 / 5 * 1;
 					}, 5);
 
 					new FlxTimer().start(1.2, function(tmr:FlxTimer)
 					{
 						finishThing();
 						kill();
+						PlayState.inCutscene = false;
+						if (PlayState.SONG.song.toLowerCase() == 'senpai' || PlayState.SONG.song.toLowerCase() == 'roses' || PlayState.SONG.song.toLowerCase() == 'thorns')
+							{
+								PlayState.generateStaticArrows(0);
+								PlayState.generateStaticArrows(1);
+							}
 					});
 				}
 			}
@@ -213,6 +243,7 @@ class DialogueBox extends FlxSpriteGroup
 			{
 				dialogueList.remove(dialogueList[0]);
 				startDialogue();
+				trace(':' + curCharacter + ': ' + dialogueList[0]);
 			}
 		}
 		

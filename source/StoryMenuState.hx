@@ -22,19 +22,40 @@ using StringTools;
 class StoryMenuState extends MusicBeatState
 {
 	var scoreText:FlxText;
- /// WHY THE FUCK IS IT SHOWING ONLY 2 SONGS
- /// i'm gonna fucking blow my brains out
+	public static var isStoryMode:Bool = false;
 	var weekData:Array<Dynamic> = [
 		['Tutorial'],
 		['Bopeebo', 'Fresh', 'Dadbattle'],
 		['Spookeez', 'South', "Monster"],
 		['Pico', 'Philly', "Blammed"],
-		['Satin-Panties', "High", "Milf", "Avidity"],
+		['Satin-Panties', "High", "Milf"],
 		['Cocoa', 'Eggnog', 'Winter-Horrorland'],
 		['Senpai', 'Roses', 'Thorns']
 	];
+	var weekData2:Array<Dynamic> = [ // put your last song in the week here.
+		['Tutorial'],
+		['Dadbattle'],
+		["Monster"],
+		["Blammed"],
+		["Milf"],
+		['Winter-Horrorland'],
+		['Thorns']
+	];
+	var weekData3:Array<Dynamic> = [ // put your second song in the week here.
+		['Tutorial'],
+		['fresh'],
+		["south"],
+		["philly"],
+		["high"],
+		['Eggnog'],
+		['roses']
+	];
+	
 	var curDifficulty:Int = 1;
 	var Diffstring:String = "";
+	public static var PRESSED:Bool = false;
+	public static var song2:String;
+	public static var song3:String;
 
 	public static var weekUnlocked:Array<Bool> = [true, true, true, true, true, true, true];
 
@@ -60,7 +81,7 @@ class StoryMenuState extends MusicBeatState
 
 	var txtWeekTitle:FlxText;
 
-	var curWeek:Int = 0;
+	public static var curWeek:Int = 0;
 	var weekstring:String = "";
 
 	var txtTracklist:FlxText;
@@ -78,6 +99,7 @@ class StoryMenuState extends MusicBeatState
 
 	override function create()
 	{
+		PRESSED = false;
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
 
@@ -114,7 +136,6 @@ class StoryMenuState extends MusicBeatState
 		rankText.setFormat(Paths.font("vcr.ttf"), 32);
 		rankText.size = scoreText.size;
 		rankText.screenCenter(X);
-
 		var ui_tex = Paths.getSparrowAtlas('campaign_menu_UI_assets');
 		var yellowBG:FlxSprite = new FlxSprite(0, 56).makeGraphic(FlxG.width, 400, 0xFFF9CF51);
 
@@ -129,7 +150,7 @@ class StoryMenuState extends MusicBeatState
 		grpLocks = new FlxTypedGroup<FlxSprite>();
 		add(grpLocks);
 
-		trace("Line 70");
+		trace("Line 133");
 
 		for (i in 0...weekData.length)
 		{
@@ -155,7 +176,7 @@ class StoryMenuState extends MusicBeatState
 			}
 		}
 
-		trace("Line 96");
+		trace("Line 159");
 
 		for (char in 0...3)
 		{
@@ -180,6 +201,9 @@ class StoryMenuState extends MusicBeatState
 				case 'parents-christmas':
 					weekCharacterThing.setGraphicSize(Std.int(weekCharacterThing.width * 0.9));
 					weekCharacterThing.updateHitbox();
+				case 'nothing':
+					weekCharacterThing.setGraphicSize(Std.int(weekCharacterThing.width * 0.9));
+					weekCharacterThing.updateHitbox();
 			}
 
 			grpWeekCharacters.add(weekCharacterThing);
@@ -188,7 +212,7 @@ class StoryMenuState extends MusicBeatState
 		difficultySelectors = new FlxGroup();
 		add(difficultySelectors);
 
-		trace("Line 124");
+		trace("Line 192");
 
 		leftArrow = new FlxSprite(grpWeekText.members[0].x + grpWeekText.members[0].width + 10, grpWeekText.members[0].y + 10);
 		leftArrow.frames = ui_tex;
@@ -214,7 +238,7 @@ class StoryMenuState extends MusicBeatState
 		rightArrow.animation.play('idle');
 		difficultySelectors.add(rightArrow);
 
-		trace("Line 150");
+		trace("Line 218");
 
 		add(yellowBG);
 		add(grpWeekCharacters);
@@ -230,7 +254,7 @@ class StoryMenuState extends MusicBeatState
 
 		updateText();
 
-		trace("Line 165");
+		trace("Line 234");
 
 		super.create();
 	}
@@ -257,6 +281,29 @@ class StoryMenuState extends MusicBeatState
 		{
 			lock.y = grpWeekText.members[lock.ID].y;
 		});
+	    var stringThing3:Array<String> = weekData3[curWeek];
+		var stringThing4:Array<String> = weekData2[curWeek];
+		#if web
+		if (!FlxG.save.data.usedeprecatedloading && controls.ACCEPT && !PRESSED)
+			{
+				for ( i in stringThing3)
+					{
+						song2 = i;
+						trace('should featch xhr inst for ' + Paths.inst(i) + ' and Voices for ' + Paths.voices(i) + ', check loading state.');
+					}
+			}
+		#end
+		#if web
+		if (!FlxG.save.data.usedeprecatedloading && controls.ACCEPT && !PRESSED)
+			{
+				PRESSED = true;
+				for ( i in stringThing4)
+					{
+						song3 = i;
+						trace('should featch xhr inst for ' + Paths.inst(i) + ' and Voices for ' + Paths.voices(i) + ', check loading state.');
+					}
+			}
+		#end		
 
 		if (!movedBack)
 		{
@@ -323,8 +370,9 @@ class StoryMenuState extends MusicBeatState
 			}
 
 			PlayState.storyPlaylist = weekData[curWeek];
-			PlayState.isStoryMode = true;
 			selectedWeek = true;
+			isStoryMode = true;
+			//let this state manage it since playstate gets reset alot
 
 			var diffic = "";
 
@@ -344,15 +392,6 @@ class StoryMenuState extends MusicBeatState
 			PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0].toLowerCase() + diffic, PlayState.storyPlaylist[0].toLowerCase());
 			PlayState.storyWeek = curWeek;
 			PlayState.campaignScore = 0;
-			if (curWeek == 6)
-				{
-					new FlxTimer().start(1, function(tmr:FlxTimer)
-						{
-							LoadingStatePixel.loadAndSwitchState(new PlayState(), true);
-							trace(curWeek);
-						});
-				}
-				else
 					{
 						new FlxTimer().start(1, function(tmr:FlxTimer)
 							{
@@ -560,6 +599,10 @@ class StoryMenuState extends MusicBeatState
 				grpWeekCharacters.members[0].offset.set(120, 200);
 				grpWeekCharacters.members[0].setGraphicSize(Std.int(grpWeekCharacters.members[0].width * 1));
 
+			case 'nothing':
+				grpWeekCharacters.members[0].offset.set(120, 200);
+				grpWeekCharacters.members[0].setGraphicSize(Std.int(grpWeekCharacters.members[0].width * 1));
+
 			default:
 				grpWeekCharacters.members[0].offset.set(100, 100);
 				grpWeekCharacters.members[0].setGraphicSize(Std.int(grpWeekCharacters.members[0].width * 1));
@@ -567,11 +610,17 @@ class StoryMenuState extends MusicBeatState
 		}
 
 		var stringThing:Array<String> = weekData[curWeek];
+		var stringThing2:Array<String> = weekData2[curWeek];
 
 		for (i in stringThing)
 		{
 			txtTracklist.text += "\n" + i;
 		}
+
+		for (i in stringThing2)
+			{
+				txtTracklist.text += "\n" + i;
+			}
 
 		txtTracklist.text = txtTracklist.text.toUpperCase();
 

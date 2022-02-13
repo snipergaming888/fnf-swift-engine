@@ -19,6 +19,8 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
 import flixel.util.FlxStringUtil;
+import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
+import flixel.addons.transition.FlxTransitionableState;
 
 using StringTools;
 
@@ -29,7 +31,7 @@ class PerformanceOptions extends MusicBeatState
 	var CYAN:FlxColor = 0xFF00FFFF;
 	var camZoom:FlxTween;
 	private var boyfriend:Boyfriend;
-	var ISWINDOWS:Bool = false;
+	var ISDESKTOP:Bool = false;
 	var descBG:FlxSprite;
 
 	var controlsStrings:Array<String> = [];
@@ -40,13 +42,15 @@ class PerformanceOptions extends MusicBeatState
 	override function create()
 	{
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		#if windows
-		ISWINDOWS = true;
+		if (FlxG.save.data.optimizations)
+		menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat-opt'));
+		#if desktop
+		ISDESKTOP = true;
 		#end
-		if (ISWINDOWS)
-		controlsStrings = CoolUtil.coolStringFile("\nAntialiasing " + (FlxG.save.data.antialiasing ? "on" : "off") + "\noptimizations " + (FlxG.save.data.optimizations ? "on" : "off") + "\n" + "CACHING");
+		if (ISDESKTOP)
+		controlsStrings = CoolUtil.coolStringFile("\nAntialiasing " + (FlxG.save.data.antialiasing ? "on" : "off") + "\noptimizations " + (FlxG.save.data.optimizations ? "on" : "off") + "\ndeprecated loading " + (FlxG.save.data.usedeprecatedloading ? "on" : "off") + "\n" + "CACHING");
 		else
-			controlsStrings = CoolUtil.coolStringFile("\nAntialiasing " + (FlxG.save.data.antialiasing ? "on" : "off") + "\noptimizations " + (FlxG.save.data.optimizations ? "on" : "off"));
+			controlsStrings = CoolUtil.coolStringFile("\nAntialiasing " + (FlxG.save.data.antialiasing ? "on" : "off") + "\noptimizations " + (FlxG.save.data.optimizations ? "on" : "off") + "\ndeprecated loading " + (FlxG.save.data.usedeprecatedloading ? "on" : "off"));
 		
 		trace(controlsStrings);
 
@@ -65,7 +69,6 @@ class PerformanceOptions extends MusicBeatState
 				var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
 				controlLabel.isMenuItem = true;
 				controlLabel.targetY = i;
-				controlLabel.screenCenter(X);
 				grpControls.add(controlLabel);
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 		}
@@ -151,19 +154,17 @@ class PerformanceOptions extends MusicBeatState
 							versionShit.antialiasing = false;	
 						}
 
-						for (item in grpControls.members)
-							{
-								item.screenCenter(X);
-							}
-						
-
 		if (FlxG.sound.music != null)
             Conductor.songPosition = FlxG.sound.music.time;
 
 		super.update(elapsed);
 
 			if (controls.BACK)
-				FlxG.switchState(new MenuState());
+				{
+					FlxTransitionableState.skipNextTransIn = true;
+					FlxTransitionableState.skipNextTransOut = true;
+					FlxG.switchState(new MenuState());
+				}
 			if (controls.UP_P)
 				changeSelection(-1);
 			if (controls.DOWN_P)
@@ -192,9 +193,12 @@ class PerformanceOptions extends MusicBeatState
 					desc.text = "Wether or not to smooth out pixels at the cost of performance. off = better performance.";
 
 				if (curSelected == 1)
-					desc.text = "Wether or not to use compressed assets.";
+					desc.text = "Wether or not to use compressed assets and disable some background animations.";
 
 				if (curSelected == 2)
+					desc.text = "Use the deprecated way to load things in-game. load times are slower and loading songs in a week will crash on HTML5. I need to fix that.";
+
+				if (curSelected == 3)
 					desc.text = "Cache assets.";
 				
 
@@ -230,7 +234,19 @@ class PerformanceOptions extends MusicBeatState
 						///ctrl.color = FlxColor.YELLOW;
 						#end
 						grpControls.add(ctrl);
-						case 2:
+					case 2:
+						grpControls.remove(grpControls.members[curSelected]);
+						FlxG.save.data.usedeprecatedloading = !FlxG.save.data.usedeprecatedloading;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, "deprecated loading " + (FlxG.save.data.usedeprecatedloading ? "on" : "off"), true, false);
+						ctrl.isMenuItem = true;
+						ctrl.targetY = curSelected - 2;
+						#if windows
+						///ctrl.color = FlxColor.YELLOW;
+						#end
+						grpControls.add(ctrl);
+						case 3:
+							FlxTransitionableState.skipNextTransIn = true;
+							FlxTransitionableState.skipNextTransOut = true;
 							FlxG.switchState(new CacheState());
 				}
 			}
@@ -240,10 +256,6 @@ class PerformanceOptions extends MusicBeatState
 
 	function changeSelection(change:Int = 0)
 	{
-		for (item in grpControls.members)
-			{
-				item.screenCenter(X);
-			}
 		#if !switch
 		// NGio.logEvent('Fresh');
 		#end
@@ -264,7 +276,6 @@ class PerformanceOptions extends MusicBeatState
 		for (item in grpControls.members)
 		{
 			item.targetY = bullShit - curSelected;
-			item.screenCenter(X);
 			bullShit++;
 
 			item.alpha = 0.6;

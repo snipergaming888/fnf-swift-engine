@@ -13,6 +13,8 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
+import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
+import flixel.addons.transition.FlxTransitionableState;
 
 class CacheState extends MusicBeatState
 {
@@ -29,6 +31,8 @@ class CacheState extends MusicBeatState
 	override function create()
 	{
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
+		if (FlxG.save.data.optimizations)
+		menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat-opt'));
 		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.imagecache ? 'IMAGE CACHING ON' : 'IMAGE CACHING OFF') + "\n" + (FlxG.save.data.songcache ? 'SONG CACHING ON' : 'SONG CACHING OFF') + "\n" + (FlxG.save.data.soundcache ? 'SOUND CACHING ON' : 'SOUND CACHING OFF') + "\n" + (FlxG.save.data.musiccache ? 'MUSIC CACHING ON' : 'MUSIC CACHING OFF'));
 		
 		trace(controlsStrings);
@@ -79,7 +83,11 @@ class CacheState extends MusicBeatState
 		super.update(elapsed);
 
 			if (controls.BACK)
-				FlxG.switchState(new PerformanceOptions());
+				{
+					FlxTransitionableState.skipNextTransIn = true;
+					FlxTransitionableState.skipNextTransOut = true;
+					FlxG.switchState(new PerformanceOptions());
+				}
 			if (controls.UP_P)
 				changeSelection(-1);
 			if (controls.DOWN_P)

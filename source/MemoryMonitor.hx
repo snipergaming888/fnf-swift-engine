@@ -3,9 +3,7 @@ package;
 import haxe.Timer;
 import openfl.display.FPS;
 import openfl.events.Event;
-#if desktop
 import openfl.system.System;
-#end
 import openfl.text.TextField;
 import openfl.text.TextFormat;
 

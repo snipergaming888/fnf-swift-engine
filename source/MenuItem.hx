@@ -16,6 +16,9 @@ class MenuItem extends FlxSpriteGroup
 	public function new(x:Float, y:Float, weekNum:Int = 0)
 	{
 		super(x, y);
+		if (FlxG.save.data.optimizations)
+		week = new FlxSprite().loadGraphic(Paths.image('storymenu/week' + weekNum + '-opt'));
+		else
 		week = new FlxSprite().loadGraphic(Paths.image('storymenu/week' + weekNum));
 		add(week);
 	}

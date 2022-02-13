@@ -7,6 +7,7 @@ import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.input.gamepad.FlxGamepad;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
+import flixel.FlxCamera;
 
 class GameOverState extends FlxTransitionableState
 {
@@ -77,7 +78,10 @@ class GameOverState extends FlxTransitionableState
 			FlxG.sound.music.fadeOut(0.5, 0, function(twn:FlxTween)
 			{
 				FlxG.sound.music.stop();
-				LoadingState.loadAndSwitchState(new PlayState());
+				if (FlxG.save.data.usedeprecatedloading)
+					LoadingState.loadAndSwitchState(new PlayState());
+					else
+						PlayState.instance.restart();
 			});
 		}
 		super.update(elapsed);

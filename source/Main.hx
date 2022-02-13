@@ -10,15 +10,15 @@ import openfl.display.Sprite;
 import openfl.events.Event;
 
 class Main extends Sprite
-{   #if desktop
+{  
 	var memoryMonitor:MemoryMonitor;
-	#end
+	
 
 	var gameWidth:Int = 1280; // Width of the game in pixels (might be less / more in actual pixels depending on your zoom).
 	var gameHeight:Int = 720; // Height of the game in pixels (might be less / more in actual pixels depending on your zoom).
 	var initialState:Class<FlxState> = TitleState; // The FlxState the game starts with.
 	var zoom:Float = -1; // If -1, zoom is automatically calculated to fit the window dimensions.
-	var framerate:Int = 138; // How many frames per second the game should run at.
+	var framerate:Int = 138; // How many frames per second the game should run at. default: 138.
 	var skipSplash:Bool = true; // Whether to skip the flixel splash screen that appears in release mode.
 	var startFullscreen:Bool = false; // Whether to start the game in fullscreen on desktop targets
 	var fpsCounter:FPS;
@@ -97,31 +97,22 @@ class Main extends Sprite
 		
 
 		#if !mobile
-		
-		if (FlxG.save.data.fps)			
-			{
 		 	 fpsCounter = new FPS(2, 2, 0xFFFFFF);
 			 addChild(fpsCounter);
-		    }
-			else
-			{
-			 fpsCounter = new FPS(10, 10, 0xFFFFFF);
-			 fpsCounter.visible = false;
-			 addChild(fpsCounter);
-			}
+			 toggleFPS(FlxG.save.data.fps);
 		 #end
 
-		#if (!web && !mobile)
-		if (FlxG.save.data.memoryMonitor)
-			{
-				memoryMonitor = new MemoryMonitor(2, 2, 0xffffff);
-				addChild(memoryMonitor);
-			}
+		
+		 
 			
-		#else
-		js.Browser.console.warn("MemoryMonitor can't work on JavaScript for some strange reason...");
+			memoryMonitor = new MemoryMonitor(2, 2, 0xffffff);
+			addChild(memoryMonitor);
+			togglememoryMonitor(FlxG.save.data.memoryMonitor);
 			
 		///addChild(new FPS(10, 3, 0xFFFFFF));
+
+		#if web
+		js.Browser.console.warn("MemoryMonitor Might not work on some browsers like firefox. You have been warned!");
 		#end
 
 	}
@@ -129,5 +120,18 @@ class Main extends Sprite
 	public function getFPS():Float
 		{
 			return fpsCounter.currentFPS;
+		}
+
+	public function toggleFPS(fpsEnabled:Bool):Void {
+		fpsCounter.visible = fpsEnabled;
+	}
+
+	public function togglememoryMonitor(memoryMonitorEnabled:Bool):Void {
+		memoryMonitor.visible = memoryMonitorEnabled;
+	}
+
+	public function setFPSCap(cap:Float)
+		{
+			openfl.Lib.current.stage.frameRate = cap;
 		}
 }

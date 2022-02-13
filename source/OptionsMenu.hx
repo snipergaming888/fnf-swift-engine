@@ -29,6 +29,8 @@ import flixel.input.actions.FlxActionInput;
 import flixel.input.actions.FlxActionInputDigital;
 import flixel.util.FlxTimer;
 import flixel.addons.display.FlxGridOverlay;
+import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
+import flixel.addons.transition.FlxTransitionableState;
 
 class OptionsMenu extends MusicBeatState
 
@@ -68,13 +70,15 @@ class OptionsMenu extends MusicBeatState
 		trace('UR BINDS ARE:');
         trace('${FlxG.save.data.leftBind}-${FlxG.save.data.downBind}-${FlxG.save.data.upBind}-${FlxG.save.data.rightBind}');
 
-		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		///controlsStrings = CoolUtil.coolTextFile(Paths.txt('controlsmenu'));
 		controlsStrings = CoolUtil.coolStringFile(FlxG.save.data.leftBind + "\n" + FlxG.save.data.downBind + "\n" + FlxG.save.data.upBind + "\n" + FlxG.save.data.rightBind + "\n" + "reset-all" );
 
 		
 		trace(controlsStrings);
-
+		if (FlxG.save.data.optimizations)
+		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat-opt'));
+		else
+		menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		menuBG.color = 0xFFea71fd;
 		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
 		menuBG.updateHitbox();
@@ -99,7 +103,6 @@ class OptionsMenu extends MusicBeatState
 				var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
 				controlLabel.isMenuItem = true;
 				controlLabel.targetY = i;
-				controlLabel.screenCenter(X);
 				grpControls.add(controlLabel);
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 		}
@@ -174,7 +177,11 @@ class OptionsMenu extends MusicBeatState
 							}
 			{
 				if (controls.BACK)
-					FlxG.switchState(new MenuState());
+					{
+						FlxTransitionableState.skipNextTransIn = true;
+						FlxTransitionableState.skipNextTransOut = true;
+						FlxG.switchState(new MenuState());
+					}
 				if(FlxG.save.data.upBind == "enter"){
 					FlxG.save.data.upBind = "UP";
 					trace("NOT BINDABLE");
@@ -199,11 +206,6 @@ class OptionsMenu extends MusicBeatState
 					{
 		
 					}
-
-					for (item in grpControls.members)
-						{
-							item.screenCenter(X);
-						}
 
 				if (controls.BACK)
 					{
@@ -239,6 +241,8 @@ class OptionsMenu extends MusicBeatState
 							///controls.setKeyboardScheme(Solo);
 							TitleState.resetBinds();
 							FlxG.sound.play(Paths.sound('GF_4'), 0.7);
+							FlxTransitionableState.skipNextTransIn = true;
+							FlxTransitionableState.skipNextTransOut = true;
 							FlxG.switchState(new OptionsMenu());
 					}
 				}
@@ -593,7 +597,6 @@ class OptionsMenu extends MusicBeatState
 							{
 								item.targetY = bullShit - curSelected;
 								bullShit++;
-								item.screenCenter(X);
 					
 								item.alpha = 0.6;
 								#if windows

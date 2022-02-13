@@ -18,6 +18,8 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
 import flixel.FlxSubState;
+import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
+import flixel.addons.transition.FlxTransitionableState;
 
 class MiscOptions extends MusicBeatState
 {
@@ -28,6 +30,7 @@ class MiscOptions extends MusicBeatState
 	var popup:Bool = false;
 	var aming:Alphabet;
 	var ok:Alphabet;
+	var curframefloat:Float = 1;
 
 	var controlsStrings:Array<String> = [];
 
@@ -36,8 +39,14 @@ class MiscOptions extends MusicBeatState
 	var descBG:FlxSprite;
 	override function create()
 	{
-		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));	
-		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.freeplaysongs ? 'freeplay song previews on' : 'freeplay song previews off') +"\n" + (FlxG.save.data.discordrpc ? 'discord presence on' : 'discord presence off') +"\n" + (FlxG.save.data.idleafterhold ? 'idle after hold note' : 'Dont idle after hold note'));
+		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
+		if (FlxG.save.data.optimizations)
+		menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat-opt'));
+		#if debug
+		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.freeplaysongs ? 'freeplay song previews on' : 'freeplay song previews off') +"\n" + (FlxG.save.data.discordrpc ? 'discord presence on' : 'discord presence off') +"\n" + (FlxG.save.data.KEidle ? 'KADE ENGINE IDLE ON' : 'KADE ENGINE IDLE OFF') +"\n" + (FlxG.save.data.idleonbeat ? 'idle on beat on' : 'idle on beat off'));
+		#else
+		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.freeplaysongs ? 'freeplay song previews on' : 'freeplay song previews off') +"\n" + (FlxG.save.data.discordrpc ? 'discord presence on' : 'discord presence off'));
+		#end
 		
 		trace(controlsStrings);
 
@@ -56,7 +65,6 @@ class MiscOptions extends MusicBeatState
 				var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
 				controlLabel.isMenuItem = true;
 				controlLabel.targetY = i;
-				controlLabel.screenCenter(X);
 				grpControls.add(controlLabel);
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 		}
@@ -103,7 +111,11 @@ class MiscOptions extends MusicBeatState
 		super.update(elapsed);
 
 			if (controls.BACK)
-				FlxG.switchState(new MenuState());
+				{
+					FlxTransitionableState.skipNextTransIn = true;
+					FlxTransitionableState.skipNextTransOut = true;
+					FlxG.switchState(new MenuState());
+				}
 			if (controls.UP_P)
 				changeSelection(-1);
 			if (controls.DOWN_P)
@@ -112,18 +124,16 @@ class MiscOptions extends MusicBeatState
 				FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
 
 			if (curSelected == 0)
-				versionShit.text = "play songs in freeplay when havering over them.";
+				versionShit.text = "Play songs in freeplay when havering over them.";
 
 			if (curSelected == 1)
-				versionShit.text = "disable or enable the games discord presence.";
+				versionShit.text = "Disable or enable the games discord presence.";
 
 			if (curSelected == 2)
-				versionShit.text = "should boyfriend instantly idle after releasing a keypress from a hold or not.";
+				versionShit.text = "Wether or not to enable the Kade Engine idle bug. (BFs idle interupts notes)";
 
-			for (item in grpControls.members)
-				{
-					item.screenCenter(X);
-				}
+			if (curSelected == 3)
+				versionShit.text = "Wether or not player 2 should be forced to idle to the beat. (may not work for some characters, EXPERAMENTAL!)";
 
 			if (controls.ACCEPT)
 			{
@@ -145,21 +155,37 @@ class MiscOptions extends MusicBeatState
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.discordrpc ? 'discord presence on' : 'discord presence off'), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 1;
-						#if windows
-						//ctrl.color = FlxColor.YELLOW;
+						#if desktop
+						if (!FlxG.save.data.discordrpc)
+							{
+								DiscordClient.shutdown();
+							}
+							else
+								{
+									DiscordClient.initialize();
+								}
 						#end
 						grpControls.add(ctrl);
-                    case 2:
+					case 2:
 						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.idleafterhold = !FlxG.save.data.idleafterhold;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.idleafterhold ? 'idle after hold note' : 'Dont idle after hold note'), true, false);
+						FlxG.save.data.KEidle = !FlxG.save.data.KEidle;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.KEidle ? 'KADE ENGINE IDLE ON' : 'KADE ENGINE IDLE OFF'), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 2;
 						#if windows
 						//ctrl.color = FlxColor.YELLOW;
 						#end
 						grpControls.add(ctrl);
-						
+					case 3:
+						grpControls.remove(grpControls.members[curSelected]);
+						FlxG.save.data.idleonbeat = !FlxG.save.data.idleonbeat;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.idleonbeat ? 'idle on beat on' : 'idle on beat off'), true, false);
+						ctrl.isMenuItem = true;
+						ctrl.targetY = curSelected - 3;
+						#if windows
+						//ctrl.color = FlxColor.YELLOW;
+						#end
+						grpControls.add(ctrl);						
 				}
 			}
 	}
@@ -190,7 +216,6 @@ class MiscOptions extends MusicBeatState
 				{
 					item.targetY = bullShit - curSelected;
 					bullShit++;
-					item.screenCenter(X);
 		
 					item.alpha = 0.6;
 					#if windows
@@ -256,26 +281,17 @@ class MiscOptions extends MusicBeatState
 				}
 			}
 
+			function truncateFloat( number : Float, precision : Int): Float {
+				var num = number;
+				num = num * Math.pow(10, precision);
+				num = Math.round( num ) / Math.pow(10, precision);
+				return num;
+				}
+
 	var accepted:Bool = true;
 
 
 }	
-
-
-
-   class BotPlay extends MiscOptions
-{	
-	public function press():Bool
-	{
-		FlxG.save.data.botplay = !FlxG.save.data.botplay;
-		trace('BotPlay : ' + FlxG.save.data.botplay);
-		updateDisplay();
-		return true;
-	}
-	
-	private function updateDisplay():String
-		return "BotPlay " + (FlxG.save.data.botplay ? "on" : "off");
-}
 
 
 

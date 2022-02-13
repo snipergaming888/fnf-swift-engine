@@ -1,5 +1,8 @@
 package;
 
+#if desktop
+import Discord.DiscordClient;
+#end
 import Controls.KeyboardScheme;
 import Controls.Control;
 import flixel.FlxG;
@@ -24,6 +27,14 @@ class LatencyState extends FlxState
 	{
 		FlxG.sound.playMusic(Paths.sound('soundTest'));
 
+		if (FreeplayState.voicesplaying)
+			{
+				FreeplayState.voicesplaying = false;
+				FreeplayState.voices.stop();
+			}
+        if (FlxG.save.data.optimizations)
+		magenta = new FlxSprite(-80).loadGraphic(Paths.image('menuDesat-opt'));
+		else
 		magenta = new FlxSprite(-80).loadGraphic(Paths.image('menuDesat'));
 		magenta.scrollFactor.x = 0;
 		magenta.scrollFactor.y = 0.18;
@@ -65,6 +76,11 @@ class LatencyState extends FlxState
 
 		Conductor.changeBPM(120);
 
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("Editing their Offset" + " (Offset: " + FlxG.save.data.offset + ")", null);
+		#end
+
 		super.create();
 	}
 
@@ -95,6 +111,11 @@ class LatencyState extends FlxState
 
 			  FlxG.resetState();
 			}
+
+			#if desktop
+		    // Updating Discord Rich Presence
+		    DiscordClient.changePresence("Editing their Offset" + " (Offset: " + FlxG.save.data.offset + ")", null);
+		    #end
 
 		if (FlxG.keys.justPressed.ESCAPE)
 			FlxG.switchState(new GameOptions());

@@ -640,6 +640,7 @@ class Controls extends FlxActionSet
 			inline bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
 			inline bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
 			inline bindKeys(Control.PAUSE, [ENTER, ESCAPE]);
+			inline bindKeys(Control.RESET, [R]);
 		}
 
 

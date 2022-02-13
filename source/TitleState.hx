@@ -9,6 +9,7 @@ import flixel.FlxG;
 import flixel.util.FlxSave;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.FlxG;
 import flixel.FlxCamera;
 import flixel.math.FlxMath;
 import flixel.addons.display.FlxGridOverlay;
@@ -31,7 +32,7 @@ import flixel.util.FlxTimer;
 import io.newgrounds.NG;
 import lime.app.Application;
 import openfl.Assets;
-
+import openfl.Lib;
 using StringTools;
 
 class TitleState extends MusicBeatState
@@ -91,12 +92,12 @@ class TitleState extends MusicBeatState
 			else
 				{
 					abletocache = false;
-				}
+				}	
 		
 		trace('default selected: ' + FlxG.save.data.curselected);
 		
 			
-		FlxG.save.bind('monaengine', 'snipergaming888');
+		FlxG.save.bind('swiftengine', 'snipergaming888');
 
 		Highscore.load();
 		keyCheck();
@@ -453,24 +454,29 @@ class TitleState extends MusicBeatState
 	{
 		if (!initialized)
 		{
+			
+				if (FlxG.save.data.togglecap)
+					{
+						openfl.Lib.current.stage.frameRate = FlxG.save.data.fpsCap;
+						trace('CAP CAP CAP CAP');
+					}
+				
 			trace('liam is a nerd');
 			var diamond:FlxGraphic = FlxGraphic.fromClass(GraphicTransTileDiamond);
 			diamond.persist = true;
 			diamond.destroyOnNoUse = false;
 
-					{
-						FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);                           ///0.7
-						FlxTransitionableState.defaultTransIn = new TransitionData(FADE, FlxColor.BLACK, 0.5, new FlxPoint(0, -1), {asset: diamond, width: 32, height: 32},
-						new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));             ///0.5
-					FlxTransitionableState.defaultTransOut = new TransitionData(FADE, FlxColor.BLACK, 0.3, new FlxPoint(0, 1),
-						{asset: diamond, width: 32, height: 32}, new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));
-						old = false;
-					}
-				
-
+			FlxTransitionableState.defaultTransIn = new TransitionData(FADE, FlxColor.BLACK, 1, new FlxPoint(0, -1), {asset: diamond, width: 32, height: 32},
+				new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));
+			FlxTransitionableState.defaultTransOut = new TransitionData(FADE, FlxColor.BLACK, 0.7, new FlxPoint(0, 1),
+				{asset: diamond, width: 32, height: 32}, new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));
 
 			transIn = FlxTransitionableState.defaultTransIn;
 			transOut = FlxTransitionableState.defaultTransOut;
+
+					
+			FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+			old = false;			
 
 			// HAD TO MODIFY SOME BACKEND SHIT
 			// IF THIS PR IS HERE IF ITS ACCEPTED UR GOOD TO GO
@@ -496,6 +502,9 @@ class TitleState extends MusicBeatState
 
 			logoBl = new FlxSprite(-150, 0);
 			logoBl.frames = Paths.getSparrowAtlas('logoBumpin');
+			if (FlxG.save.data.optimizations)
+			logoBl.frames = Paths.getSparrowAtlas('logoBumpin-opt');
+			if (FlxG.save.data.antialiasing)
 			logoBl.antialiasing = true;
 			logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
 			logoBl.animation.play('bump');
@@ -506,14 +515,19 @@ class TitleState extends MusicBeatState
 	
 			gfDance = new FlxSprite(FlxG.width * 0.4, FlxG.height * 0.07);
 			gfDance.frames = Paths.getSparrowAtlas('gfDanceTitle');
+			if (FlxG.save.data.optimizations)
+			gfDance.frames = Paths.getSparrowAtlas('gfDanceTitle-opt');	
 			gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
 			gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
+			if (FlxG.save.data.antialiasing)
 			gfDance.antialiasing = true;
 			add(gfDance);
 			add(logoBl);
 	
 			titleText = new FlxSprite(100, FlxG.height * 0.8);
 			titleText.frames = Paths.getSparrowAtlas('titleEnter');
+			if (FlxG.save.data.optimizations)
+			titleText.frames = Paths.getSparrowAtlas('titleEnter-opt');		
 			titleText.animation.addByPrefix('idle', "Press Enter to Begin", 24);
 			titleText.animation.addByPrefix('press', "ENTER PRESSED", 24);
 			titleText.antialiasing = true;
@@ -522,9 +536,11 @@ class TitleState extends MusicBeatState
 			// titleText.screenCenter(X);
 			add(titleText);
 		
-
 		var logo:FlxSprite = new FlxSprite().loadGraphic(Paths.image('logo'));
+		if (FlxG.save.data.optimizations)
+		logo = new FlxSprite().loadGraphic(Paths.image('logo-opt'));
 		logo.screenCenter();
+		if (FlxG.save.data.antialiasing)
 		logo.antialiasing = true;
 		// add(logo);
 
@@ -544,18 +560,19 @@ class TitleState extends MusicBeatState
 		// credTextShit.alignment = CENTER;
 
 		credTextShit.visible = false;
-
+		if (FlxG.save.data.optimizations)
+		ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('newgrounds_logo-opt'));
+		else
 		ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('newgrounds_logo'));
 		add(ngSpr);
 		ngSpr.visible = false;
 		ngSpr.setGraphicSize(Std.int(ngSpr.width * 0.8));
 		ngSpr.updateHitbox();
 		ngSpr.screenCenter(X);
+		if (FlxG.save.data.antialiasing)
 		ngSpr.antialiasing = true;
 
 		FlxTween.tween(credTextShit, {y: credTextShit.y + 20}, 2.9, {ease: FlxEase.quadInOut, type: PINGPONG});
-
-		FlxG.mouse.visible = false;
 
 		if (initialized)
 			skipIntro();
@@ -563,6 +580,12 @@ class TitleState extends MusicBeatState
 			initialized = true;
 
 		// credGroup.add(credTextShit);
+
+		if (FlxG.mouse.visible = true)
+			{
+				FlxG.mouse.visible = false;
+				trace('no mouse');
+			}
 	}
 
 	function getIntroTextShit():Array<Array<String>>
@@ -804,7 +827,7 @@ class TitleState extends MusicBeatState
 				 // credTextShit.text = 'In association \nwith';
 				 // credTextShit.screenCenter();
 				 case 5:
-					 createCoolText(['mona engine', 'by']);
+					 createCoolText(['swift engine', 'by']);
 				 case 7:
 					 #if windows
 					 addMoreTextcolorsnipergaming('sniper gaming');
@@ -889,7 +912,7 @@ class TitleState extends MusicBeatState
 					 addMoreText('Funkin'); // credTextShit.text += '\nFunkin';
 
 				case 31:
-					 addMoreText('Mona Engine'); // credTextShit.text += '\nFunkin';
+					 addMoreText('swift Engine'); // credTextShit.text += '\nFunkin';
 	 
 				 case 32:
 					 skipIntro();
@@ -912,7 +935,7 @@ class TitleState extends MusicBeatState
 						// credTextShit.text = 'In association \nwith';
 						// credTextShit.screenCenter();
 						case 5:
-							createCoolText(['mona engine', 'by']);
+							createCoolText(['swift engine', 'by']);
 						case 7:
 							#if windows
 							addMoreTextcolorsnipergaming('sniper gaming');

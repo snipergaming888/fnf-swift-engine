@@ -2,6 +2,7 @@ package;
 
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.FlxG;
 
 class MenuCharacter extends FlxSprite
 {
@@ -12,7 +13,6 @@ class MenuCharacter extends FlxSprite
 		super(x);
 
 		this.character = character;
-
 		var tex = Paths.getSparrowAtlas('campaign_menu_UI_characters');
 		frames = tex;
 
@@ -25,6 +25,7 @@ class MenuCharacter extends FlxSprite
 		animation.addByPrefix('mom', "Mom Idle BLACK LINES", 24);
 		animation.addByPrefix('parents-christmas', "Parent Christmas Idle", 24);
 		animation.addByPrefix('senpai', "SENPAI idle Black Lines", 24);
+		animation.addByPrefix('nothing', "SENPAI idle Black Lines", 24);
 		// Parent Christmas Idle
 
 		animation.play(character);
