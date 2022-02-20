@@ -19,9 +19,6 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
 import flixel.util.FlxStringUtil;
-import openfl.Lib;
-import flixel.FlxObject;
-import flixel.tweens.FlxEase;
 import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
 import flixel.addons.transition.FlxTransitionableState;
 
@@ -36,8 +33,6 @@ class PerformanceOptions extends MusicBeatState
 	private var boyfriend:Boyfriend;
 	var ISDESKTOP:Bool = false;
 	var descBG:FlxSprite;
-	var menuBG:FlxSprite;
-	var camFollow:FlxObject;
 
 	var controlsStrings:Array<String> = [];
 
@@ -46,11 +41,9 @@ class PerformanceOptions extends MusicBeatState
 	var desc:FlxText;
 	override function create()
 	{
-		menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
+		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		if (FlxG.save.data.optimizations)
 		menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat-opt'));
-		menuBG.scrollFactor.set();
-		menuBG.x -= 30;	
 		#if cpp
 		ISDESKTOP = true;
 		#end
@@ -60,9 +53,6 @@ class PerformanceOptions extends MusicBeatState
 			controlsStrings = CoolUtil.coolStringFile("\nAntialiasing " + (FlxG.save.data.antialiasing ? "on" : "off") + "\noptimizations " + (FlxG.save.data.optimizations ? "on" : "off") + "\ndeprecated loading " + (FlxG.save.data.usedeprecatedloading ? "on" : "off"));
 		
 		trace(controlsStrings);
-
-		camFollow = new FlxObject(0, 0, 1, 1);
-		add(camFollow);
 
 		menuBG.color = 0xFFea71fd;
 		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
@@ -75,20 +65,22 @@ class PerformanceOptions extends MusicBeatState
 		add(grpControls);
 
 		for (i in 0...controlsStrings.length)
-			{                                  //100
-			var ctrl:Alphabet = new Alphabet(0, (80 * i) + 60, controlsStrings[i], true, false);
-		    ctrl.ID = i;
-			ctrl.y += 102;
-			ctrl.x += 50;
-		    grpControls.add(ctrl);
-			}//70
+		{
+				var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
+				controlLabel.isMenuItem = true;
+				controlLabel.targetY = i;
+				grpControls.add(controlLabel);
+			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
+		}
 
 		var descBG:FlxSprite = new FlxSprite(0,  FlxG.height - 18).makeGraphic(Std.int(FlxG.width), 110, 0xFF000000);
 		descBG.alpha = 0.6;
-		descBG.scrollFactor.set();
 		descBG.screenCenter(X);
 		add(descBG);
 
+
+		changeSelection();
+		///so shit gets highlighted
 		
          
 		if (FlxG.save.data.antialiasing)
@@ -125,7 +117,6 @@ class PerformanceOptions extends MusicBeatState
 				 boyfriend.antialiasing = false;	
 			 }
 			 boyfriend.visible = false;
-			 boyfriend.scrollFactor.set();
 			 add(boyfriend);
 
 			 #if cpp
@@ -174,90 +165,10 @@ class PerformanceOptions extends MusicBeatState
 					FlxTransitionableState.skipNextTransOut = true;
 					FlxG.switchState(new MenuState());
 				}
-				if (controls.UP_P)
-					{
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-						curSelected -= 1;
-						for (item in grpControls.members)
-							{
-								if (item.targetY == 0)
-								{
-								
-									camFollow.setPosition(item.getGraphicMidpoint().x + 600, item.getGraphicMidpoint().y);
-									FlxG.camera.follow(camFollow, LOCKON, 0.04 * (30 / (cast (Lib.current.getChildAt(0), Main)).getFPS()));
-										
-									// item.setGraphicSize(Std.int(item.width));
-								}
-							}
-					}
-		
-				if (controls.DOWN_P)
-					{
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-						curSelected += 1;
-						for (item in grpControls.members)
-							{
-								if (item.targetY == 0)
-								{
-								
-									camFollow.setPosition(item.getGraphicMidpoint().x + 600, item.getGraphicMidpoint().y + 200);
-									FlxG.camera.follow(camFollow, LOCKON, 0.04 * (30 / (cast (Lib.current.getChildAt(0), Main)).getFPS()));
-										
-										
-									// item.setGraphicSize(Std.int(item.width));
-								}
-							}
-					}
-			
-
-			if (curSelected < 0)
-				curSelected = 0;
-
-			if (ISDESKTOP)
-				{
-					if (curSelected > 3)
-						curSelected = 3;
-				}
-				else
-					{
-						if (curSelected > 2)
-							curSelected = 2;
-					}
-	
-
-			grpControls.forEach(function(sex:Alphabet)
-				{
-		
-					if (sex.ID == curSelected)
-						sex.alpha = 1;
-					else
-						sex.alpha = 0.7;
-				});
-
-				/*grpControls.forEach(function(sex:Alphabet)
-					{
-						if (sex.ID == curSelected)
-						{
-							camFollow.setPosition(sex.getGraphicMidpoint().x + 600, sex.getGraphicMidpoint().y + 200);
-							FlxG.camera.follow(camFollow, null, 0.06);
-						}
-					});*/
-				var bullShit:Int = 0;
-
-				for (item in grpControls.members)
-					{
-						item.targetY = bullShit - curSelected;
-						bullShit++;
-
-						item.alpha = 0.7;
-						// item.setGraphicSize(Std.int(item.width * 0.8));
-			
-						if (item.targetY == 0)
-						{
-							item.alpha = 1;
-							// item.setGraphicSize(Std.int(item.width));
-						}
-					}
+			if (controls.UP_P)
+				changeSelection(-1);
+			if (controls.DOWN_P)
+				changeSelection(1);
 			if (controls.BACK)
 				FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
 			
@@ -305,31 +216,25 @@ class PerformanceOptions extends MusicBeatState
 					case 0:
 						grpControls.remove(grpControls.members[curSelected]);
 						FlxG.save.data.antialiasing = !FlxG.save.data.antialiasing;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Antialiasing " + (FlxG.save.data.antialiasing ? "on" : "off"), true, false);
-						ctrl.y += 102;
-			        	ctrl.x += 50;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, "Antialiasing " + (FlxG.save.data.antialiasing ? "on" : "off"), true, false);
+						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 0;
 						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
 						
 					case 1:
 						grpControls.remove(grpControls.members[curSelected]);
 						FlxG.save.data.optimizations = !FlxG.save.data.optimizations;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "optimizations " + (FlxG.save.data.optimizations ? "on" : "off"), true, false);
-						ctrl.y += 102;
-			        	ctrl.x += 50;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, "optimizations " + (FlxG.save.data.optimizations ? "on" : "off"), true, false);
+						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 1;
 						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
 					case 2:
 						grpControls.remove(grpControls.members[curSelected]);
 						FlxG.save.data.usedeprecatedloading = !FlxG.save.data.usedeprecatedloading;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "deprecated loading " + (FlxG.save.data.usedeprecatedloading ? "on" : "off"), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, "deprecated loading " + (FlxG.save.data.usedeprecatedloading ? "on" : "off"), true, false);
+						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 2;
 						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
 						case 3:
 							FlxTransitionableState.skipNextTransIn = true;
 							FlxTransitionableState.skipNextTransOut = true;
@@ -339,6 +244,41 @@ class PerformanceOptions extends MusicBeatState
 	}
 
 	var isSettingControl:Bool = false;
+
+	function changeSelection(change:Int = 0)
+	{
+		#if !switch
+		// NGio.logEvent('Fresh');
+		#end
+		
+		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+
+		curSelected += change;
+
+		if (curSelected < 0)
+			curSelected = grpControls.length - 1;
+		if (curSelected >= grpControls.length)
+			curSelected = 0;
+
+		// selector.y = (70 * curSelected) + 30;
+
+		var bullShit:Int = 0;
+
+		for (item in grpControls.members)
+		{
+			item.targetY = bullShit - curSelected;
+			bullShit++;
+
+			item.alpha = 0.6;
+			 //item.setGraphicSize(Std.int(item.width * 0.8));
+
+			if (item.targetY == 0)
+			{
+				item.alpha = 1;
+				// item.setGraphicSize(Std.int(item.width));
+			}
+		}
+	}
 
 
 	override function beatHit()

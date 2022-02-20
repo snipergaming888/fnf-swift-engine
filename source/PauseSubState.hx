@@ -1,6 +1,6 @@
 package;
 
-#if desktop
+#if cpp
 import Discord.DiscordClient;
 #end
 import Controls.Control;
@@ -25,9 +25,9 @@ class PauseSubState extends MusicBeatSubstate
 {
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
 	#if debug
-	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Change Difficulty', 'Change Speed', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'options', 'Exit to freeplay menu', 'Exit to main menu'];
+	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Change Difficulty', 'toggle practice mode', 'Change Speed', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'options', 'Exit to freeplay menu', 'Exit to main menu'];
 	#else
-	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Change Difficulty', 'Change Speed', 'Chart Editor', 'options', 'Exit to freeplay menu', 'Exit to main menu'];
+	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Change Difficulty', 'toggle practice mode', 'Change Speed', 'Chart Editor', 'options', 'Exit to freeplay menu', 'Exit to main menu'];
 	#end
 	var curSelected:Int = 0;
 	public static var daPixelZoom:Float = 6;
@@ -48,6 +48,7 @@ class PauseSubState extends MusicBeatSubstate
 	var isSettingControlleft:Bool = false;
 	var isSettingControlright:Bool = false;
 	var abletochange:Bool = true;
+	public static var blueballed:Int = 0;
 	private var keyalphabet:FlxTypedGroup<Alphabet>;
 	var aming:Alphabet;
 	var versionShit:FlxText;
@@ -57,6 +58,8 @@ class PauseSubState extends MusicBeatSubstate
 	public static var ghosttappinghitsoundsenabled:Bool = false;
 	public var prevNote:Note;
 	public var daSelected:String;
+	public static var practice:FlxText;
+	public static var practicemode:Bool = false;
 
 	var difficultyChoices:Array<String> = ['EASY', 'NORMAL', 'HARD', 'BACK'];
 	var speed:Array<String> = ['SPEED', 'BACK'];
@@ -64,6 +67,10 @@ class PauseSubState extends MusicBeatSubstate
 	var needstoreload:Bool = false;
 	var ISDESKTOP:Bool = false; // sextop
 	private var boyfriend:Boyfriend;
+	var popuptext:FlxText;
+	var yes:FlxText;
+	var no:FlxText;
+	var comfirmbg:FlxSprite;
 
 	public function new(x:Float, y:Float)
 	{
@@ -77,25 +84,25 @@ class PauseSubState extends MusicBeatSubstate
 		#if debug
 		if (StoryMenuState.isStoryMode) {
 			if (PlayState.storyPlaylist.length != 1) {
-				menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'Chart Editor', 'Change Speed', 'Animation Debug dad', 'Animation Debug bf', 'options', 'Exit to storymode menu', 'Exit to main menu'];
+				menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'toggle practice mode', 'Chart Editor', 'Change Speed', 'Animation Debug dad', 'Animation Debug bf', 'options', 'Exit to storymode menu', 'Exit to main menu'];
 			}
 			else
 				{
-					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Chart Editor', 'Change Speed', 'Animation Debug dad', 'Animation Debug bf', 'options', 'Exit to freeplay menu', 'Exit to main menu'];
+					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'toggle practice mode', 'Chart Editor', 'Change Speed', 'Animation Debug dad', 'Animation Debug bf', 'options', 'Exit to freeplay menu', 'Exit to main menu'];
 				}
 		}
 		#else
 		if (StoryMenuState.isStoryMode && PlayState.storyPlaylist.length != 1)
 			{
-				menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'Change Speed', 'Chart Editor', 'options', 'Exit to storymode menu', 'Exit to main menu'];
+				menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'toggle practice mode', 'Change Speed', 'Chart Editor', 'options', 'Exit to storymode menu', 'Exit to main menu'];
 			}
 			else if (StoryMenuState.isStoryMode)
 				{
-					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Change Speed', 'Chart Editor', 'options', 'Exit to storymode menu', 'Exit to main menu'];
+					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'toggle practice mode', 'Change Speed', 'Chart Editor', 'options', 'Exit to storymode menu', 'Exit to main menu'];
 				}
 				else
 					{
-						menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Change Speed', 'Chart Editor', 'options', 'Exit to freeplay menu', 'Exit to main menu'];
+						menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'toggle practice mode', 'Change Speed', 'Chart Editor', 'options', 'Exit to freeplay menu', 'Exit to main menu'];
 					}
 		#end
 				{
@@ -146,16 +153,37 @@ class PauseSubState extends MusicBeatSubstate
 		levelDifficulty.updateHitbox();
 		add(levelDifficulty);
 
+		var blueballed:FlxText = new FlxText(20, 15 + 64, 0, "Blue balled: " + PlayState.blueballed, 32);
+		blueballed.scrollFactor.set();
+		blueballed.setFormat(Paths.font('vcr.ttf'), 32);
+		blueballed.updateHitbox();
+		add(blueballed);
+
+        if (practicemode)
+		practice = new FlxText(0, 15 + 96, 0, "PRACTICE MODE", 32);
+		else
+		practice = new FlxText(20, 15 + 96, 0, "", 32);
+		practice.scrollFactor.set();
+		practice.setFormat(Paths.font('vcr.ttf'), 32);
+		practice.updateHitbox();
+		add(practice);
+
+
 		levelDifficulty.alpha = 0;
 		levelInfo.alpha = 0;
+		blueballed.alpha = 0;
+		practice.alpha = 0;
 
 		levelInfo.x = FlxG.width - (levelInfo.width + 20);
 		levelDifficulty.x = FlxG.width - (levelDifficulty.width + 20);
+		blueballed.x = FlxG.width - (blueballed.width + 20);
+		practice.x = FlxG.width - (practice.width + 20);
 
 		FlxTween.tween(bg, {alpha: 0.6}, 0.4, {ease: FlxEase.quartInOut});
 		FlxTween.tween(levelInfo, {alpha: 1, y: 20}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.3});
 		FlxTween.tween(levelDifficulty, {alpha: 1, y: levelDifficulty.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.5});
-
+		FlxTween.tween(blueballed, {alpha: 1, y: blueballed.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.7});
+		FlxTween.tween(practice, {alpha: 1, y: practice.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.9});
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 
 		var aming:Alphabet = new Alphabet(0, (70 * curSelected) + 30, ('press-any-key'), true, false);
@@ -296,6 +324,12 @@ class PauseSubState extends MusicBeatSubstate
 		var downP = controls.DOWN_P;
 		var accepted = controls.ACCEPT;
 
+		if (practicemode)
+			{
+				practice.text = "PRACTICE MODE";
+			}
+			else
+				practice.text = "";
 		if (isingameplay)
 			{
 				versionShit.visible = true;	
@@ -337,7 +371,7 @@ class PauseSubState extends MusicBeatSubstate
 												PlayState.resetgamespeed = true;
 											}
 								}
-								else if (curSelected == 3)
+								else if (curSelected == 4)
 									{
 										versionShit.visible = true;
 										versionShit.text = "change the speed at which that the game runs. speed: " + truncateFloat(FreeplayState.gamespeed, 2) + " (Left, Right)";
@@ -382,7 +416,7 @@ class PauseSubState extends MusicBeatSubstate
 										{
 											add(keyalphabet);
 											waitingInputright();
-										}
+										}							
 						
         /// gameplay text
 		if (curSelected == 0 && isingameplay)
@@ -577,15 +611,15 @@ class PauseSubState extends MusicBeatSubstate
 						{
 							if (StoryMenuState.isStoryMode && PlayState.storyPlaylist.length != 1)
 								{
-									menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'Change Speed', 'Chart Editor', 'options', 'Exit to storymode menu', 'Exit to main menu'];
+									menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'toggle practice mode', 'Change Speed', 'Chart Editor', 'options', 'Exit to storymode menu', 'Exit to main menu'];
 								}
 								else if (StoryMenuState.isStoryMode)
 									{
-										menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Change Speed', 'Chart Editor', 'options', 'Exit to storymode menu', 'Exit to main menu'];
+										menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'toggle practice mode', 'Change Speed', 'Chart Editor', 'options', 'Exit to storymode menu', 'Exit to main menu'];
 									}
 									else
 										{
-											menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Change Speed', 'Chart Editor', 'options', 'Exit to freeplay menu', 'Exit to main menu'];
+											menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'toggle practice mode', 'Change Speed', 'Chart Editor', 'options', 'Exit to freeplay menu', 'Exit to main menu'];
 										}
 							regenMenu();			
 							if (isingameplay = false)
@@ -843,19 +877,24 @@ class PauseSubState extends MusicBeatSubstate
 				case "Exit to storymode menu":
 					FlxG.switchState(new StoryMenuState());
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
+					PlayState.blueballed = 0;
+					FlxG.timeScale = 1;
 					case "Exit to freeplay menu":
 						#if web
 						trace("Freeplay HTML5");
 						FlxG.switchState(new FreeplayStateHTML5());
 						FlxG.timeScale = 1;
+						PlayState.blueballed = 0;
 						#else
 						FlxG.switchState(new FreeplayState());
 						trace("Freeplay Menu");
 						FlxG.timeScale = 1;
+						PlayState.blueballed = 0;
 						#end	
 				case "Exit to main menu":
 					FlxG.switchState(new MainMenuState());
 					FlxG.timeScale = 1;
+					PlayState.blueballed = 0;
 					case "Animation Debug dad":
 						FlxG.switchState(new AnimationDebug(PlayState.SONG.player2));
 					case "Animation Debug bf":
@@ -907,12 +946,12 @@ class PauseSubState extends MusicBeatSubstate
 					if (StoryMenuState.isStoryMode)
 						{
 							if (PlayState.storyPlaylist.length != 1) {
-								menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'Change Speed', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'options', 'Exit to storymode menu', 'Exit to main menu'];
+								menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'toggle practice mode', 'Change Speed', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'options', 'Exit to storymode menu', 'Exit to main menu'];
 								regenMenu();
 							}	
 						}
 						else
-					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Chart Editor', 'Change Speed', 'Animation Debug dad', 'Animation Debug bf', 'options', 'Exit to freeplay menu', 'Exit to main menu'];
+					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'toggle practice mode', 'Chart Editor', 'Change Speed', 'Animation Debug dad', 'Animation Debug bf', 'options', 'Exit to freeplay menu', 'Exit to main menu'];
 					regenMenu();
                 case "DFJK":
 					controls.setKeyboardScheme(KeyboardScheme.Duo(true), true);
@@ -921,12 +960,12 @@ class PauseSubState extends MusicBeatSubstate
 					if (StoryMenuState.isStoryMode)
 						{
 							if (PlayState.storyPlaylist.length != 1) {
-								menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'Change Speed', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'options', 'Exit to storymode menu', 'Exit to main menu'];
+								menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'toggle practice mode', 'Change Speed', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'options', 'Exit to storymode menu', 'Exit to main menu'];
 								regenMenu();
 							}	
 						}
 						else
-					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Change Speed', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'options', 'Exit to freeplay menu', 'Exit to main menu'];
+					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'toggle practice mode', 'Change Speed', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'options', 'Exit to freeplay menu', 'Exit to main menu'];
 					regenMenu();
 				case "options":
 					menuItems = ['GAMEPLAY', 'APPEARANCE', 'KEYBINDS', 'PERFORMANCE', 'MISC', 'BACK'];
@@ -1224,26 +1263,31 @@ class PauseSubState extends MusicBeatSubstate
 								LoadingState.loadAndSwitchState(new PlayState());
 							}
 				case "Exit to storymode menu":
+					PlayState.blueballed = 0;
+					FlxG.timeScale = 1;
 					FlxG.switchState(new StoryMenuState());
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
 					case "Exit to freeplay menu":
 						#if web
 						trace("Freeplay HTML5");
+						PlayState.blueballed = 0;
 						FlxG.switchState(new FreeplayStateHTML5());
 						FlxG.timeScale = 1;
 						#else
+						PlayState.blueballed = 0;
 						FlxG.switchState(new FreeplayState());
 						trace("Freeplay Menu");
 						FlxG.timeScale = 1;
 						#end
 						#if desktop 
 				case "Change Speed":
-					regenMenu();
+				
 					#else
 					case "Change Speed":
-					regenMenu();
+					
 					#end
 				case "Exit to main menu":
+					PlayState.blueballed = 0;
 					FlxG.switchState(new MainMenuState());
 					FlxG.timeScale = 1;
 					case "Animation Debug dad":
@@ -1253,6 +1297,18 @@ class PauseSubState extends MusicBeatSubstate
 				case "Change Difficulty":
 					menuItems = difficultyChoices;
 					regenMenu();
+				case "toggle practice mode":
+					if (!practicemode)
+						{
+						  practicemode = true;
+						  practice.x = 1010;
+						  PlayState.practicemodeon = " - (PRACTICE MODE)";
+						}
+						else
+							{
+								practicemode = false;
+								PlayState.practicemodeon = "";
+							}		
 				case "EASY" | "NORMAL" | "HARD":
 					if (!FlxG.save.data.usedeprecatedloading)
 						{
@@ -1273,15 +1329,15 @@ class PauseSubState extends MusicBeatSubstate
 				case "BACK":
 					if (StoryMenuState.isStoryMode && PlayState.storyPlaylist.length != 1)
 						{
-							menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'Change Speed', 'Chart Editor', 'options', 'Exit to storymode menu', 'Exit to main menu'];
+							menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'toggle practice mode', 'Change Speed', 'Chart Editor', 'options', 'Exit to storymode menu', 'Exit to main menu'];
 						}
 						else if (StoryMenuState.isStoryMode)
 							{
-								menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Change Speed', 'Chart Editor', 'options', 'Exit to storymode menu', 'Exit to main menu'];
+								menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'toggle practice mode', 'Change Speed', 'Chart Editor', 'options', 'Exit to storymode menu', 'Exit to main menu'];
 							}
 							else
 								{
-									menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'Change Speed', 'Chart Editor', 'options', 'Exit to freeplay menu', 'Exit to main menu'];
+									menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'toggle practice mode', 'Change Speed', 'Chart Editor', 'options', 'Exit to freeplay menu', 'Exit to main menu'];
 								}
 						if (isingameplay)
 							{
@@ -1332,7 +1388,7 @@ class PauseSubState extends MusicBeatSubstate
 				case "APPEARANCE":
 					remove(grpMenuShit);
 					isinappearance = true;
-					menuItems =	CoolUtil.coolStringFile("\n" + (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD") + "\n" + (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF") + "\n" + (FlxG.save.data.hittimings ? "MS Timing info ON" : "MS Timing info OFF") + "\n" + (FlxG.save.data.showratings ? "ratings info ON" : "ratings info OFF") + "\n" + (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION off")+ "\n" + (FlxG.save.data.transparency ? "hold note transparency ON" : "hold note transparency off")+ "\n" + (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF") + "\n" + (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF")  + "\n" + (FlxG.save.data.minscore ? "minimalize score info ON" : "minimalize score info OFF") + "\n" + (FlxG.save.data.nps ? "NPS ON" : "NPS OFF") + "\n" + (FlxG.save.data.healthcolor ? 'new healthbar on' : 'new healthbar off') + "\n" + (FlxG.save.data.newhealthheadbump ? 'new healthhead bump on' : 'new healthhead bump off') + "\n" + (FlxG.save.data.fps ? "FPS COUNTER ON" : "FPS COUNTER OFF") + "\n" + (FlxG.save.data.memoryMonitor ? "memoryMonitor ON" : "memoryMonitor OFF" + "\n" + "BACK"));
+					menuItems =	CoolUtil.coolStringFile("\n" + (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD") + "\n" + (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF") + "\n" + (FlxG.save.data.hittimings ? "MS Timing info ON" : "MS Timing info OFF") + "\n" + (FlxG.save.data.showratings ? "ratings info ON" : "ratings info OFF") + "\n" + (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION off")+ "\n" + (FlxG.save.data.transparency ? "hold note transparency ON" : "hold note transparency off")+ "\n" + (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF") + "\n" + (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF")  + "\n" + (FlxG.save.data.minscore ? "minimalize score info ON" : "minimalize score info OFF") + "\n" + (FlxG.save.data.nps ? "NPS ON" : "NPS OFF") + "\n" + (FlxG.save.data.healthcolor ? 'new healthbar on' : 'new healthbar off') + "\n" + (FlxG.save.data.newhealthheadbump ? 'new healthhead bump on' : 'new healthhead bump off') + "\n" + (FlxG.save.data.fps ? "FPS COUNTER ON" : "FPS COUNTER OFF") + "\n" + (FlxG.save.data.memoryMonitor ? "memoryMonitor ON" : "memoryMonitor OFF") + "\n" + "BACK");
 					trace(menuItems);		
 
 					grpMenuShit = new FlxTypedGroup<Alphabet>();
@@ -1809,7 +1865,7 @@ class PauseSubState extends MusicBeatSubstate
 						{
 							FlxG.save.data.discordrpc = false;
 							regenmisc();
-							#if desktop
+							#if cpp
 							DiscordClient.shutdown();
 						    #end
 						}
@@ -1817,7 +1873,7 @@ class PauseSubState extends MusicBeatSubstate
 							{
 								FlxG.save.data.discordrpc = true;
 								regenmisc();
-								#if desktop
+								#if cpp
 								DiscordClient.initialize();
 								#end
 							}
@@ -1854,9 +1910,6 @@ class PauseSubState extends MusicBeatSubstate
 					bullShit++;
 		
 					item.alpha = 0.6;
-					#if windows
-					item.color = FlxColor.WHITE;
-					#end
 					// item.setGraphicSize(Std.int(item.width * 0.8));
 		
 					if (item.targetY == 0)

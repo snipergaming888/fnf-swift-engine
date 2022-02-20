@@ -1,7 +1,6 @@
-# Friday Night Funkin Swift Engine
+# Friday Night Funkin
 
-This is the repository for Friday Night Funkin, a game originally made for Ludum Dare 47 by ninjamuffin, "Stuck In a Loop".
-This engine provides many settings mainly geared for HTML5 modding and compatibility.
+This is the repository for Friday Night Funkin, a game originally made for Ludum Dare 47 "Stuck In a Loop".
 
 Play the Ludum Dare prototype here: https://ninja-muffin24.itch.io/friday-night-funkin
 Play the Newgrounds one here: https://www.newgrounds.com/portal/view/770371

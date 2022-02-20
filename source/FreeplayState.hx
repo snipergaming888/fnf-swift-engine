@@ -1,6 +1,6 @@
 package;
 
-#if desktop
+#if cpp
 import Discord.DiscordClient;
 #end
 import flash.text.TextField;
@@ -167,7 +167,7 @@ class FreeplayState extends MusicBeatState
 		changeSelection();
 		changeDiff();
 
-		#if desktop
+		#if cpp
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("Looking at the Freeplay song list", null);
 		#end
@@ -267,7 +267,7 @@ class FreeplayState extends MusicBeatState
 				gamespeed += 0.1;
 				trace(gamespeed);
 			speedtext.text = "SPEED: " + gamespeed;
-			#if desktop
+			#if cpp
 			// Updating Discord Rich Presence
 			DiscordClient.changePresence("Thinking about playing " + songs[curSelected].songName.toLowerCase() + " " + (curDifficulty == 2 ? "Hard" : curDifficulty == 1 ? "Normal" : "Easy") + " on a speed of " + gamespeed + " (In the freeplay menu)", null);
 			#end
@@ -278,7 +278,7 @@ class FreeplayState extends MusicBeatState
 					gamespeed -= 0.1;
 				trace(gamespeed);
 			    speedtext.text = "SPEED: " + gamespeed;
-				#if desktop
+				#if cpp
 				// Updating Discord Rich Presence
 				DiscordClient.changePresence("Thinking about playing " + songs[curSelected].songName.toLowerCase() + " " + (curDifficulty == 2 ? "Hard" : curDifficulty == 1 ? "Normal" : "Easy") + " on a speed of " + gamespeed + " (In the freeplay menu)", null);
 				#end
@@ -390,7 +390,7 @@ class FreeplayState extends MusicBeatState
 
 		FlxG.save.data.curdifficulty = curDifficulty;
 
-		#if desktop
+		#if cpp
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("Thinking about playing " + songs[curSelected].songName.toLowerCase() + " " + (curDifficulty == 2 ? "Hard" : curDifficulty == 1 ? "Normal" : "Easy") + " on a speed of " + gamespeed + " (In the freeplay menu)", null);
 		#end
@@ -546,7 +546,7 @@ class FreeplayState extends MusicBeatState
 				}
 		#end
 		trace('current selection: ' + curSelected);
-		#if desktop
+		#if cpp
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("Thinking about playing " + songs[curSelected].songName.toLowerCase() + " " + (curDifficulty == 2 ? "Hard" : curDifficulty == 1 ? "Normal" : "Easy") + " on a speed of " + gamespeed + " (In the freeplay menu)", null);
 		#end
@@ -569,7 +569,7 @@ class FreeplayState extends MusicBeatState
 			bullShit++;
 
 			item.alpha = 0.6;
-			#if windows
+			#if cpp
 			item.color = FlxColor.WHITE;
             #end
 			// item.setGraphicSize(Std.int(item.width * 0.8));

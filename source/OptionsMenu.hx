@@ -1,6 +1,6 @@
 package;
 
-#if desktop
+#if cpp
 import Discord.DiscordClient;
 import sys.thread.Thread;
 #end
@@ -8,7 +8,9 @@ import Controls.KeyboardScheme;
 import Controls.Control;
 import flash.text.TextField;
 import flixel.FlxG;
+import openfl.Lib;
 import flixel.FlxSprite;
+import flixel.FlxObject;
 import flixel.tweens.FlxTween;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -36,7 +38,7 @@ class OptionsMenu extends MusicBeatState
 
 {
 	var selector:FlxText;
-	var curSelected:Int = FlxG.save.data.optionscurselected;
+	var curSelected:Int = 1;
 	var keypress:FlxSprite;
 	var menuBG:FlxSprite;
 	var keytext:FlxText;
@@ -45,6 +47,9 @@ class OptionsMenu extends MusicBeatState
 	var CYAN:FlxColor = 0xFF00FFFF;
 	var LIME:FlxColor = 0xFF00FF00;
 	var camZoom:FlxTween;
+	var camFollow:FlxObject;
+	var sex:Alphabet;
+	var versionShit:FlxText;
 
 	var controlsStrings:Array<String> = [];
 	var controlLabel:Alphabet;
@@ -56,15 +61,12 @@ class OptionsMenu extends MusicBeatState
 	private var keyalphabet:FlxTypedGroup<Alphabet>;
 	public static var gameVer:String = "0.2.7.1";
 	public static var sniperengineversion:String = "0.1";
-	var versionShit:FlxText;
 	var descBG:FlxSprite;
 	/// be prepared for some horrable code
 	/// i had no idea how to remove alpabets from groups so uhhhh
 	override function create()
 	{
-		if (FlxG.save.data.optionscurselected == null)
-			FlxG.save.data.optionscurselected = "0";
-		trace('default selected: ' + FlxG.save.data.optionscurselected);
+		trace('default selected: ' + curSelected);
 		curSelected = 0;
 		///should fix zero bug
 		trace('UR BINDS ARE:');
@@ -76,10 +78,12 @@ class OptionsMenu extends MusicBeatState
 		
 		trace(controlsStrings);
 		if (FlxG.save.data.optimizations)
-		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat-opt'));
+		menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat-opt'));
 		else
 		menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		menuBG.color = 0xFFea71fd;
+		menuBG.scrollFactor.set();
+		menuBG.x -= 30;	
 		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
 		menuBG.updateHitbox();
 		menuBG.screenCenter();
@@ -98,20 +102,24 @@ class OptionsMenu extends MusicBeatState
 		add(grpControlsnew3);
 		add(grpControlsnew4);
 
+		camFollow = new FlxObject(0, 0, 1, 1);
+		add(camFollow);
+
 		for (i in 0...controlsStrings.length)
-		{
-				var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
-				controlLabel.isMenuItem = true;
-				controlLabel.targetY = i;
-				grpControls.add(controlLabel);
-			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
-		}
+			{                                  //100
+			var ctrl:Alphabet = new Alphabet(0, (80 * i) + 60, controlsStrings[i], true, false);
+		    ctrl.ID = i;
+			ctrl.y += 102;
+			ctrl.x += 50;
+		    grpControls.add(ctrl);
+			}//70
 
 		TitleState.keyCheck();
 		trace('CHECKING BINDS');
 
 		var descBG:FlxSprite = new FlxSprite(0,  FlxG.height - 18).makeGraphic(Std.int(FlxG.width), 110, 0xFF000000);
 		descBG.alpha = 0.6;
+		descBG.scrollFactor.set();
 		descBG.screenCenter(X);
 		add(descBG);
 
@@ -124,7 +132,8 @@ class OptionsMenu extends MusicBeatState
 								aming.isMenuItem = false;
 								aming.targetY = curSelected - 0;
 								aming.screenCenter(X);
-								#if windows
+								aming.scrollFactor.set();
+								#if cpp
 								aming.color = FlxColor.LIME;
 								#end
 								keyalphabet.add(aming);
@@ -135,11 +144,10 @@ class OptionsMenu extends MusicBeatState
 				{
 				}
 				
-				changeSelection();
 				trace("ur binds are not zero, good");
 		///so shit gets highlighted
 
-		#if desktop
+		#if cpp
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("Rebinding Keys", null);
 		#end
@@ -198,13 +206,85 @@ class OptionsMenu extends MusicBeatState
 					FlxG.save.data.rightBind = "RIGHT";
 					trace("NOT BINDABLE");
 				}
-				if (FlxG.keys.justPressed.UP)
-					changeSelection(-1);
-				if (FlxG.keys.justPressed.DOWN)
-					changeSelection(1);
-				if (controls.ACCEPT)
+
+
+				if (abletochange)
 					{
+						if (controls.UP_P)
+							{
+								FlxG.sound.play(Paths.sound('scrollMenu'));
+								curSelected -= 1;
+								for (item in grpControls.members)
+									{
+										if (item.targetY == 0)
+										{
+										
+											camFollow.setPosition(item.getGraphicMidpoint().x + 600, item.getGraphicMidpoint().y);
+											FlxG.camera.follow(camFollow, LOCKON, 0.04 * (30 / (cast (Lib.current.getChildAt(0), Main)).getFPS()));
+												
+											// item.setGraphicSize(Std.int(item.width));
+										}
+									}
+							}
+				
+						if (controls.DOWN_P)
+							{
+								FlxG.sound.play(Paths.sound('scrollMenu'));
+								curSelected += 1;
+								for (item in grpControls.members)
+									{
+										if (item.targetY == 0)
+										{
+										
+											camFollow.setPosition(item.getGraphicMidpoint().x + 600, item.getGraphicMidpoint().y + 200);
+											FlxG.camera.follow(camFollow, LOCKON, 0.04 * (30 / (cast (Lib.current.getChildAt(0), Main)).getFPS()));
+												
+												
+											// item.setGraphicSize(Std.int(item.width));
+										}
+									}
+							}
+					}
+			
+
+			if (curSelected < 0)
+				curSelected = 0;
+	
+			if (curSelected > 4)
+				curSelected = 4;
+
+			grpControls.forEach(function(sex:Alphabet)
+				{
 		
+					if (sex.ID == curSelected)
+						sex.alpha = 1;
+					else
+						sex.alpha = 0.7;
+				});
+
+				/*grpControls.forEach(function(sex:Alphabet)
+					{
+						if (sex.ID == curSelected)
+						{
+							camFollow.setPosition(sex.getGraphicMidpoint().x + 600, sex.getGraphicMidpoint().y + 200);
+							FlxG.camera.follow(camFollow, null, 0.06);
+						}
+					});*/
+				var bullShit:Int = 0;
+
+				for (item in grpControls.members)
+					{
+						item.targetY = bullShit - curSelected;
+						bullShit++;
+
+						item.alpha = 0.7;
+						// item.setGraphicSize(Std.int(item.width * 0.8));
+			
+						if (item.targetY == 0)
+						{
+							item.alpha = 1;
+							// item.setGraphicSize(Std.int(item.width));
+						}
 					}
 
 				if (controls.BACK)
@@ -243,7 +323,7 @@ class OptionsMenu extends MusicBeatState
 							FlxG.sound.play(Paths.sound('GF_4'), 0.7);
 							FlxTransitionableState.skipNextTransIn = true;
 							FlxTransitionableState.skipNextTransOut = true;
-							FlxG.switchState(new OptionsMenu());
+							FlxG.resetState();
 					}
 				}
 			
@@ -269,14 +349,12 @@ class OptionsMenu extends MusicBeatState
 		
 				for (i in 0...controlsStrings.length)
 				{
-					var item = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
-					item.isMenuItem = true;
-					item.targetY = i;
-					grpControls.add(item);
+					var ctrl:Alphabet = new Alphabet(0, (80 * i) + 60, controlsStrings[i], true, false);
+					ctrl.ID = i;
+					ctrl.y += 102;
+					ctrl.x += 50;
+					grpControls.add(ctrl);	
 				}
-		
-				curSelected = FlxG.save.data.optionscurselected;
-				changeSelection();
 			}
 
 
@@ -302,9 +380,10 @@ class OptionsMenu extends MusicBeatState
 						remove(aming);
 						controlsStrings = [FlxG.save.data.leftBind, FlxG.save.data.downBind, FlxG.save.data.upBind, FlxG.save.data.rightBind, 'reset-all'];
 						regenMenu();
-						#if desktop
+						#if cpp
 						// Updating Discord Rich Presence
 						DiscordClient.changePresence("Rebinding Keys to " + '${FlxG.save.data.leftBind}-${FlxG.save.data.downBind}-${FlxG.save.data.upBind}-${FlxG.save.data.rightBind}', null);
+						FlxG.sound.play(Paths.sound('scrollMenu'));
 						#end
 					});
 			}
@@ -328,9 +407,10 @@ class OptionsMenu extends MusicBeatState
 							remove(aming);
 							controlsStrings = [FlxG.save.data.leftBind, FlxG.save.data.downBind, FlxG.save.data.upBind, FlxG.save.data.rightBind, 'reset-all'];
 							regenMenu();
-							#if desktop
+							#if cpp
 							// Updating Discord Rich Presence
 							DiscordClient.changePresence("Rebinding Keys to " + '${FlxG.save.data.leftBind}-${FlxG.save.data.downBind}-${FlxG.save.data.upBind}-${FlxG.save.data.rightBind}', null);
+							FlxG.sound.play(Paths.sound('scrollMenu'));
 							#end
 						});
 				}
@@ -355,9 +435,10 @@ class OptionsMenu extends MusicBeatState
 								remove(aming);
 								controlsStrings = [FlxG.save.data.leftBind, FlxG.save.data.downBind, FlxG.save.data.upBind, FlxG.save.data.rightBind, 'reset-all'];
 								regenMenu();
-								#if desktop
+								#if cpp
 								// Updating Discord Rich Presence
 								DiscordClient.changePresence("Rebinding Keys to " + '${FlxG.save.data.leftBind}-${FlxG.save.data.downBind}-${FlxG.save.data.upBind}-${FlxG.save.data.rightBind}', null);
+								FlxG.sound.play(Paths.sound('scrollMenu'));
 								#end
 							});
 					}
@@ -382,247 +463,15 @@ class OptionsMenu extends MusicBeatState
 									remove(aming);
 									controlsStrings = [FlxG.save.data.leftBind, FlxG.save.data.downBind, FlxG.save.data.upBind, FlxG.save.data.rightBind, 'reset-all'];
 									regenMenu();
-									#if desktop
+									#if cpp
 									// Updating Discord Rich Presence
 									DiscordClient.changePresence("Rebinding Keys to " + '${FlxG.save.data.leftBind}-${FlxG.save.data.downBind}-${FlxG.save.data.upBind}-${FlxG.save.data.rightBind}', null);
+									FlxG.sound.play(Paths.sound('scrollMenu'));
 									#end
 								});
 						}
 						// PlayerSettings.player1.controls.replaceBinding(Control)
 					}
-			
-
-	function changeSelection(change:Int = 0)
-	if (abletochange)
-	{
-		if (isnewmenu4)
-			{
-				FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-
-				curSelected += change;
-		
-				if (curSelected < 0)
-					curSelected = grpControlsnew4.length - 1;
-				if (curSelected >= grpControlsnew4.length)
-					curSelected = 0;
-				
-				// selector.y = (70 * curSelected) + 30;
-		
-				var bullShit:Int = 0;
-
-				FlxG.save.data.optionscurselected = curSelected;
-		
-				for (item in grpControlsnew4.members)
-				{
-					item.targetY = bullShit - curSelected;
-					bullShit++;
-		
-					item.alpha = 0.6;
-					#if windows
-					//item.color = FlxColor.WHITE;
-					#end
-					// item.setGraphicSize(Std.int(item.width * 0.8));
-		
-					if (item.targetY == 0)
-					{
-						item.alpha = 1;
-						#if windows
-						item.color = FlxColor.RED;
-						#end
-						if (curSelected != 4)
-							{
-								#if windows
-								///if debug is current selection
-								/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
-								//item.color = FlxColor.YELLOW;
-								#end
-							}
-						// item.setGraphicSize(Std.int(item.width));
-					}
-				}
-			}
-			else if (isnewmenu3)
-				{
-					FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-	
-					curSelected += change;
-			
-					if (curSelected < 0)
-						curSelected = grpControlsnew3.length - 1;
-					if (curSelected >= grpControlsnew3.length)
-						curSelected = 0;
-					
-					// selector.y = (70 * curSelected) + 30;
-			
-					var bullShit:Int = 0;
-			
-					for (item in grpControlsnew3.members)
-					{
-						item.targetY = bullShit - curSelected;
-						bullShit++;
-			
-						item.alpha = 0.6;
-						#if windows
-						item.color = FlxColor.WHITE;
-						#end
-						// item.setGraphicSize(Std.int(item.width * 0.8));
-			
-						if (item.targetY == 0)
-						{
-							item.alpha = 1;
-							#if windows
-							item.color = FlxColor.RED;
-							#end
-							if (curSelected != 4)
-								{
-									#if windows
-									///if debug is current selection
-									/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
-									item.color = FlxColor.YELLOW;
-									#end
-								}
-							// item.setGraphicSize(Std.int(item.width));
-						}
-					}
-				}
-				else if (isnewmenu2)
-					{
-							{
-								FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-				
-								curSelected += change;
-						
-								if (curSelected < 0)
-									curSelected = grpControlsnew2.length - 1;
-								if (curSelected >= grpControlsnew2.length)
-									curSelected = 0;
-								
-								// selector.y = (70 * curSelected) + 30;
-						
-								var bullShit:Int = 0;
-						
-								for (item in grpControlsnew2.members)
-								{
-									item.targetY = bullShit - curSelected;
-									bullShit++;
-						
-									item.alpha = 0.6;
-									#if windows
-									item.color = FlxColor.WHITE;
-									#end
-									// item.setGraphicSize(Std.int(item.width * 0.8));
-						
-									if (item.targetY == 0)
-									{
-										item.alpha = 1;
-										#if windows
-										item.color = FlxColor.RED;
-										#end
-										if (curSelected != 4)
-											{
-												#if windows
-												///if debug is current selection
-												/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
-												item.color = FlxColor.YELLOW;
-												#end
-											}
-										// item.setGraphicSize(Std.int(item.width));
-									}
-								}
-							}
-					}
-					 else if (isnewmenu)
-					{
-						FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-		
-						curSelected += change;
-				
-						if (curSelected < 0)
-							curSelected = grpControlsnew.length - 1;
-						if (curSelected >= grpControlsnew.length)
-							curSelected = 0;
-						
-						// selector.y = (70 * curSelected) + 30;
-				
-						var bullShit:Int = 0;
-				
-						for (item in grpControlsnew.members)
-						{
-							item.targetY = bullShit - curSelected;
-							bullShit++;
-				
-							item.alpha = 0.6;
-							#if windows
-							item.color = FlxColor.WHITE;
-							#end
-							// item.setGraphicSize(Std.int(item.width * 0.8));
-				
-							if (item.targetY == 0)
-							{
-								item.alpha = 1;
-								#if windows
-								item.color = FlxColor.RED;
-								#end
-								if (curSelected != 4)
-									{
-										#if windows
-										///if debug is current selection
-										/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
-										///item.color = FlxColor.YELLOW;
-										#end
-									}
-								// item.setGraphicSize(Std.int(item.width));
-							}
-						}
-					}
-					else
-						{
-							FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-		
-							curSelected += change;
-					
-							if (curSelected < 0)
-								curSelected = grpControls.length - 1;
-							if (curSelected >= grpControls.length)
-								curSelected = 0;
-
-							FlxG.save.data.optionscurselected = curSelected;
-							
-							
-							// selector.y = (70 * curSelected) + 30;
-					
-							var bullShit:Int = 0;
-					
-							for (item in grpControls.members)
-							{
-								item.targetY = bullShit - curSelected;
-								bullShit++;
-					
-								item.alpha = 0.6;
-								#if windows
-								item.color = FlxColor.WHITE;
-								#end
-								// item.setGraphicSize(Std.int(item.width * 0.8));
-					
-								if (item.targetY == 0)
-								{
-									item.alpha = 1;
-									#if windows
-									///item.color = FlxColor.RED;
-									#end
-									if (curSelected == 4)
-										{
-											#if windows
-											///if debug is current selection
-											/// ITS BACKWARDS!?!?!?!?! WHAT THE FUCK?
-											item.color = FlxColor.RED;
-											#end
-										}
-									// item.setGraphicSize(Std.int(item.width));
-								}
-							}
-						}
-	}
 
 
 

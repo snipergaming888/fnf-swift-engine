@@ -23,6 +23,12 @@ class TitleStateOld extends FlxTransitionableState
 	{
 		super.create();
 
+		if (FlxG.mouse.visible = true)
+			{
+				FlxG.mouse.visible = false;
+				trace('no mouse');
+			}
+
 		if (!initialized)
 		{
 			var diamond:FlxGraphic = FlxGraphic.fromClass(GraphicTransTileDiamond);

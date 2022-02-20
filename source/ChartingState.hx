@@ -1,6 +1,6 @@
 package;
 
-#if desktop
+#if cpp
 import Discord.DiscordClient;
 #end
 import Conductor.BPMChangeEvent;
@@ -93,7 +93,7 @@ class ChartingState extends MusicBeatState
 
 	override function create()
 	{
-		#if desktop
+		#if cpp
 		DiscordClient.changePresence("Editing " + PlayState.SONG.song + " in the Chart Editor", null, null, true);
 		#end
 
@@ -538,7 +538,7 @@ class ChartingState extends MusicBeatState
 			changeSection(curSection + 1, false);
 		}
 
-		#if desktop
+		#if cpp
 		DiscordClient.changePresence("Editing " + PlayState.SONG.song + " in the Chart Editor" + " | " + "Position: " + Std.string(FlxMath.roundDecimal(Conductor.songPosition / 1000, 2)) + " / " + Std.string(FlxMath.roundDecimal(FlxG.sound.music.length / 1000, 2)) + " | Section " + curSection , null, null, true);
 		#end
 

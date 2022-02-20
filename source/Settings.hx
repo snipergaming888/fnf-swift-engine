@@ -163,6 +163,9 @@ class Settings extends MusicBeatState
               {
                 GameOptions.ghosttappinghitsoundsenabled = true;
               }
+
+              FlxG.save.data.hasplayed = false;
+              trace('anim played? ' + FlxG.save.data.hasplayed);
               
               if (FlxG.save.data.togglecap)
               (cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);

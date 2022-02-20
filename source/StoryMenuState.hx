@@ -1,6 +1,6 @@
 package;
 
-#if desktop
+#if cpp
 import Discord.DiscordClient;
 import sys.thread.Thread;
 #end
@@ -119,7 +119,7 @@ class StoryMenuState extends MusicBeatState
 
 		persistentUpdate = persistentDraw = true;
 
-		#if desktop
+		#if cpp
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("Looking at the Story Menu", null);
 		#end
@@ -418,7 +418,7 @@ class StoryMenuState extends MusicBeatState
 		else if (curDifficulty == 2)
 			Diffstring = "Hard";
 
-		#if desktop
+		#if cpp
 		if (curWeek == 0)
 			{
 				weekstring = "Tutorial";
@@ -509,7 +509,7 @@ class StoryMenuState extends MusicBeatState
 		else if (curDifficulty == 2)
 			Diffstring = "Hard";
 
-		#if desktop
+		#if cpp
 		if (curWeek == 0)
 			{
 				weekstring = "Tutorial";

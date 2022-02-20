@@ -1,6 +1,6 @@
 package;
 
-#if desktop
+#if cpp
 import Discord.DiscordClient;
 import sys.thread.Thread;
 #end
@@ -18,6 +18,9 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
 import flixel.FlxSubState;
+import openfl.Lib;
+import flixel.FlxObject;
+import flixel.tweens.FlxEase;
 import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
 import flixel.addons.transition.FlxTransitionableState;
 
@@ -31,6 +34,8 @@ class MiscOptions extends MusicBeatState
 	var aming:Alphabet;
 	var ok:Alphabet;
 	var curframefloat:Float = 1;
+	var menuBG:FlxSprite;
+	var camFollow:FlxObject;
 
 	var controlsStrings:Array<String> = [];
 
@@ -39,9 +44,11 @@ class MiscOptions extends MusicBeatState
 	var descBG:FlxSprite;
 	override function create()
 	{
-		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
+		menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		if (FlxG.save.data.optimizations)
 		menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat-opt'));
+		menuBG.scrollFactor.set();
+		menuBG.x -= 30;	
 		#if debug
 		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.freeplaysongs ? 'freeplay song previews on' : 'freeplay song previews off') +"\n" + (FlxG.save.data.discordrpc ? 'discord presence on' : 'discord presence off') +"\n" + (FlxG.save.data.KEidle ? 'KADE ENGINE IDLE ON' : 'KADE ENGINE IDLE OFF') +"\n" + (FlxG.save.data.idleonbeat ? 'idle on beat on' : 'idle on beat off'));
 		#else
@@ -61,17 +68,21 @@ class MiscOptions extends MusicBeatState
 		add(grpControls);
 
 		for (i in 0...controlsStrings.length)
-		{
-				var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
-				controlLabel.isMenuItem = true;
-				controlLabel.targetY = i;
-				grpControls.add(controlLabel);
-			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
-		}
+			{                                  //100
+			var ctrl:Alphabet = new Alphabet(0, (80 * i) + 60, controlsStrings[i], true, false);
+		    ctrl.ID = i;
+			ctrl.y += 102;
+			ctrl.x += 50;
+		    grpControls.add(ctrl);
+			}//70
+
+			camFollow = new FlxObject(0, 0, 1, 1);
+		    add(camFollow);
 
 		var descBG:FlxSprite = new FlxSprite(0,  FlxG.height - 18).makeGraphic(Std.int(FlxG.width), 110, 0xFF000000);
 		descBG.alpha = 0.6;
 		descBG.screenCenter(X);
+		descBG.scrollFactor.set();
 		add(descBG);
 
 		versionShit = new FlxText(5, FlxG.height - 18, 0, "", 12);
@@ -93,7 +104,7 @@ class MiscOptions extends MusicBeatState
 		ok.targetY = curSelected - 0;
 		ok.screenCenter(X);
 
-		#if desktop
+		#if cpp
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("Looking at the Miscellaneous Options Menu", null);
 		#end
@@ -116,10 +127,82 @@ class MiscOptions extends MusicBeatState
 					FlxTransitionableState.skipNextTransOut = true;
 					FlxG.switchState(new MenuState());
 				}
-			if (controls.UP_P)
-				changeSelection(-1);
-			if (controls.DOWN_P)
-				changeSelection(1);
+				if (controls.UP_P)
+					{
+						FlxG.sound.play(Paths.sound('scrollMenu'));
+						curSelected -= 1;
+						for (item in grpControls.members)
+							{
+								if (item.targetY == 0)
+								{
+								
+									camFollow.setPosition(item.getGraphicMidpoint().x + 600, item.getGraphicMidpoint().y);
+									FlxG.camera.follow(camFollow, LOCKON, 0.04 * (30 / (cast (Lib.current.getChildAt(0), Main)).getFPS()));
+										
+									// item.setGraphicSize(Std.int(item.width));
+								}
+							}
+					}
+		
+				if (controls.DOWN_P)
+					{
+						FlxG.sound.play(Paths.sound('scrollMenu'));
+						curSelected += 1;
+						for (item in grpControls.members)
+							{
+								if (item.targetY == 0)
+								{
+								
+									camFollow.setPosition(item.getGraphicMidpoint().x + 600, item.getGraphicMidpoint().y + 200);
+									FlxG.camera.follow(camFollow, LOCKON, 0.04 * (30 / (cast (Lib.current.getChildAt(0), Main)).getFPS()));
+										
+										
+									// item.setGraphicSize(Std.int(item.width));
+								}
+							}
+					}
+			
+
+			if (curSelected < 0)
+				curSelected = 0;
+				
+			if (curSelected > 1)
+				curSelected = 1;
+					
+
+			grpControls.forEach(function(sex:Alphabet)
+				{
+		
+					if (sex.ID == curSelected)
+						sex.alpha = 1;
+					else
+						sex.alpha = 0.7;
+				});
+
+				/*grpControls.forEach(function(sex:Alphabet)
+					{
+						if (sex.ID == curSelected)
+						{
+							camFollow.setPosition(sex.getGraphicMidpoint().x + 600, sex.getGraphicMidpoint().y + 200);
+							FlxG.camera.follow(camFollow, null, 0.06);
+						}
+					});*/
+				var bullShit:Int = 0;
+
+				for (item in grpControls.members)
+					{
+						item.targetY = bullShit - curSelected;
+						bullShit++;
+
+						item.alpha = 0.7;
+						// item.setGraphicSize(Std.int(item.width * 0.8));
+			
+						if (item.targetY == 0)
+						{
+							item.alpha = 1;
+							// item.setGraphicSize(Std.int(item.width));
+						}
+					}
 			if (controls.BACK)
 				FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
 
@@ -142,20 +225,22 @@ class MiscOptions extends MusicBeatState
 					case 0:
 						grpControls.remove(grpControls.members[curSelected]);
 						FlxG.save.data.freeplaysongs = !FlxG.save.data.freeplaysongs;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.freeplaysongs ? 'freeplay song previews on' : 'freeplay song previews off'), true, false);
-						ctrl.isMenuItem = true;
+						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.freeplaysongs ? 'freeplay song previews on' : 'freeplay song previews off'), true, false);
+						ctrl.y += 102;
+			        	ctrl.x += 50;
 						ctrl.targetY = curSelected - 0;
-						#if windows
-						//trl.color = FlxColor.YELLOW;
-						#end
 						grpControls.add(ctrl);
+						FlxG.sound.play(Paths.sound('scrollMenu'));
 					case 1:
 						grpControls.remove(grpControls.members[curSelected]);
 						FlxG.save.data.discordrpc = !FlxG.save.data.discordrpc;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.discordrpc ? 'discord presence on' : 'discord presence off'), true, false);
-						ctrl.isMenuItem = true;
+						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.discordrpc ? 'discord presence on' : 'discord presence off'), true, false);
+						ctrl.y += 102;
+			        	ctrl.x += 50;
 						ctrl.targetY = curSelected - 1;
-						#if desktop
+						grpControls.add(ctrl);
+						FlxG.sound.play(Paths.sound('scrollMenu'));
+						#if cpp
 						if (!FlxG.save.data.discordrpc)
 							{
 								DiscordClient.shutdown();
@@ -165,16 +250,12 @@ class MiscOptions extends MusicBeatState
 									DiscordClient.initialize();
 								}
 						#end
-						grpControls.add(ctrl);
 					case 2:
 						grpControls.remove(grpControls.members[curSelected]);
 						FlxG.save.data.KEidle = !FlxG.save.data.KEidle;
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.KEidle ? 'KADE ENGINE IDLE ON' : 'KADE ENGINE IDLE OFF'), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 2;
-						#if windows
-						//ctrl.color = FlxColor.YELLOW;
-						#end
 						grpControls.add(ctrl);
 					case 3:
 						grpControls.remove(grpControls.members[curSelected]);
@@ -182,9 +263,6 @@ class MiscOptions extends MusicBeatState
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.idleonbeat ? 'idle on beat on' : 'idle on beat off'), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 3;
-						#if windows
-						//ctrl.color = FlxColor.YELLOW;
-						#end
 						grpControls.add(ctrl);						
 				}
 			}
@@ -218,17 +296,11 @@ class MiscOptions extends MusicBeatState
 					bullShit++;
 		
 					item.alpha = 0.6;
-					#if windows
-					//item.color = FlxColor.WHITE;
-					#end
 					// item.setGraphicSize(Std.int(item.width * 0.8));
 		
 					if (item.targetY == 0)
 					{
 						item.alpha = 1;
-						#if windows
-						//item.color = FlxColor.YELLOW;
-						#end
 						// item.setGraphicSize(Std.int(item.width));
 					}
 				}

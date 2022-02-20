@@ -1,6 +1,6 @@
 package;
 
-#if desktop
+#if cpp
 import Discord.DiscordClient;
 #end
 import Controls.KeyboardScheme;
@@ -31,7 +31,7 @@ class Cache extends MusicBeatState
 	var magenta:FlxSprite;
 	override function create()
 	{
-		#if desktop
+		#if cpp
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("Loading up the game", null);
 		#end

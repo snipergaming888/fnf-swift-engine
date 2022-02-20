@@ -47,7 +47,7 @@ class DialogueBox extends FlxSpriteGroup
 				FlxG.sound.playMusic(Paths.music('LunchboxScary', 'shared'), 0);
 				FlxG.sound.music.fadeIn(1, 0, 0.8);
 		}
-        if (StoryMenuState.isStoryMode)
+        if (StoryMenuState.isStoryMode && !FlxG.save.data.hideHUD)
 			{
 				switch (PlayState.SONG.song.toLowerCase())
 				{
@@ -61,6 +61,19 @@ class DialogueBox extends FlxSpriteGroup
 							}, 5);
 				}
 			}
+
+			/*if (StoryMenuState.isStoryMode && FlxG.save.data.songPosition)
+				{
+					switch (PlayState.SONG.song.toLowerCase())
+					{
+						case 'senpai' | 'roses' | 'thorns':
+							new FlxTimer().start(0.36, function(tmr:FlxTimer)
+								{
+									PlayState.songPosBG.alpha -= 1 / 5 * 1;
+									PlayState.songPosBar.alpha -= 1 / 5 * 1;
+								}, 5);
+					}
+				} */
 
 		bgFade = new FlxSprite(-200, -200).makeGraphic(Std.int(FlxG.width * 1.3), Std.int(FlxG.height * 1.3), 0xFFB3DFd8);
 		bgFade.scrollFactor.set();
@@ -97,6 +110,7 @@ class DialogueBox extends FlxSpriteGroup
 				box.frames = Paths.getSparrowAtlas('weeb/pixelUI/dialogueBox-evil', 'shared');
 				box.animation.addByPrefix('normalOpen', 'Spirit Textbox spawn', 24, false);
 				box.animation.addByIndices('normal', 'Spirit Textbox spawn', [11], "", 24);
+				// for some reason the box is bigger than in the normal game? i don't know why.
 		}
 
 		this.dialogueList = dialogueList;
@@ -220,11 +234,28 @@ class DialogueBox extends FlxSpriteGroup
 						portraitRight.visible = false;
 						swagDialogue.alpha -= 1 / 5;
 						dropText.alpha = swagDialogue.alpha;
-						PlayState.healthBarBG.alpha += 1 / 5 * 1;
-						PlayState.healthBar.alpha += 1 / 5 * 1;
-						PlayState.iconP1.alpha += 1 / 5 * 1;
-						PlayState.iconP2.alpha += 1 / 5 * 1;
 					}, 5);
+
+
+					if (StoryMenuState.isStoryMode && !FlxG.save.data.hideHUD)
+						{
+							new FlxTimer().start(0.2, function(tmr:FlxTimer)
+								{
+									PlayState.healthBarBG.alpha += 1 / 5 * 1;
+									PlayState.healthBar.alpha += 1 / 5 * 1;
+									PlayState.iconP1.alpha += 1 / 5 * 1;
+									PlayState.iconP2.alpha += 1 / 5 * 1;
+								}, 5);
+						}
+
+						/*if (StoryMenuState.isStoryMode && FlxG.save.data.songPosition && PlayState.addedsongpos)
+						{
+							new FlxTimer().start(0.2, function(tmr:FlxTimer)
+								{
+							        PlayState.songPosBG.alpha += 1 / 5 * 1;
+									PlayState.songPosBar.alpha += 1 / 5 * 1;
+								}, 5);
+						} */	
 
 					new FlxTimer().start(1.2, function(tmr:FlxTimer)
 					{
@@ -235,6 +266,7 @@ class DialogueBox extends FlxSpriteGroup
 							{
 								PlayState.generateStaticArrows(0);
 								PlayState.generateStaticArrows(1);
+								trace('arrows now');
 							}
 					});
 				}

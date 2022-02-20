@@ -1,6 +1,6 @@
 package;
 
-#if desktop
+#if cpp
 import Discord.DiscordClient;
 import sys.thread.Thread;
 #end
@@ -102,7 +102,7 @@ class TitleState extends MusicBeatState
 		Highscore.load();
 		keyCheck();
 
-		#if desktop
+		#if cpp
 		if (FlxG.save.data.discordrpc)
 			{
 				DiscordClient.initialize();
@@ -113,7 +113,7 @@ class TitleState extends MusicBeatState
 			}
 		#end
 
-		#if desktop
+		#if cpp
 		if (FlxG.save.data.discordrpc)
 			DiscordClient.changePresence("Looking at the Title Menu", null);
 		// Updating Discord Rich Presence
@@ -829,12 +829,11 @@ class TitleState extends MusicBeatState
 				 case 5:
 					 createCoolText(['swift engine', 'by']);
 				 case 7:
-					 #if windows
+					 #if cpp
 					 addMoreTextcolorsnipergaming('sniper gaming');
+					 #else
+					 addMoreText('sniper gaming');
 					 #end
-				 #if web	
-				  addMoreText('sniper gaming');
-				  #end
 				 // credTextShit.text += '\nNewgrounds';
 				 case 8:
 					 deleteCoolText();
@@ -937,12 +936,11 @@ class TitleState extends MusicBeatState
 						case 5:
 							createCoolText(['swift engine', 'by']);
 						case 7:
-							#if windows
+							#if cpp
 							addMoreTextcolorsnipergaming('sniper gaming');
+							#else
+							addMoreText('sniper gaming');
 							#end
-						#if web	
-						 addMoreText('sniper gaming');
-						 #end
 						// credTextShit.text += '\nNewgrounds';
 						case 8:
 							deleteCoolText();

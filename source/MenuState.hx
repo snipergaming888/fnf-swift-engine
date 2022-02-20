@@ -1,6 +1,6 @@
 package;
 
-#if desktop
+#if cpp
 import Discord.DiscordClient;
 import sys.thread.Thread;
 #end
@@ -8,6 +8,7 @@ import Controls.KeyboardScheme;
 import Controls.Control;
 import flash.text.TextField;
 import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
 import flixel.FlxG;
 import flixel.system.FlxSound;
 import flixel.FlxSprite;
@@ -18,6 +19,7 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
+import flixel.util.FlxTimer;
 import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
 import flixel.addons.transition.FlxTransitionableState;
 
@@ -32,9 +34,13 @@ class MenuState extends MusicBeatState
 	var versionShit:FlxText;
 	var camZoom:FlxTween;
 	var CYAN:FlxColor = 0xFF00FFFF;
-	var desc:FlxText;
+	public static var desc:FlxText;
 	var voices:FlxSound;
-	var descBG:FlxSprite;
+	public static var descBG:FlxSprite;
+	var sex:Array<String> = ['GAMEPLAY', 'APPEARANCE', 'KEYBINDS', 'PERFORMANCE', 'MISC'];
+	#if web
+	sex = ['GAMEPLAY', 'APPEARANCE', 'KEYBINDS', 'PERFORMANCE'];
+	#end
 	override function create()
 	{
 		
@@ -59,29 +65,52 @@ class MenuState extends MusicBeatState
 		grpControls = new FlxTypedGroup<Alphabet>();
 		add(grpControls);
 
-		for (i in 0...controlsStrings.length)
-		{
-				var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
+		/*for (i in 0...controlsStrings.length)
+		{                                                  //70
+				var controlLabel:Alphabet = new Alphabet(0, (1 * i) + 1, controlsStrings[i], true, false);
 				controlLabel.isMenuItem = true;
 				controlLabel.targetY = i;
 				grpControls.add(controlLabel);
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
-		}
+		}*/
 
-		var descBG:FlxSprite = new FlxSprite(0,  FlxG.height - 18).makeGraphic(Std.int(FlxG.width), 110, 0xFF000000);
+	         
+		
+		for (i in 0...sex.length)
+			{                                  //100
+			var ctrl:Alphabet = new Alphabet(0, (80 * i) + 60, sex[i], true, false);
+		    ctrl.ID = i;
+			ctrl.y += 102;
+			ctrl.screenCenter(X);
+		    grpControls.add(ctrl);
+			}//70
+				// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
+			
+
+		descBG = new FlxSprite(0,  FlxG.height - 18).makeGraphic(Std.int(FlxG.width), 110, 0xFF000000);
 		descBG.alpha = 0.6;
+		if(!FlxG.save.data.hasplayed)
+		descBG.y += 100;
 		descBG.screenCenter(X);
 		add(descBG);
+		if (!FlxG.save.data.hasplayed)
+		FlxTween.tween(descBG, {y: descBG.y -100, alpha: 0.6}, 1, {ease: FlxEase.circOut, startDelay: 0.3});
 
 		desc = new FlxText(5, FlxG.height - 18, 0, "", 12);
 		desc.scrollFactor.set();
 		desc.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		if(!FlxG.save.data.hasplayed)
+		desc.y += 100;
 		add(desc);
+		if (!FlxG.save.data.hasplayed)
+			{
+				FlxTween.tween(desc, {y: desc.y -100, alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 0.3});
+				FlxG.save.data.hasplayed = true;	
+			}
 
-		changeSelection();
 		///so shit gets highlighted
 
-		#if desktop
+		#if cpp
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("Looking at the Options Menu", null);
 		#end
@@ -98,16 +127,15 @@ class MenuState extends MusicBeatState
 
 			if (controls.BACK)
 				{
+					FlxG.save.data.hasplayed = false;
 					FlxTransitionableState.skipNextTransIn = false;
 					FlxTransitionableState.skipNextTransOut = false;
-					FlxG.switchState(new MainMenuState());
+			        FlxG.switchState(new MainMenuState());
 				}
-			if (controls.UP_P)
-				changeSelection(-1);
-			if (controls.DOWN_P)
-				changeSelection(1);
 			if (controls.BACK)
-			FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
+				{
+					FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);	
+				}
 
 			if (curSelected == 0)
 				desc.text = "In-game options menu.";
@@ -123,6 +151,37 @@ class MenuState extends MusicBeatState
 
 			if (curSelected == 4)
 				desc.text = "miscellaneous options menu.";
+
+			if (controls.UP_P)
+				{
+					FlxG.sound.play(Paths.sound('scrollMenu'));
+					curSelected -= 1;
+				}
+	
+			if (controls.DOWN_P)
+				{
+					FlxG.sound.play(Paths.sound('scrollMenu'));
+					curSelected += 1;
+				}
+	
+			if (curSelected < 0)
+				curSelected = 0;
+			#if web
+			if (curSelected > 4)
+				curSelected = 4;
+			#else
+			if (curSelected > 4)
+				curSelected = 4;
+			#end
+
+			grpControls.forEach(function(sex:Alphabet)
+				{
+		
+					if (sex.ID == curSelected)
+						sex.alpha = 1;
+					else
+						sex.alpha = 0.7;
+				});
 			
 
 			if (controls.ACCEPT)
@@ -168,49 +227,6 @@ class MenuState extends MusicBeatState
 			}
 
 	var isSettingControl:Bool = false;
-
-	function changeSelection(change:Int = 0)
-	{
-		#if !switch
-		// NGio.logEvent('Fresh');
-		#end
-		
-		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-
-		curSelected += change;
-
-		if (curSelected < 0)
-			curSelected = grpControls.length - 1;
-		if (curSelected >= grpControls.length)
-			curSelected = 0;
-
-		// selector.y = (70 * curSelected) + 30;
-
-		var bullShit:Int = 0;
-
-		for (item in grpControls.members)
-		{
-			item.targetY = bullShit - curSelected;
-			bullShit++;
-			
-
-			item.alpha = 0.6;
-
-			/*#if windows
-			item.color = FlxColor.WHITE;
-           */// #end
-			// item.setGraphicSize(Std.int(item.width * 0.8));
-
-			if (item.targetY == 0)
-			{
-				item.alpha = 1;
-				/*#if windows
-				item.color = FlxColor.YELLOW;
-				 *///#end
-				// item.setGraphicSize(Std.int(item.width));
-			}
-		}
-	}
 
 
 

@@ -1,6 +1,6 @@
 package;
 
-#if desktop
+#if cpp
 import Discord.DiscordClient;
 #end
 import Controls.KeyboardScheme;
@@ -76,7 +76,7 @@ class LatencyState extends FlxState
 
 		Conductor.changeBPM(120);
 
-		#if desktop
+		#if cpp
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("Editing their Offset" + " (Offset: " + FlxG.save.data.offset + ")", null);
 		#end
@@ -112,7 +112,7 @@ class LatencyState extends FlxState
 			  FlxG.resetState();
 			}
 
-			#if desktop
+			#if cpp
 		    // Updating Discord Rich Presence
 		    DiscordClient.changePresence("Editing their Offset" + " (Offset: " + FlxG.save.data.offset + ")", null);
 		    #end

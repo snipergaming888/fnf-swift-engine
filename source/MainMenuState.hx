@@ -1,6 +1,6 @@
 package;
 
-#if desktop
+#if cpp
 import Discord.DiscordClient;
 #end
 import flixel.FlxG;
@@ -44,15 +44,15 @@ class MainMenuState extends MusicBeatState
 	var playanims:Bool = false;
 	var defaultCamZoom:Float = 1.05;
 	var camZoom:FlxTween;
-	public static var sniperengineversion:String = " Swift Engine 1.4.5";
-	public static var sniperengineversionA:String = " SE 1.4.5";
+	public static var sniperengineversion:String = " Swift Engine 1.4.6";
+	public static var sniperengineversionA:String = " SE 1.4.6";
 	public static var gameVer:String = "v0.2.7.1";
 	public static var nightly:String = "";
 	public static var testbuild:String = "PUBLIC TEST BUILD";
 	
 	override function create()
 	{	
-		#if desktop
+		#if cpp
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("Looking at the Menu", null);
 		#end
@@ -395,24 +395,6 @@ class MainMenuState extends MusicBeatState
 												trace('no');
 											}
 							    }
-
-								if (curBeat % 2 == 0)
-									{
-										if (TitleState.old)
-											{
-												 ///nothing
-											}
-											else if (FlxG.save.data.camzooming)
-												{
-													FlxG.camera.zoom += 0.015;
-													camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);
-													trace('zoom');
-												}
-												else
-												{
-													trace('no');
-												}
-									}
 				}
 			}
 

@@ -1,6 +1,6 @@
 package;
 
-#if desktop
+#if cpp
 import Discord.DiscordClient;
 #end
 import flixel.addons.display.FlxBackdrop;
@@ -135,6 +135,7 @@ class PlayState extends MusicBeatState
 	public static var resetalpha:Bool = false;
 	public static var resetlength:Bool = false;
 	public static var resetgamespeed:Bool = false;
+	public static var altAnim:String = "";
 
 	// no sex in this household
 	// fr fr
@@ -179,7 +180,7 @@ class PlayState extends MusicBeatState
 	public static var sniperenginemark:FlxText;
 	var botPlayState:FlxText;
 	public static var downscrollbotplay:FlxText;
-	var songlengthtext:FlxText;
+	public static var songlengthtext:FlxText;
 	public static var version:FlxText;
 	public static var nightlyandtest:FlxText;
 	var ratings:FlxText;
@@ -191,15 +192,16 @@ class PlayState extends MusicBeatState
 	public static var theFunne:Bool = true;
 	public static var BOTPLAY:Bool = true;
 	public static var stageTesting:Bool = false;
+	public static var blueballed:Int = 0;
 	var notesHitArray:Array<Date> = [];
 	var notesHit:Float = 0;
 	var cpunotesHit:Float = 0;
 	var notesnotmissed:Float = 0;
 	var notesPassing:Float = 0;
-	var baseText2:String = "( Current Accuracy: ";
+	var baseText2:String = "N/A";
 	var songRating:String = "?";
-	var fullcombotext:String = " | N/A";
-	var baseText:String = "( Current Accuracy:";
+	var fullcombotext:String = "N/A";
+	var baseText:String = "N/A";
 	public static var songPosBG:FlxSprite;
 	public static var songPosBar:FlxBar;
 	var songName:FlxText;
@@ -223,12 +225,13 @@ class PlayState extends MusicBeatState
 
 	public static var inCutscene:Bool = false;
 
-	#if desktop
+	#if cpp
 	// Discord RPC variables
 	var storyDifficultyText:String = "";
 	var iconRPC:String = "";
 	var detailsText:String = "";
 	public static var botplayd:String = "";
+	public static var practicemodeon:String = "";
 	var detailsPausedText:String = "";
 	#end
 
@@ -260,6 +263,7 @@ class PlayState extends MusicBeatState
 		moveminscoreback =true;
 		paused = false;
 		needstopitch = false;
+		//blueballed = 0;
 		if (!Settings.enablebotplay)
 			{
 			  FlxG.save.data.botplay = false;
@@ -336,7 +340,7 @@ class PlayState extends MusicBeatState
 				dialogue = CoolUtil.coolTextFile(Paths.txt('thorns/thornsDialogue'));
 		}
 
-		#if desktop
+		#if cpp
 		// Making difficulty text for Discord Rich Presence.
 		switch (storyDifficulty)
 		{
@@ -372,18 +376,27 @@ class PlayState extends MusicBeatState
 
 		if (FlxG.save.data.botplay)
 			{
-				botplayd = " - (Botplay)";
+				botplayd = " | botplay";
 			}
 			else
 				{
 					botplayd = "";	
 				}
 
+		if (PauseSubState.practicemode)
+			{
+				practicemodeon = " - (PRACTICE MODE)";
+			}
+			else
+				{
+					practicemodeon = "";	
+				}		
+
 		// String for when the game is paused
 		detailsPausedText = "Paused - " + detailsText;
 		
 		// Updating Discord Rich Presence.
-		DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC);
+		DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd + practicemodeon, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC);
 		#end
 
 		switch (SONG.song.toLowerCase())
@@ -1168,7 +1181,7 @@ class PlayState extends MusicBeatState
          boyfriend = new Boyfriend(770, 450, SONG.player1);
 				
 
-		switch (dad.curCharacter) // if anyone listed is P2 | make sure to add your characters color here, or it will crash or default to red.
+		switch (dad.curCharacter) // if anyone listed is P2 | make sure to add your characters color here, or it will default to red.
 		{
 			case 'dad':
 			p2color = 0xFF9456AE;
@@ -1289,8 +1302,10 @@ class PlayState extends MusicBeatState
 
 		Conductor.songPosition = -5000;
                                   ///50
-		strumLine = new FlxSprite(0, 50).makeGraphic(FlxG.width, 10);
-		strumLine.x = 50;
+		//strumLine = new FlxSprite(0, 50).makeGraphic(FlxG.width, 10);
+		strumLine = new FlxSprite(100, 50).makeGraphic(100, 10);
+		//strumLine.x = 50;
+		strumLine.x = 100;
 		strumLine.scrollFactor.set();
 
 		if (FlxG.save.data.downscroll)
@@ -1368,12 +1383,14 @@ class PlayState extends MusicBeatState
 					songPosBG.y = FlxG.height * 0.9 + 45; 
 				songPosBG.screenCenter(X);
 				songPosBG.scrollFactor.set();
+				songPosBG.alpha = 0;
 				add(songPosBG);
 				
 				songPosBar = new FlxBar(songPosBG.x + 4, songPosBG.y + 4, LEFT_TO_RIGHT, Std.int(songPosBG.width - 8), Std.int(songPosBG.height - 8), this,
 					'songPositionBar', 0, 90000);
 				songPosBar.scrollFactor.set();
 				songPosBar.createFilledBar(FlxColor.BLACK, FlxColor.WHITE);
+				songPosBar.alpha = 0;
 				add(songPosBar);
 
 				if (FlxG.save.data.downscroll)
@@ -1776,7 +1793,7 @@ class PlayState extends MusicBeatState
 						dialogue = CoolUtil.coolTextFile(Paths.txt('thorns/thornsDialogue'));
 				}
 		
-				#if desktop
+				#if cpp
 				// Making difficulty text for Discord Rich Presence.
 				switch (storyDifficulty)
 				{
@@ -1814,7 +1831,7 @@ class PlayState extends MusicBeatState
 				detailsPausedText = "Paused - " + detailsText;
 				
 				// Updating Discord Rich Presence.
-				DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC);
+				DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd + practicemodeon, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC);
 				#end
 				defaultstagezoom();
 	
@@ -2013,9 +2030,9 @@ class PlayState extends MusicBeatState
 					songPosBar.cameras = [camHUD];
 					songlengthtext.cameras = [camHUD];
 				}
-		#if desktop
+		#if cpp
 		// Updating Discord Rich Presence (with Time Left)
-		DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC);
+		DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd + practicemodeon, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC);
 		#end
 	}
 
@@ -2134,8 +2151,8 @@ class PlayState extends MusicBeatState
 	{
 		for (i in 0...4)
 		{
-			trace(i);                              ///0
-			babyArrow = new FlxSprite(0, strumLine.y);
+			trace(i);              ///0
+			babyArrow = new FlxSprite(35, strumLine.y);
 
 			switch (curStage)
 			{
@@ -2359,14 +2376,14 @@ class PlayState extends MusicBeatState
 									}
 				});
 
-			#if desktop
+			#if cpp
 			if (startTimer.finished)
 			{
-			DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses , iconRPC, true, songLength - Conductor.songPosition);
+			DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd + practicemodeon, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses , iconRPC, true, songLength - Conductor.songPosition);
 			}
 			else
 			{
-			DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC);
+			DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd + practicemodeon, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC);
 			}
 			#end
 		}
@@ -2376,16 +2393,16 @@ class PlayState extends MusicBeatState
 
 	override public function onFocus():Void
 	{
-		#if desktop
+		#if cpp
 		if (health > 0 && !paused)
 		{
 			if (Conductor.songPosition > 0.0)
 			{
-			DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC, true, songLength - Conductor.songPosition);
+			DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd + practicemodeon, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC, true, songLength - Conductor.songPosition);
 			}
 			else
 			{
-			DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC);
+			DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd + practicemodeon, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC);
 			}
 			//(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
 		}
@@ -2396,10 +2413,10 @@ class PlayState extends MusicBeatState
 	
 	override public function onFocusLost():Void
 	{
-		#if desktop
+		#if cpp
 		if (health > 0 && !paused)
 		{
-		DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC);
+		DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd + practicemodeon, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC);
 		}
 		#end
 
@@ -2476,7 +2493,7 @@ class PlayState extends MusicBeatState
 
 		if (FlxG.save.data.showratings && !addedratingstext)
 			{
-				ratings = new FlxText(4, 300, "Sicks: " + sicks + "\n" + "\n" + "Goods: " + goods + "\n" + "\n" + "Bads: " + bads + "\n" + "\n" + "Shits: " + shits + "\n" + "" , 20);
+				ratings = new FlxText(4, 300, "" , 20);
 				ratings.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 				ratings.scrollFactor.set();
 				ratings.alignment = CENTER;
@@ -2830,6 +2847,7 @@ class PlayState extends MusicBeatState
 						songPosBG.screenCenter(X);
 						songPosBG.scrollFactor.set();
 						add(songPosBG);
+						FlxTween.tween(songPosBG, {alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 0.2});
 		
 						songPosBar = new FlxBar(songPosBG.x + 4, songPosBG.y + 4, LEFT_TO_RIGHT, Std.int(songPosBG.width - 8), Std.int(songPosBG.height - 8), this,
 							'songPositionBar', 0, songLength - 1000);
@@ -2837,6 +2855,7 @@ class PlayState extends MusicBeatState
 						songPosBar.scrollFactor.set();
 						songPosBar.createFilledBar(FlxColor.BLACK, FlxColor.WHITE);
 						add(songPosBar);
+						FlxTween.tween(songlengthtext, {alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 0.2});
 						if (FlxG.save.data.downscroll)
 						songlengthtext = new FlxText(600, 682, "", 20);
 						else
@@ -2940,25 +2959,30 @@ class PlayState extends MusicBeatState
 						}	
 			}
 
-		if (FlxG.save.data.minscore)
+	       if (FlxG.save.data.hideHUD && !inCutscene)
+	       {
+			scoreTxt.text = "";	
+	       }
+		   else if (FlxG.save.data.minscore && !inCutscene)
 			{
 				scoreTxt.text = "Score:" + songScore;	
 			}
-			else if (FlxG.save.data.nps)
+			else if (FlxG.save.data.nps && !inCutscene)
 				{
-					if (accuracy == 0)
+					if (accuracy == 0 && !inCutscene)
 						scoreTxt.text = "( Current Accuracy: " + baseText2 + " | Overall Accuracy: " + "N/A" + " | Misses: " + misses + " | " + fullcombotext + " (" + songRating + ")" + " | NPS: " + nps + " | Max NPS: " + maxNPS + " | " + "Score: " + songScore + " )";	
-						else
+						else if (!inCutscene)
 						scoreTxt.text = "( Current Accuracy: " + baseText2 + " | Overall Accuracy: " + truncateFloat(accuracy, 2) + "%" + " | Misses: " + misses + " | " + fullcombotext + " (" + songRating + ")" + " | NPS: " + nps + " | Max NPS: " + maxNPS + " | " + "Score: " + songScore + " )";
-					
+					if (!inCutscene)
 					scoreTxt.alignment = CENTER;
 				}
 				else
 					{
-						if (accuracy == 0)
+						if (accuracy == 0 && !inCutscene)
 						scoreTxt.text = "( Current Accuracy: " + baseText2 + " | Overall Accuracy: " + "N/A" + " | Misses: " + misses + " | " + fullcombotext + " (" + songRating + ")" + " | " + "Score: " + songScore + " )";
-						else
+						else if (!inCutscene)
 						scoreTxt.text = "( Current Accuracy: " + baseText2 + " | Overall Accuracy: " + truncateFloat(accuracy, 2) + "%" + " | Misses: " + misses + " | " + fullcombotext + " (" + songRating + ")" + " | " + "Score: " + songScore + " )";
+					   if (!inCutscene)
 					   scoreTxt.alignment = CENTER;
 					}
 
@@ -2970,17 +2994,16 @@ class PlayState extends MusicBeatState
 							{
 							   //nothin	
 							}
-							else if (FlxG.save.data.showratings && addedratingstext && songStarted)
+							else if (FlxG.save.data.showratings && addedratingstext && startedCountdown)
 								{
+									if (!inCutscene)
 									ratings.alignment = CENTER;
+									if (!inCutscene)
 									ratings.text = "Sicks: " + sicks + "\n" + "\n" + "Goods: " + goods + "\n" + "\n" + "Bads: " + bads + "\n" + "\n" + "Shits: " + shits + "\n" + "";	
 								}
 					
-                if (FlxG.save.data.botplay)
-					{
-						fullcombotext = "BP"; // botplay is on, so say it is botplay	
-					}
-					else if (misses == 0 && accuracy == 0)
+    
+					 if (misses == 0 && accuracy == 0)
 						{
 							  fullcombotext = "N/A";	// default to this when no notes have been hit
 						}
@@ -3082,8 +3105,8 @@ class PlayState extends MusicBeatState
 							camHUD.visible = true;
 						}
 				
-					#if desktop
-					DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC);
+					#if cpp
+					DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd + practicemodeon, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC);
 					#end
 				}
 		}
@@ -3109,8 +3132,8 @@ class PlayState extends MusicBeatState
 								camHUD.visible = true;
 							}
 							
-						#if desktop
-						DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC);
+						#if cpp
+						DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd + practicemodeon, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC);
 						#end
 					}
 			}
@@ -3313,8 +3336,9 @@ class PlayState extends MusicBeatState
 
 		// RESET = Quick Game Over Screen
 				{
-					if (controls.RESET && FlxG.save.data.reset && !FlxG.save.data.botplay)
+					if (controls.RESET && FlxG.save.data.reset && !FlxG.save.data.botplay && !PauseSubState.practicemode)
 						{
+							blueballed += 1;
 							if (FlxG.save.data.instantRespawn)
 								{
 									if (FlxG.save.data.usedeprecatedloading)
@@ -3337,7 +3361,7 @@ class PlayState extends MusicBeatState
 							
 										// FlxG.switchState(new GameOverState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 										
-										#if desktop
+										#if cpp
 										// Game Over doesn't get his own variable because it's only used here
 										DiscordClient.changePresence("Game Over - " + detailsText, SONG.song + "" + storyDifficultyText + "", iconRPC);
 										#end
@@ -3360,11 +3384,12 @@ class PlayState extends MusicBeatState
 				restart();
 				else
 					FlxG.resetState();
+				blueballed += 1;
 			}
-			else if (health <= 0)
+			else if (health <= 0 && !PauseSubState.practicemode)
 				{
 		
-						
+					blueballed += 1;	
 					boyfriend.stunned = true;
 		
 					persistentUpdate = false;
@@ -3378,7 +3403,7 @@ class PlayState extends MusicBeatState
 		
 					// FlxG.switchState(new GameOverState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 					
-					#if desktop
+					#if cpp
 					// Game Over doesn't get his own variable because it's only used here
 					DiscordClient.changePresence("Game Over - " + detailsText, SONG.song + "" + storyDifficultyText + "", iconRPC);
 					#end
@@ -3643,20 +3668,6 @@ class PlayState extends MusicBeatState
 					cpunotesHit += 1;
 					if (SONG.song != '')
 
-							if (daNote.isSustainNote && FlxG.save.data.Smode && daNote.alpha == 0.3)
-								{
-									if (FlxG.save.data.transparency)
-										{
-											daNote.alpha = 0.6;	
-										}
-										else
-											{
-												daNote.alpha = 1.0;	
-											}
-								}
-
-					var altAnim:String = "";
-
 					if (SONG.notes[Math.floor(curStep / 16)] != null)
 					{
 						if (SONG.notes[Math.floor(curStep / 16)].altAnim)
@@ -3878,6 +3889,7 @@ class PlayState extends MusicBeatState
 
 		if (!inCutscene)
 			keyShit();
+			
 
 		#if debug
 		if (FlxG.keys.justPressed.ONE)
@@ -3937,10 +3949,10 @@ class PlayState extends MusicBeatState
 								trace('BOTPLAY OFF');
 								BOTPLAY = true;	
 							}
-							#if desktop
+							#if cpp
 							if (FlxG.save.data.botplay)
 								{
-									botplayd = " | Botplay";
+									botplayd = " | botplay";
 								}
 								else
 									{
@@ -4106,12 +4118,12 @@ class PlayState extends MusicBeatState
 				SFC = false;
 			}
 
-		if (noteDiff > Conductor.safeZoneOffset * 0.405 && !FlxG.save.data.botplay)
+		if (noteDiff > Conductor.safeZoneOffset * 0.5 && !FlxG.save.data.botplay)
 			{
 				GFC = false;
 			}
 
-			if (noteDiff > Conductor.safeZoneOffset * 0.5 && !FlxG.save.data.botplay)
+			if (noteDiff > Conductor.safeZoneOffset * 0.55 && !FlxG.save.data.botplay)
 				{
 					BFC = false;
 				}
@@ -4186,7 +4198,7 @@ class PlayState extends MusicBeatState
 							*////}
 
 
-							if (noteDiff > Conductor.safeZoneOffset * 0.5)
+							if (noteDiff > Conductor.safeZoneOffset * 0.55)
 								{
 									daRating = 'shit';
 									score = 50;
@@ -4199,7 +4211,7 @@ class PlayState extends MusicBeatState
 											trace('shit');
 										}
 								}
-								else if (noteDiff > Conductor.safeZoneOffset * 0.405)
+								else if (noteDiff > Conductor.safeZoneOffset * 0.5)
 								{
 									daRating = 'bad';
 									score = 100;
@@ -4992,13 +5004,9 @@ class PlayState extends MusicBeatState
 
 			if (note.noteData >= 0)
 				{
-					if (FlxG.save.data.Smode && !note.isSustainNote)
-					    health += 0.036;
-					else
 						health += 0.023;
-
 				}
-			else if (!FlxG.save.data.Smode)
+			else
 				health += 0.004;
 
 			switch (note.noteData)
@@ -5252,9 +5260,9 @@ class PlayState extends MusicBeatState
 					FlxG.sound.play(Paths.sound('Lights_Shut_off'));
 			}
 
-				#if desktop
+				#if cpp
 				if (startTimer.finished && !paused)
-					DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC, true, songLength - Conductor.songPosition);
+					DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd + practicemodeon, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC, true, songLength - Conductor.songPosition);
 				//else if (!paused)
 					//DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Curr Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC, true, songLength - Conductor.songPosition);
 				

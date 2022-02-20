@@ -65,6 +65,7 @@ class GameOverSubstate extends MusicBeatSubstate
 		{
 			endBullshit();
 			bfneedstofade = true;
+			PlayState.blueballed += 1;
 		}
 
 		if (bfneedstofade)
@@ -88,14 +89,17 @@ class GameOverSubstate extends MusicBeatSubstate
 				{
 					FlxG.switchState(new StoryMenuState());
 					FlxG.timeScale = 1;
+					PlayState.blueballed = 0;
 				}
 			else
 				#if web
 			FlxG.switchState(new FreeplayStateHTML5());
 			FlxG.timeScale = 1;
+			PlayState.blueballed = 0;
 			#else
 			FlxG.switchState(new FreeplayState());
 			FlxG.timeScale = 1;
+			PlayState.blueballed = 0;
 			#end	
 		}
 
