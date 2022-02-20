@@ -217,6 +217,15 @@ class FreeplayStateHTML5 extends MusicBeatState
 			PlayState.storyWeek = songs[curSelected].week;
 			trace('CUR WEEK' + PlayState.storyWeek);
 			LoadingState.loadAndSwitchState(new PlayState());
+
+			if (!StoryMenuState.isStoryMode)
+				{
+					StoryMenuState.song3 = PlayState.SONG.song;
+				}
+			if (!StoryMenuState.isStoryMode)
+				{
+					StoryMenuState.song2 = PlayState.SONG.song;
+				}
 		}
 	}
 

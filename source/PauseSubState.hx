@@ -1302,12 +1302,16 @@ class PauseSubState extends MusicBeatSubstate
 						{
 						  practicemode = true;
 						  practice.x = 1010;
+						  #if cpp
 						  PlayState.practicemodeon = " - (PRACTICE MODE)";
+						  #end
 						}
 						else
 							{
 								practicemode = false;
+								#if cpp
 								PlayState.practicemodeon = "";
+								#end
 							}		
 				case "EASY" | "NORMAL" | "HARD":
 					if (!FlxG.save.data.usedeprecatedloading)

@@ -292,6 +292,10 @@ class StoryMenuState extends MusicBeatState
 						trace('should featch xhr inst for ' + Paths.inst(i) + ' and Voices for ' + Paths.voices(i) + ', check loading state.');
 					}
 			}
+			else if (!isStoryMode && controls.ACCEPT && !PRESSED)
+				{
+					song2 = PlayState.SONG.song;
+				}
 		#end
 		#if web
 		if (!FlxG.save.data.usedeprecatedloading && controls.ACCEPT && !PRESSED)
@@ -303,6 +307,10 @@ class StoryMenuState extends MusicBeatState
 						trace('should featch xhr inst for ' + Paths.inst(i) + ' and Voices for ' + Paths.voices(i) + ', check loading state.');
 					}
 			}
+			else if (!isStoryMode && controls.ACCEPT && !PRESSED)
+				{
+					song3 = PlayState.SONG.song;
+				}
 		#end		
 
 		if (!movedBack)

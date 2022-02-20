@@ -38,9 +38,6 @@ class MenuState extends MusicBeatState
 	var voices:FlxSound;
 	public static var descBG:FlxSprite;
 	var sex:Array<String> = ['GAMEPLAY', 'APPEARANCE', 'KEYBINDS', 'PERFORMANCE', 'MISC'];
-	#if web
-	sex = ['GAMEPLAY', 'APPEARANCE', 'KEYBINDS', 'PERFORMANCE'];
-	#end
 	override function create()
 	{
 		
@@ -48,9 +45,9 @@ class MenuState extends MusicBeatState
 		if (FlxG.save.data.optimizations)
 		menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat-opt'));
 		#if web
-		controlsStrings = CoolUtil.coolStringFile('GAMEPLAY' + "\n" + "APPEARANCE" + "\n" + "KEYBINDS" + "\n" + "PERFORMANCE");
+		sex = CoolUtil.coolStringFile('GAMEPLAY' + "\n" + "APPEARANCE" + "\n" + "KEYBINDS" + "\n" + "PERFORMANCE");
 		#else
-		controlsStrings = CoolUtil.coolStringFile('GAMEPLAY' + "\n" + "APPEARANCE" + "\n" + "KEYBINDS" + "\n" + "PERFORMANCE" + "\n" + "MISC");
+		sex = CoolUtil.coolStringFile('GAMEPLAY' + "\n" + "APPEARANCE" + "\n" + "KEYBINDS" + "\n" + "PERFORMANCE" + "\n" + "MISC");
 		#end
 		
 		trace(controlsStrings);
