@@ -2,7 +2,7 @@
 
 ///////////////////////////
 
-i made this cuz i was bored
+i made this cuz i was bored if i am being fr, but its pretty good imo for being made by a dumb
 
 ///////////////////////////
 
