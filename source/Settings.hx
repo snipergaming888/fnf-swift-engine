@@ -9,9 +9,6 @@ class Settings extends MusicBeatState
   public static var enablebotplay:Bool = true; // set to false to disable botplay for your mod 
          public static function loadsettings()
           {
-            // turn debug off on startup
-            FlxG.save.data.debug = false;
-            trace('turning off debug');
             //settings
             
             if (FlxG.save.data.ghosttapping == null)
@@ -144,10 +141,7 @@ class Settings extends MusicBeatState
 
             if (FlxG.save.data.instantRespawn == null)
               FlxG.save.data.instantRespawn = false;
-
-            if (FlxG.save.data.Smode == null)
-              FlxG.save.data.Smode = false;
-
+          
             #if web
             if (FlxG.save.data.usedeprecatedloading == null)
               FlxG.save.data.usedeprecatedloading = true;
@@ -164,10 +158,27 @@ class Settings extends MusicBeatState
                 GameOptions.ghosttappinghitsoundsenabled = true;
               }
 
+              if (FlxG.save.data.middlecam == null)
+                FlxG.save.data.middlecam = true;
+
               FlxG.save.data.hasplayed = false;
               trace('anim played? ' + FlxG.save.data.hasplayed);
               
               if (FlxG.save.data.togglecap)
-              (cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
+                {
+                  (cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
+                  FlxG.updateFramerate = FlxG.save.data.fpsCap;
+				          FlxG.drawFramerate = FlxG.save.data.fpsCap;
+                }
+
+		          if (FlxG.save.data.volume != null)
+              {
+                FlxG.sound.volume = FlxG.save.data.volume;
+              }
+              if (FlxG.save.data.mute != null)
+              {
+                FlxG.sound.muted = FlxG.save.data.mute;
+              }
+                       
           }
 }

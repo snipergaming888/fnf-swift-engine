@@ -22,6 +22,7 @@ class Note extends FlxSprite
 	public var tooLate:Bool = false;
 	public var wasGoodHit:Bool = false;
 	public var prevNote:Note;
+	public var distance:Float = 2000;
 
 	public var sustainLength:Float = 0;
 	public var isSustainNote:Bool = false;
@@ -68,23 +69,6 @@ class Note extends FlxSprite
 
 				if (isSustainNote)
 				{
-					if (FlxG.save.data.downscroll)
-						{
-							loadGraphic(Paths.image('weeb/pixelUI/arrowEndsdownscroll'), true, 7, 6);
-							flipY = true;
-							flipY = !flipY;
-
-							animation.add('purpleholdend', [4]);
-							animation.add('greenholdend', [6]);
-							animation.add('redholdend', [7]);
-							animation.add('blueholdend', [5]);
-		
-							animation.add('purplehold', [0]);
-							animation.add('greenhold', [2]);
-							animation.add('redhold', [3]);
-							animation.add('bluehold', [1]);
-						}
-						else
 							{
 								loadGraphic(Paths.image('weeb/pixelUI/arrowEnds'), true, 7, 6);
 
@@ -104,38 +88,6 @@ class Note extends FlxSprite
 				updateHitbox();
 
 			default:
-				if (FlxG.save.data.downscroll)
-					{
-						frames = Paths.getSparrowAtlas('NOTE_assets_downscroll');
-
-						animation.addByPrefix('greenScroll', 'green0');
-						animation.addByPrefix('redScroll', 'red0');
-						animation.addByPrefix('blueScroll', 'blue0');
-						animation.addByPrefix('purpleScroll', 'purple0');
-		
-						animation.addByPrefix('purpleholdend', 'pruple end hold');
-						animation.addByPrefix('greenholdend', 'green hold end');
-						animation.addByPrefix('redholdend', 'red hold end');
-						animation.addByPrefix('blueholdend', 'blue hold end');
-		
-						animation.addByPrefix('purplehold', 'purple hold piece');
-						animation.addByPrefix('greenhold', 'green hold piece');
-						animation.addByPrefix('redhold', 'red hold piece');
-						animation.addByPrefix('bluehold', 'blue hold piece');
-		
-						setGraphicSize(Std.int(width * 0.7));
-						updateHitbox();
-						if (FlxG.save.data.antialiasing)
-							{
-								antialiasing = true;	
-							}
-							else
-								{
-									antialiasing = false;	
-								}
-
-					}
-					else
 						{
 							frames = Paths.getSparrowAtlas('NOTE_assets');
 
@@ -196,6 +148,10 @@ class Note extends FlxSprite
 					{
 						alpha = 1.0;	
 					}
+			if (FlxG.save.data.downscroll)
+				{
+					flipY = true;	
+				}
 
 			x += width / 2;
 
@@ -270,13 +226,5 @@ class Note extends FlxSprite
 			if (alpha > 0.3)
 				alpha = 0.3;
 		}
-		
-		if (isSustainNote && FlxG.save.data.Smode && tooLate)
-			{
-				
-				if (alpha > 0.3)
-					alpha = 0.3;
-						
-			}
 	}
 }

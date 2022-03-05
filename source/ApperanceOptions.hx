@@ -43,7 +43,7 @@ class ApperanceOptions extends MusicBeatState
 		menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat-opt'));
 		menuBG.scrollFactor.set();
 		menuBG.x -= 30;	
-		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD") + "\n" + (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF") + "\n" + (FlxG.save.data.hittimings ? "MS Timing info ON" : "MS Timing info OFF") + "\n" + (FlxG.save.data.showratings ? "ratings info ON" : "ratings info OFF") + "\n" + (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION off")+ "\n" + (FlxG.save.data.transparency ? "hold note transparency ON" : "hold note transparency off")+ "\n" + (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF") + "\n" + (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF")  + "\n" + (FlxG.save.data.minscore ? "minimalize score info ON" : "minimalize score info OFF") + "\n" + (FlxG.save.data.nps ? "NPS ON" : "NPS OFF") + "\n" + (FlxG.save.data.healthcolor ? 'new healthbar on' : 'new healthbar off') + "\n" + (FlxG.save.data.newhealthheadbump ? 'new healthhead bump on' : 'new healthhead bump off') + "\n" + (FlxG.save.data.fps ? "FPS COUNTER ON" : "FPS COUNTER OFF") + "\n" + (FlxG.save.data.togglecap ? "FPS CAP ON" : "FPS CAP OFF") + "\n" + (FlxG.save.data.memoryMonitor ? "memoryMonitor ON" : "memoryMonitor OFF"));
+		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD") + "\n" + (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF") + "\n" + (FlxG.save.data.hittimings ? "MS Timing info ON" : "MS Timing info OFF") + "\n" + (FlxG.save.data.showratings ? "ratings info ON" : "ratings info OFF") + "\n" + (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION off")+ "\n" + (FlxG.save.data.transparency ? "hold note transparency ON" : "hold note transparency off")+ "\n" + (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF") + "\n" + (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF")  + "\n" + (FlxG.save.data.minscore ? "minimalize score info ON" : "minimalize score info OFF") + "\n" + (FlxG.save.data.nps ? "NPS ON" : "NPS OFF") + "\n" + (FlxG.save.data.healthcolor ? 'new healthbar on' : 'new healthbar off') + "\n" + (FlxG.save.data.newhealthheadbump ? 'new healthhead bump on' : 'new healthhead bump off') + "\n" + (FlxG.save.data.fps ? "FPS COUNTER ON" : "FPS COUNTER OFF") + "\n" + (FlxG.save.data.togglecap ? "FPS CAP ON" : "FPS CAP OFF") + "\n" + (FlxG.save.data.memoryMonitor ? "memoryMonitor ON" : "memoryMonitor OFF") + "\n" + (FlxG.save.data.middlecam ? "Camera focusing ON" : "Camera focusing OFF"));
 		
 		trace(controlsStrings);
 
@@ -147,8 +147,8 @@ class ApperanceOptions extends MusicBeatState
 				if (curSelected < 0)
 					curSelected = 0;
 		
-				if (curSelected > 16)
-					curSelected = 16;
+				if (curSelected > 17)
+					curSelected = 17;
 	
 				grpControls.forEach(function(sex:Alphabet)
 					{
@@ -196,6 +196,8 @@ class ApperanceOptions extends MusicBeatState
 								{
 									FlxG.save.data.fpsCap += 1 * multiply;
 									(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
+									FlxG.updateFramerate = FlxG.save.data.fpsCap;
+				                    FlxG.drawFramerate = FlxG.save.data.fpsCap;
 								}
 						}
 					if (FlxG.keys.justPressed.LEFT && FlxG.save.data.fpsCap > 20 && FlxG.save.data.togglecap)
@@ -203,6 +205,8 @@ class ApperanceOptions extends MusicBeatState
 								{
 									FlxG.save.data.fpsCap -= 1 * multiply;
 									(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
+									FlxG.updateFramerate = FlxG.save.data.fpsCap;
+				                    FlxG.drawFramerate = FlxG.save.data.fpsCap;
 								}
 						}
 			
@@ -263,6 +267,9 @@ class ApperanceOptions extends MusicBeatState
 
 			if (curSelected == 16)
 				versionShit.text = "Toggle the memory monitor on and off.";
+
+			if (curSelected == 17)
+				versionShit.text = "Toggle if the camera should point at player 1 and 2 when they are singing.";
 
 
 			if (controls.ACCEPT)
@@ -406,8 +413,20 @@ class ApperanceOptions extends MusicBeatState
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 						(cast (Lib.current.getChildAt(0), Main)).toggleFPS(FlxG.save.data.fps);
 					case 15:
-						grpControls.remove(grpControls.members[curSelected]);
 						FlxG.save.data.togglecap = !FlxG.save.data.togglecap;
+						if (!FlxG.save.data.togglecap)
+							{
+							    (cast (Lib.current.getChildAt(0), Main)).setFPSCap(138);
+								FlxG.updateFramerate = 138;
+				                FlxG.drawFramerate = 138;
+							}
+						else if (FlxG.save.data.togglecap)
+							{
+								(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
+								FlxG.updateFramerate = FlxG.save.data.fpsCap;
+				                FlxG.drawFramerate = FlxG.save.data.fpsCap;
+							}
+						grpControls.remove(grpControls.members[curSelected]);
 						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.togglecap ? "FPS CAP ON" : "FPS CAP OFF"), true, false);
 						ctrl.x += 50;
 						ctrl.y += 102;
@@ -415,10 +434,6 @@ class ApperanceOptions extends MusicBeatState
 						grpControls.add(ctrl);
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 						trace("pressed");
-						if (!FlxG.save.data.togglecap)
-							(cast (Lib.current.getChildAt(0), Main)).setFPSCap(138);
-						else
-							(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
 					case 16:
 						grpControls.remove(grpControls.members[curSelected]);
 						FlxG.save.data.memoryMonitor = !FlxG.save.data.memoryMonitor;
@@ -428,7 +443,16 @@ class ApperanceOptions extends MusicBeatState
 						ctrl.targetY = curSelected - 16;
 						grpControls.add(ctrl);
 						FlxG.sound.play(Paths.sound('scrollMenu'));
-						(cast (Lib.current.getChildAt(0), Main)).togglememoryMonitor(FlxG.save.data.memoryMonitor);										   	
+						(cast (Lib.current.getChildAt(0), Main)).togglememoryMonitor(FlxG.save.data.memoryMonitor);
+					case 17:
+						grpControls.remove(grpControls.members[curSelected]);
+						FlxG.save.data.middlecam = !FlxG.save.data.middlecam;
+						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.middlecam ? "camera focusing ON" : "camera focusing Off"), true, false);
+						ctrl.x += 50;
+						ctrl.y += 102;
+						ctrl.targetY = curSelected - 17;
+						grpControls.add(ctrl);
+						FlxG.sound.play(Paths.sound('scrollMenu'));									   	
 				}
 			}
 	}

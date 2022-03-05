@@ -504,7 +504,7 @@ class Controls extends FlxActionSet
 				inline bindKeys(Control.DOWN, [FlxKey.DOWN, FlxKey.DOWN]);
 				inline bindKeys(Control.LEFT, [FlxKey.LEFT, FlxKey.LEFT]);
 				inline bindKeys(Control.RIGHT, [FlxKey.RIGHT, FlxKey.RIGHT]);
-				inline bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
+				inline bindKeys(Control.ACCEPT, [SPACE, ENTER]);
 				inline bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
 				inline bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
 				inline bindKeys(Control.RESET, [R]);
@@ -513,7 +513,7 @@ class Controls extends FlxActionSet
 				inline bindKeys(Control.DOWN, [F, FlxKey.DOWN]);
 				inline bindKeys(Control.LEFT, [D, FlxKey.LEFT]);
 				inline bindKeys(Control.RIGHT, [K, FlxKey.RIGHT]);
-				inline bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
+				inline bindKeys(Control.ACCEPT, [SPACE, ENTER]);
 				inline bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
 				inline bindKeys(Control.RESET, [R]);
 			case Duo(false):
@@ -521,7 +521,7 @@ class Controls extends FlxActionSet
 				inline bindKeys(Control.DOWN, [FlxKey.S, FlxKey.DOWN]);
 				inline bindKeys(Control.LEFT, [FlxKey.A, FlxKey.LEFT]);
 				inline bindKeys(Control.RIGHT, [FlxKey.D, FlxKey.RIGHT]);
-				inline bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
+				inline bindKeys(Control.ACCEPT, [SPACE, ENTER]);
 				inline bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
 				inline bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
 				inline bindKeys(Control.RESET, [R]);
@@ -531,7 +531,7 @@ class Controls extends FlxActionSet
 				inline bindKeys(Control.DOWN, [FlxKey.X, FlxKey.DOWN]);
 				inline bindKeys(Control.LEFT, [FlxKey.Z, FlxKey.LEFT]);
 				inline bindKeys(Control.RIGHT, [FlxKey.NUMPADTHREE, FlxKey.THREE, FlxKey.TWO, FlxKey.RIGHT]);
-				inline bindKeys(Control.ACCEPT, [Z, FlxKey.SPACE]);
+				inline bindKeys(Control.ACCEPT, [FlxKey.SPACE]);
 				inline bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
 				inline bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
 				inline bindKeys(Control.RESET, [R]);
@@ -540,7 +540,7 @@ class Controls extends FlxActionSet
 				inline bindKeys(Control.DOWN, [FlxKey.S, FlxKey.DOWN]);
 				inline bindKeys(Control.LEFT, [FlxKey.A, FlxKey.LEFT]);
 				inline bindKeys(Control.RIGHT, [FlxKey.L, FlxKey.RIGHT]);
-				inline bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
+				inline bindKeys(Control.ACCEPT, [SPACE, ENTER]);
 				inline bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
 				inline bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
 				inline bindKeys(Control.RESET, [R]);
@@ -550,7 +550,7 @@ class Controls extends FlxActionSet
 				inline bindKeys(Control.DOWN, [FlxG.save.data.downBind, FlxKey.DOWN]);
 				inline bindKeys(Control.LEFT, [FlxG.save.data.leftBind, FlxKey.LEFT]);
 				inline bindKeys(Control.RIGHT, [FlxG.save.data.rightBind, FlxKey.RIGHT]);
-				inline bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
+				inline bindKeys(Control.ACCEPT, [SPACE, ENTER]);
 				inline bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
 				inline bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
 				inline bindKeys(Control.RESET, [R]);
@@ -565,7 +565,7 @@ class Controls extends FlxActionSet
 				bindKeys(Control.DOWN, [S, FlxKey.DOWN]);
 				bindKeys(Control.LEFT, [A, FlxKey.LEFT]);
 				bindKeys(Control.RIGHT, [D, FlxKey.RIGHT]);
-				bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
+				bindKeys(Control.ACCEPT, [SPACE, ENTER]);
 				bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
 				bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
 				bindKeys(Control.RESET, [R]);
@@ -591,9 +591,9 @@ class Controls extends FlxActionSet
 				Main.woops = true;
 				bindKeys(Control.UP, [NUMPADTWO, FlxKey.UP]);
 				bindKeys(Control.DOWN, [X, FlxKey.DOWN]);
-				bindKeys(Control.LEFT, [Z, FlxKey.LEFT]);
+				bindKeys(Control.LEFT, [FlxKey.LEFT]);
 				bindKeys(Control.RIGHT, [FlxKey.NUMPADTHREE, FlxKey.THREE, FlxKey.TWO, FlxKey.RIGHT]);
-				bindKeys(Control.ACCEPT, [Z, FlxKey.SPACE]);
+				bindKeys(Control.ACCEPT, [FlxKey.SPACE]);
 				bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
 				bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
 				bindKeys(Control.RESET, [R]);
@@ -602,7 +602,7 @@ class Controls extends FlxActionSet
 				bindKeys(Control.DOWN, [S, FlxKey.DOWN]);
 				bindKeys(Control.LEFT, [A, FlxKey.LEFT]);
 				bindKeys(Control.RIGHT, [L, FlxKey.RIGHT]);
-				bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
+				bindKeys(Control.ACCEPT, [SPACE, ENTER]);
 				bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
 				bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
 				bindKeys(Control.RESET, [R]);
@@ -612,7 +612,7 @@ class Controls extends FlxActionSet
 				bindKeys(Control.DOWN, [FlxG.save.data.downBind]);
 				bindKeys(Control.LEFT, [FlxG.save.data.leftBind]);
 				bindKeys(Control.RIGHT, [FlxG.save.data.rightBind]);
-				bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
+				bindKeys(Control.ACCEPT, [SPACE, ENTER]);
 				bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
 				bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
 				bindKeys(Control.RESET, [R]);	

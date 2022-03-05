@@ -21,6 +21,7 @@ class GameOverSubstate extends MusicBeatSubstate
 
 	public function new(x:Float, y:Float)
 	{
+		FlxG.timeScale = 1;
 		bfneedstofade = false;
 		var daStage = PlayState.curStage;
 		var daBf:String = '';
@@ -140,6 +141,7 @@ class GameOverSubstate extends MusicBeatSubstate
 			{
 				new FlxTimer().start(2.0, function(tmr:FlxTimer)
 					{
+						FlxG.timeScale = FreeplayState.gamespeed;
 						if (FlxG.save.data.usedeprecatedloading)
 							LoadingState.loadAndSwitchState(new PlayState());
 							else

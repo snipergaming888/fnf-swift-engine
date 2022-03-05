@@ -365,7 +365,7 @@ class OptionsMenu extends MusicBeatState
 		{
 			///THIS KEYBINDSTATE TOOK ME LIKE 2 FUCKING DAYS TO MAKE
 			///FUCKKKKKKK
-			if (FlxG.keys.justPressed.ANY)
+			if (FlxG.keys.justPressed.ANY || FlxG.keys.justPressed.Z)
 			{
 				PlayerSettings.player1.controls.replaceBinding(Control.UP, Keys, FlxG.keys.getIsDown()[0].ID, null);
 				FlxG.save.data.upBind = FlxG.keys.getIsDown()[0].ID.toString();
@@ -392,7 +392,7 @@ class OptionsMenu extends MusicBeatState
 
 		function waitingInputdown():Void
 			{
-				if (FlxG.keys.justPressed.ANY)
+				if (FlxG.keys.justPressed.ANY || FlxG.keys.justPressed.Z)
 				{
 					PlayerSettings.player1.controls.replaceBinding(Control.DOWN, Keys, FlxG.keys.getIsDown()[0].ID, null);
 					FlxG.save.data.downBind = FlxG.keys.getIsDown()[0].ID.toString();
@@ -420,7 +420,7 @@ class OptionsMenu extends MusicBeatState
 
 			function waitingInputleft():Void
 				{
-					if (FlxG.keys.justPressed.ANY)
+					if (FlxG.keys.justPressed.ANY || FlxG.keys.justPressed.Z)
 					{
 						PlayerSettings.player1.controls.replaceBinding(Control.LEFT, Keys, FlxG.keys.getIsDown()[0].ID, null);
 						FlxG.save.data.leftBind = FlxG.keys.getIsDown()[0].ID.toString();
@@ -448,7 +448,7 @@ class OptionsMenu extends MusicBeatState
 
 				function waitingInputright():Void
 					{
-						if (FlxG.keys.justPressed.ANY)
+						if (FlxG.keys.justPressed.ANY || FlxG.keys.justPressed.Z)
 						{
 							PlayerSettings.player1.controls.replaceBinding(Control.RIGHT, Keys, FlxG.keys.getIsDown()[0].ID, null);
 							FlxG.save.data.rightBind = FlxG.keys.getIsDown()[0].ID.toString();

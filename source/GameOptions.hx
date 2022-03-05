@@ -70,6 +70,8 @@ class GameOptions extends MusicBeatState
 
 		//FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
 		//FlxG.camera.setScrollBounds(0, FlxG.width, 0, FlxG.height);
+		// ADD AUTO PAUSE TOGGLE FlxG.autoPause = false; (ADD TO PAUSE OPTIONS)
+		// same with FlxGraphic.defaultPersist = true;
 
 		menuBG.color = 0xFFea71fd;                 //1.1
 		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));

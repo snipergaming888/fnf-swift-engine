@@ -24,8 +24,8 @@ using StringTools;
 
 class FreeplayState extends MusicBeatState
 {
-	var songs:Array<SongMetadata> = []; ///all bpms up to tearing
-	var beatArray:Array<Int> = [100,100,120,180,150,165,95,150,175,165,110,125,180,100,150,159,144,120,190,162,144,130,200,120];
+	var songs:Array<SongMetadata> = []; ///all bpms up to thorns, add your song BPM in order of them in freeplay.
+	var beatArray:Array<Int> = [100,100,120,180,150,165,95,150,175,165,110,125,180,100,150,159,144,120,190];
 
 	var selector:FlxText;
 	var curSelected:Int = FlxG.save.data.curselected;
@@ -156,7 +156,7 @@ class FreeplayState extends MusicBeatState
 		scoreBG.alpha = 0.6;
 		add(scoreBG);
 		#if PRELOAD_ALL
-		infotext = new FlxText(5, FlxG.height - 18, 0, "Press V to play vocals for a song / hold down shift + left or right to change song speed.", 12);
+		infotext = new FlxText(5, FlxG.height - 18, 0, "Press V to toggle vocals for a song / hold down shift + left or right to change song speed.", 12);
 		#else
 		infotext = new FlxText(5, FlxG.height - 18, 0, "hold down shift + left or right to change song speed.", 12);
 		#end
@@ -244,6 +244,55 @@ class FreeplayState extends MusicBeatState
 
 
 		super.update(elapsed);
+        #if cpp
+		if (FlxG.sound.music.playing)
+			{
+				if (gamespeed != 1)
+					{
+							if (gamespeed > 1)
+								{
+									@:privateAccess
+									{
+										if (FlxG.sound.music.playing)
+										lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, gamespeed);
+										if (voicesplaying)
+											lime.media.openal.AL.sourcef(voices._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, gamespeed);
+										//sniper gaming looking for a way to pitch vocals without cpp
+									}
+									///trace("pitched inst and vocals to " + FlxG.timeScale);
+								 
+								}			
+					}
+
+					if (gamespeed == 1)
+						{
+							@:privateAccess
+							{
+								if (FlxG.sound.music.playing)
+								lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, 1);
+								if (voicesplaying)
+									lime.media.openal.AL.sourcef(voices._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, 1);
+								//sniper gaming looking for a way to pitch vocals without cpp
+							}
+						}
+
+					if (gamespeed < 1)
+						{
+							{
+								@:privateAccess
+								{
+									if (FlxG.sound.music.playing)
+									lime.media.openal.AL.sourcef(FlxG.sound.music._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, gamespeed);
+									if (voicesplaying)
+										lime.media.openal.AL.sourcef(voices._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, gamespeed);
+									//sniper gaming looking for a way to pitch vocals without cpp
+								}
+								///trace("pitched inst and vocals to " + gamespeed);
+							}
+						}
+				
+			}
+		#end
 
 
 		if (FlxG.sound.music.volume < 0.7)
@@ -306,20 +355,30 @@ class FreeplayState extends MusicBeatState
 		if (controls.RIGHT_P && !FlxG.keys.pressed.SHIFT)
 			changeDiff(1);
 		#if PRELOAD_ALL
-		if(FlxG.keys.justPressed.V && !voicesplaying && FlxG.sound.music.playing)
+		if(FlxG.keys.justPressed.V && FlxG.sound.music.playing)
 			{
-				voices = new FlxSound().loadEmbedded(Paths.voices(songs[curSelected].songName));
-				voicesplaying = true;
-				trace('IS PLAYING ' + voicesplaying);
-				voices.play();
-				if (!FlxG.save.data.freeplaysongs)
+				if (!voicesplaying)
 					{
-						FlxG.sound.music.stop();
-						FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
-						playingist = true;
-						Conductor.changeBPM(beatArray[curSelected]);
-						trace(Conductor.bpm);
+						voices = new FlxSound().loadEmbedded(Paths.voices(songs[curSelected].songName));
+						voices.onComplete = stopPlaying;
+						voicesplaying = true;
+						trace('IS PLAYING ' + voicesplaying);
+						voices.play();
+						if (!FlxG.save.data.freeplaysongs)
+							{
+								FlxG.sound.music.stop();
+								FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
+								playingist = true;
+								Conductor.changeBPM(beatArray[curSelected]);
+								trace(Conductor.bpm);
+							}
 					}
+					else if (voices.playing)
+						{
+							voices.stop();
+							voicesplaying = false;
+							trace('stop i hate you');
+						}
 			}
 			#end
 
@@ -378,6 +437,11 @@ class FreeplayState extends MusicBeatState
 
 			   super.onFocus();
 			}
+
+	function stopPlaying():Void
+		{
+			voicesplaying = false;
+		}		
 
 	function changeDiff(change:Int = 0)
 	{
