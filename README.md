@@ -1,4 +1,10 @@
-# Friday Night Funkin
+# Friday Night Funkin Swift Engine
+
+///////////////////////////
+
+i made this cuz i was bored
+
+///////////////////////////
 
 This is the repository for Friday Night Funkin, a game originally made for Ludum Dare 47 "Stuck In a Loop".
 
