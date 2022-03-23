@@ -207,7 +207,7 @@ class MiscOptions extends MusicBeatState
 				FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
 
 			if (curSelected == 0)
-				versionShit.text = "Play songs in freeplay when havering over them.";
+				versionShit.text = "Play songs in freeplay when hovering over them.";
 
 			if (curSelected == 1)
 				versionShit.text = "Disable or enable the games discord presence.";

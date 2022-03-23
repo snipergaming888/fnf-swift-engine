@@ -74,7 +74,7 @@ class CacheState extends MusicBeatState
 		descBG.scrollFactor.set();
 		add(descBG);
 
-		versionShit = new FlxText(5, FlxG.height - 18, 0, "WARNING: CHACHING WILL USE LARGE AMOUNTS OF RAM! ENABLE AT YOUR OWN RISK!");
+		versionShit = new FlxText(5, FlxG.height - 18, 0, "WARNING: CACHING WILL USE LARGE AMOUNTS OF SYSTEM RAM AND IS BETA! IT MAY NOT WORK PROPERLY!");
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);

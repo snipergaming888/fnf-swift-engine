@@ -360,7 +360,7 @@ class PauseSubState extends MusicBeatSubstate
 											FreeplayState.gamespeed += 0.1;
 											trace(FreeplayState.gamespeed);
 											versionShit.text = "change the speed at which that the game runs. speed: " + truncateFloat(FreeplayState.gamespeed, 2) + " (Left, Right)";
-											PlayState.resetgamespeed = true;
+											PlayState.speedchange();
 										}
 							
 										if (controls.LEFT_R)
@@ -368,7 +368,7 @@ class PauseSubState extends MusicBeatSubstate
 												FreeplayState.gamespeed -= 0.1;
 												trace(FreeplayState.gamespeed);
 												versionShit.text = "change the speed at which that the game runs. speed: " + truncateFloat(FreeplayState.gamespeed, 2) + " (Left, Right)";
-												PlayState.resetgamespeed = true;
+												PlayState.speedchange();
 											}
 								}
 								else if (curSelected == 4)
@@ -381,7 +381,7 @@ class PauseSubState extends MusicBeatSubstate
 												FreeplayState.gamespeed += 0.1;
 												trace(FreeplayState.gamespeed);
 												versionShit.text = "change the speed at which that the game runs. speed: " + truncateFloat(FreeplayState.gamespeed, 2) + " (Left, Right)";
-												PlayState.resetgamespeed = true;
+												PlayState.speedchange();
 											}
 								
 											if (controls.LEFT_R)
@@ -389,7 +389,7 @@ class PauseSubState extends MusicBeatSubstate
 													FreeplayState.gamespeed -= 0.1;
 													trace(FreeplayState.gamespeed);
 													versionShit.text = "change the speed at which that the game runs. speed: " + truncateFloat(FreeplayState.gamespeed, 2) + " (Left, Right)";
-													PlayState.resetgamespeed = true;
+													PlayState.speedchange();
 												}
 									}
 									else
@@ -497,9 +497,9 @@ class PauseSubState extends MusicBeatSubstate
 		if (curSelected == 1 && isinperformance)
 			versionShit.text = "Wether or not to use compressed assets and disable some background animations.";
 		if (curSelected == 2 && isinperformance)
-			versionShit.text = "Use the deprecated way to load things in-game. load times are slower and loading songs in a week will crash on HTML5. I need to fix that.";
+			versionShit.text = "Use the deprecated way to load things in-game. load times are slower than using the new loading scheme.";
 		if (curSelected == 0 && isinmisc)
-			versionShit.text = "Play songs in freeplay when havering over them.";
+			versionShit.text = "Play songs in freeplay when hovering over them.";
 		if (curSelected == 1 && isinmisc)
 			versionShit.text = "Disable or enable the games discord presence.";
 

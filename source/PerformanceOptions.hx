@@ -285,7 +285,7 @@ class PerformanceOptions extends MusicBeatState
 					desc.text = "Wether or not to use compressed assets and disable some background animations.";
 
 				if (curSelected == 2)
-					desc.text = "Use the deprecated way to load things in-game. load times are slower and loading songs in a week will crash on HTML5. I need to fix that.";
+					desc.text = "Use the deprecated way to load things in-game. load times are slower than using the new loading scheme.";
 
 				if (curSelected == 3)
 					desc.text = "Cache assets.";

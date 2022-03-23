@@ -306,7 +306,7 @@ class ApperanceOptions extends MusicBeatState
 					case 3:
 						grpControls.remove(grpControls.members[curSelected]);
 						FlxG.save.data.showratings = !FlxG.save.data.showratings;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.showratings ? "Ratings info on" : "Ratings info on"), true, false);
+						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.showratings ? "Ratings info on" : "Ratings info off"), true, false);
 						ctrl.y += 102;
 						ctrl.x += 50;
 						ctrl.targetY = curSelected - 3;

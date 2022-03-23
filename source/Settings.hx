@@ -157,6 +157,8 @@ class Settings extends MusicBeatState
               {
                 GameOptions.ghosttappinghitsoundsenabled = true;
               }
+              if (FlxG.save.data.notebaseddrain == null)
+                FlxG.save.data.notebaseddrain = false;
 
               if (FlxG.save.data.middlecam == null)
                 FlxG.save.data.middlecam = true;

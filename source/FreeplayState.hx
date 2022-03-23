@@ -355,17 +355,17 @@ class FreeplayState extends MusicBeatState
 		if (controls.RIGHT_P && !FlxG.keys.pressed.SHIFT)
 			changeDiff(1);
 		#if PRELOAD_ALL
-		if(FlxG.keys.justPressed.V && FlxG.sound.music.playing)
+		if(FlxG.keys.justPressed.V && FlxG.sound.music.playing && !FlxG.save.data.freeplaysongs)
 			{
 				if (!voicesplaying)
 					{
-						voices = new FlxSound().loadEmbedded(Paths.voices(songs[curSelected].songName));
-						voices.onComplete = stopPlaying;
-						voicesplaying = true;
-						trace('IS PLAYING ' + voicesplaying);
-						voices.play();
 						if (!FlxG.save.data.freeplaysongs)
 							{
+								voices = new FlxSound().loadEmbedded(Paths.voices(songs[curSelected].songName));
+						        voices.onComplete = stopPlaying;
+						        voicesplaying = true;
+						        trace('IS PLAYING ' + voicesplaying);
+						        voices.play();
 								FlxG.sound.music.stop();
 								FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
 								playingist = true;
@@ -590,14 +590,7 @@ class FreeplayState extends MusicBeatState
 
 		#if PRELOAD_ALL
 				{
-					if (FlxG.save.data.songcache && FlxG.save.data.freeplaysongs)
-						{
-							FlxG.sound.music.stop();
-							FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
-							Conductor.changeBPM(beatArray[curSelected]);
-							trace(Conductor.bpm);
-						}
-						else if (FlxG.save.data.freeplaysongs)
+						if (FlxG.save.data.freeplaysongs)
 							{
 								FlxG.sound.music.stop();
 								songWait.cancel();

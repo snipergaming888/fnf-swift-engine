@@ -2,8 +2,11 @@ package;
 
 import flixel.FlxG;
 import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.graphics.atlas.FlxAtlas;
 import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
+import flixel.FlxSprite;
+import flixel.graphics.FlxGraphic;
 
 class Paths
 {
@@ -75,22 +78,34 @@ class Paths
 		return getPath('data/$key.json', TEXT, library);
 	}
 
-	static public function sound(key:String, ?library:String)
+	/*static public function sound(key:String, ?library:String)
 	{
 		return getPath('sounds/$key.$SOUND_EXT', SOUND, library);
-	}
+	*///}
+
+	static public function sound(key:String, ?library:String)
+		{
+			var result = getPath('sounds/$key.$SOUND_EXT', SOUND, library);
+			return doesSoundAssetExist(result) ? result : null;
+		}
 
 	inline static public function soundRandom(key:String, min:Int, max:Int, ?library:String)
 	{
 		return sound(key + FlxG.random.int(min, max), library);
 	}
 
-	inline static public function music(key:String, ?library:String)
+	/*inline static public function music(key:String, ?library:String)
 	{
 		return getPath('music/$key.$SOUND_EXT', MUSIC, library);
-	}
+	*///}
 
-	inline static public function voices(song:String)
+	inline static public function music(key:String, ?library:String)
+		{
+			var result = getPath('music/$key.$SOUND_EXT', MUSIC, library);
+			return doesSoundAssetExist(result) ? result : null;
+		}
+
+	/*inline static public function voices(song:String)
 	{
 		return 'songs:assets/songs/${song.toLowerCase()}/Voices.$SOUND_EXT';
 	}
@@ -98,19 +113,36 @@ class Paths
 	inline static public function inst(song:String)
 	{
 		return 'songs:assets/songs/${song.toLowerCase()}/Inst.$SOUND_EXT';
-	}
+	}*/
 
-	inline static public function image(key:String, ?library:String)
+	inline static public function voices(song:String)
+		{
+			var result = 'songs:assets/songs/${song.toLowerCase()}/Voices.$SOUND_EXT';
+			return doesSoundAssetExist(result) ? result : null;
+		}
+	
+		inline static public function inst(song:String)
+		{
+			var result = 'songs:assets/songs/${song.toLowerCase()}/Inst.$SOUND_EXT';
+			return doesSoundAssetExist(result) ? result : null;
+		}
+
+	/*inline static public function image(key:String, ?library:String)
 	{
 		return getPath('images/$key.png', IMAGE, library);
-	}
+	}*/
+
+	inline static public function image(key:String, ?library:String)
+		{
+			return getPath('images/$key.png', IMAGE, library);
+		}
 
 	inline static public function font(key:String)
 	{
 		return 'assets/fonts/$key';
 	}
 
-	inline static public function getSparrowAtlas(key:String, ?library:String)
+	/*inline static public function getSparrowAtlas(key:String, ?library:String)
 	{
 		return FlxAtlasFrames.fromSparrow(image(key, library), file('images/$key.xml', library));
 	}
@@ -118,5 +150,109 @@ class Paths
 	inline static public function getPackerAtlas(key:String, ?library:String)
 	{
 		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, library), file('images/$key.txt', library));
-	}
+	}*/
+
+	inline static public function getSparrowAtlas(key:String, ?library:String)
+		{
+			return FlxAtlasFrames.fromSparrow(loadImage(key, library), file('images/$key.xml', library));
+		}
+	
+		inline static public function getPackerAtlas(key:String, ?library:String)
+		{
+			return FlxAtlasFrames.fromSpriteSheetPacker(loadImage(key, library), file('images/$key.txt', library));
+		}
+
+	static public function listSongsToCache()
+		{
+			// We need to query OpenFlAssets, not the file system, because of Polymod.
+			var soundAssets = OpenFlAssets.list(AssetType.MUSIC).concat(OpenFlAssets.list(AssetType.SOUND));
+	
+			// TODO: Maybe rework this to pull from a text file rather than scan the list of assets.
+			var songNames = [];
+	
+			for (sound in soundAssets)
+			{
+				// Parse end-to-beginning to support mods.
+				var path = sound.split('/');
+				path.reverse();
+	
+				var fileName = path[0];
+				var songName = path[1];
+	
+				if (path[2] != 'songs')
+					continue;
+	
+				// Remove duplicates.
+				if (songNames.indexOf(songName) != -1)
+					continue;
+	
+				songNames.push(songName);
+			}
+	
+			return songNames;
+		}
+	
+		static public function listAudioToCache(isSound:Bool)
+		{
+			// We need to query OpenFlAssets, not the file system, because of Polymod.
+			var soundAssets = OpenFlAssets.list(AssetType.MUSIC).concat(OpenFlAssets.list(AssetType.SOUND));
+	
+			// TODO: Maybe rework this to pull from a text file rather than scan the list of assets.
+			var fileNames = [];
+	
+			var folderName = 'music';
+	
+			if (isSound)
+				folderName = 'sounds';
+	
+			for (sound in soundAssets)
+			{
+				// Parse end-to-beginning to support mods.
+				var path = sound.split('/');
+				path.reverse();
+	
+				var fileName = path[0];
+	
+				if (path[1] != folderName)
+					continue;
+	
+				// Remove duplicates.
+				if (fileNames.indexOf(fileName) != -1)
+					continue;
+	
+				fileNames.push(fileName);
+			}
+	
+			return fileNames;
+		}
+	
+		static public function doesSoundAssetExist(path:String)
+		{
+			if (path == null || path == "")
+				return false;
+			return OpenFlAssets.exists(path, AssetType.SOUND) || OpenFlAssets.exists(path, AssetType.MUSIC);
+		}
+
+		static public function loadImage(key:String, ?library:String):FlxGraphic
+			{
+				var path = image(key, library);
+		
+				#if cpp
+				if (Caching.bitmapData != null)
+				{
+					if (Caching.bitmapData.exists(key))
+						// Get data from cache.
+						return Caching.bitmapData.get(key);
+				}
+				#end
+		
+				if (OpenFlAssets.exists(path, IMAGE))
+				{
+					var bitmap = OpenFlAssets.getBitmapData(path);
+					return FlxGraphic.fromBitmapData(bitmap);
+				}
+				else
+					// Could not find image at path
+					return null;
+			}
 }
