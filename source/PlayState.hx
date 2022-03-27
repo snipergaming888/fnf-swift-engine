@@ -1381,6 +1381,9 @@ class PlayState extends MusicBeatState
 		}
 
 		add(camFollow);
+		if (FlxG.save.data.camfollowspeedon)
+		FlxG.camera.follow(camFollow, LOCKON, 0.04 * (30 / FlxG.save.data.camfollowspeed));
+		else	
 		FlxG.camera.follow(camFollow, LOCKON, 0.04 * (30 / (cast (Lib.current.getChildAt(0), Main)).getFPS()));
 		/// greetings kadedevoloper
 		///FlxG.camera.follow(camFollow, LOCKON, 0.04);
@@ -1454,7 +1457,7 @@ class PlayState extends MusicBeatState
 					if (FlxG.save.data.minscore)
 					scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT);
 					else
-					scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+					scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 					scoreTxt.scrollFactor.set();
 					if (FlxG.save.data.antialiasing)
 						{
@@ -1470,25 +1473,6 @@ class PlayState extends MusicBeatState
 				conducttext = new FlxText(500, 500, Conductor.songPosition, 20);
 				add(conducttext);
 				#end
-		
-										{
-											var sniperenginemark = new FlxText(4,420, "FNF " + " | DEBUG ", 12);
-											sniperenginemark.setFormat(Paths.font("vcr.ttf"), 12, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
-											sniperenginemark.scrollFactor.set();
-											if (FlxG.save.data.antialiasing)
-												{
-													sniperenginemark.antialiasing = false;
-												}
-												else
-													{
-														sniperenginemark.antialiasing = true;
-													}
-													if(FlxG.save.data.watermarks)
-														{
-															add(sniperenginemark);
-															sniperenginemark.cameras = [camHUD];
-														}
-										}
 		scoreTxt.cameras = [camHUD];
 		if (FlxG.save.data.showratings)
 		doof.cameras = [camHUD];
@@ -3750,10 +3734,22 @@ class PlayState extends MusicBeatState
 
 					if (SONG.needsVoices)
 						vocals.volume = 1;
+                    #if debug
+					if (FlxG.keys.pressed.O)
+						{
+							
+						}
+						else
+						#end	
+							{
+	                          daNote.kill();
+					          notes.remove(daNote, true);
+					          daNote.destroy();
+							}
 
-					daNote.kill();
-					notes.remove(daNote, true);
-					daNote.destroy();
+					//daNote.kill();
+					//notes.remove(daNote, true);
+					//daNote.destroy();
 				}
 
 
@@ -4291,7 +4287,7 @@ class PlayState extends MusicBeatState
 					currentTimingShown.alpha = 1;
 		
 				add(currentTimingShown);
-				currentTimingShown.cameras = [camHUD];
+				//currentTimingShown.cameras = [camHUD];
 		
 			}
 		comboSpr.velocity.x += FlxG.random.int(1, 10);
@@ -4623,18 +4619,7 @@ class PlayState extends MusicBeatState
 				}
 			});
 		}
-
-		if (pressArray.contains(true) && generatedMusic && FlxG.save.data.KEidle && debug)
-			{
-				boyfriend.holdTimer = 0;
-			}
-
-			if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && (!holdArray.contains(true) && FlxG.save.data.KEidle && !onbeat && debug || FlxG.save.data.botPlay))
-				{
-					if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss'))
-						boyfriend.playAnim('idle', true);
-				}
-					
+			
 				
 					if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && (!holdArray.contains(true) && !onbeat || FlxG.save.data.botPlay))
 						{

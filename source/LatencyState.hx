@@ -123,7 +123,10 @@ class LatencyState extends FlxState
 		if (FlxG.keys.justPressed.ESCAPE)
 			FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
 		if (FlxG.keys.justPressed.ESCAPE)
-			FlxG.sound.music.stop();
+			{
+				FlxG.sound.music.stop();
+				FlxG.sound.playMusic(Paths.music('freakyMenu'));
+			}
 		noteGrp.forEach(function(daNote:Note)
 		{
 			daNote.y = (strumLine.y - (Conductor.songPosition - daNote.strumTime) * 0.45);

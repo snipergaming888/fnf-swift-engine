@@ -10,6 +10,22 @@ class Settings extends MusicBeatState
          public static function loadsettings()
           {
             //settings
+
+            if (FlxG.save.data.firststart == null)
+              {
+                resettodefaultsettings();
+                FlxG.save.data.firststart = true;
+              }
+
+
+            if (FlxG.save.data.songScores == null)
+              {
+                FlxG.save.data.songScores = 0;
+              }
+              else if (FlxG.save.data.songScores != null)
+                {
+                  Highscore.songScores = FlxG.save.data.songScores;
+                }
             
             if (FlxG.save.data.ghosttapping == null)
               FlxG.save.data.ghosttapping = true;
@@ -163,6 +179,9 @@ class Settings extends MusicBeatState
               if (FlxG.save.data.middlecam == null)
                 FlxG.save.data.middlecam = true;
 
+              if (FlxG.save.data.camfollowspeedon == null)
+                FlxG.save.data.camfollowspeedon = false;
+
               FlxG.save.data.hasplayed = false;
               trace('anim played? ' + FlxG.save.data.hasplayed);
               
@@ -183,4 +202,118 @@ class Settings extends MusicBeatState
               }
                        
           }
+
+          public static function resettodefaultsettings()
+            {
+                FlxG.save.data.ghosttapping = true;
+          
+                FlxG.save.data.downscroll = false;
+  
+                FlxG.save.data.middlescroll = false;
+          
+                FlxG.save.data.optimizations = false;
+          
+                FlxG.save.data.antialiasing = true;
+        
+                FlxG.save.data.botplay = false;
+          
+                FlxG.save.data.offset = 0;
+          
+                FlxG.save.data.curselected = "0";
+          
+                FlxG.save.data.strumlights = true;
+          
+                FlxG.save.data.playerstrumlights = true;
+                trace('reset pstrums');
+
+                FlxG.save.data.debug = false;
+          
+                FlxG.save.data.camzooming = true;
+          
+                FlxG.save.data.watermarks = true;
+          
+                FlxG.save.data.fps = false;
+              
+                FlxG.save.data.togglecap = false;
+  
+                FlxG.save.data.fpsCap = 138; // sorry kade dev but 360 HZ monitors exist now
+          
+                FlxG.save.data.imagecache = false;
+          
+                FlxG.save.data.songcache = false;
+          
+                FlxG.save.data.soundcache = false;
+          
+                FlxG.save.data.musiccache = false;
+          
+                FlxG.save.data.songPosition = false;
+          
+                FlxG.save.data.pausecount = false;
+          
+                FlxG.save.data.hittimings = false;
+  
+                FlxG.save.data.showratings = false;
+  
+                FlxG.save.data.reset = false;
+              
+                FlxG.save.data.hitsounds = false;
+          
+                FlxG.save.data.repeat = false;
+          
+                FlxG.save.data.transparency = true;
+          
+                FlxG.save.data.minscore = false;
+  
+                FlxG.save.data.freeplaysongs = true;
+          
+                FlxG.save.data.nps = false;
+          
+                FlxG.save.data.discordrpc = true;
+  
+                FlxG.save.data.memoryMonitor = false;
+  
+                FlxG.save.data.songspeed = false;
+  
+                FlxG.save.data.anti = false;
+  
+                FlxG.save.data.oldinput = false;
+  
+                FlxG.save.data.healthcolor = true;
+  
+                FlxG.save.data.newhealthheadbump = true;
+  
+                FlxG.save.data.missnotes = true;
+  
+                FlxG.save.data.instantRespawn = false;
+            
+                FlxG.save.data.usedeprecatedloading = false;
+  
+                FlxG.save.data.ghosttappinghitsoundsenabled = false;
+  
+              if (FlxG.save.data.ghosttappinghitsoundsenabled)
+                {
+                  GameOptions.ghosttappinghitsoundsenabled = true;
+                }
+                  FlxG.save.data.notebaseddrain = false;
+  
+                  FlxG.save.data.middlecam = true;
+  
+                  FlxG.save.data.camfollowspeedon = false;
+  
+                FlxG.save.data.hasplayed = false;
+                trace('anim played? ' + FlxG.save.data.hasplayed);
+                
+                    (cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
+                    FlxG.updateFramerate = FlxG.save.data.fpsCap;
+                    FlxG.drawFramerate = FlxG.save.data.fpsCap; 
+  
+                if (FlxG.save.data.volume != null)
+                {
+                  FlxG.sound.volume = FlxG.save.data.volume;
+                }
+                if (FlxG.save.data.mute != null)
+                {
+                  FlxG.sound.muted = FlxG.save.data.mute;
+                }
+            }
 }

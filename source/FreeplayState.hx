@@ -354,21 +354,17 @@ class FreeplayState extends MusicBeatState
 			changeDiff(-1);
 		if (controls.RIGHT_P && !FlxG.keys.pressed.SHIFT)
 			changeDiff(1);
-		#if PRELOAD_ALL
-		if(FlxG.keys.justPressed.V && FlxG.sound.music.playing && !FlxG.save.data.freeplaysongs)
+		#if cpp
+		if(FlxG.keys.justPressed.V && FlxG.sound.music.playing && FlxG.save.data.freeplaysongs)
 			{
 				if (!voicesplaying)
 					{
-						if (!FlxG.save.data.freeplaysongs)
 							{
 								voices = new FlxSound().loadEmbedded(Paths.voices(songs[curSelected].songName));
 						        voices.onComplete = stopPlaying;
 						        voicesplaying = true;
 						        trace('IS PLAYING ' + voicesplaying);
 						        voices.play();
-								FlxG.sound.music.stop();
-								FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
-								playingist = true;
 								Conductor.changeBPM(beatArray[curSelected]);
 								trace(Conductor.bpm);
 							}
@@ -596,6 +592,7 @@ class FreeplayState extends MusicBeatState
 								songWait.cancel();
 								songWait.start(1, function(tmr:FlxTimer) {
 								FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
+								playingist = true;
 								Conductor.changeBPM(beatArray[curSelected]);
 								trace(Conductor.bpm);
 								});

@@ -133,9 +133,6 @@ class OptionsMenu extends MusicBeatState
 								aming.targetY = curSelected - 0;
 								aming.screenCenter(X);
 								aming.scrollFactor.set();
-								#if cpp
-								aming.color = FlxColor.LIME;
-								#end
 								keyalphabet.add(aming);
 		if(keytextbool)
 			{

@@ -1866,13 +1866,13 @@ class PauseSubState extends MusicBeatSubstate
 				case "Camera focusing ON" | "camera focusing Off":
 					if (FlxG.save.data.middlecam)
 						{
-							regenappearance();
 							FlxG.save.data.middlecam = false;
+							regenappearance();
 						}
 					else if (!FlxG.save.data.middlecam)
 						{
-							regenappearance();
-							FlxG.save.data.middlecam = true;	
+							FlxG.save.data.middlecam = true;
+							regenappearance();	
 						}		
 				case "memoryMonitor ON" | "memoryMonitor OFF":
 				    if (FlxG.save.data.memoryMonitor)
