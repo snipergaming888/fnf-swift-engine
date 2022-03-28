@@ -97,6 +97,7 @@ class PlayState extends MusicBeatState
 	public static var strumLineNotes:FlxTypedGroup<FlxSprite>;
 	public static var playerStrums:FlxTypedGroup<FlxSprite>;
 	public static var cpuStrums:FlxTypedGroup<FlxSprite> = null;
+	private var singAnimations:Array<String> = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'];
 	public static var generatedStaticArrows:Bool = false;
 	public static var startTime = 0.0;
 
@@ -3585,7 +3586,6 @@ class PlayState extends MusicBeatState
 				{
 					if (!daNote.isSustainNote)
 					cpunotesHit += 1;
-					if (SONG.song != '')
 
 					if (SONG.notes[Math.floor(curStep / 16)] != null)
 					{
@@ -3594,32 +3594,11 @@ class PlayState extends MusicBeatState
 						else
 							altAnim = '';
 					}
-					
-					
 
-					switch (Math.abs(daNote.noteData))
-					{
-						case 0:
-							dad.playAnim('singLEFT' + altAnim, true);
-							if (FlxG.save.data.notebaseddrain)
-								health -= 0.023;
-						case 1:
-							dad.playAnim('singDOWN' + altAnim, true);
-							if (FlxG.save.data.notebaseddrain)
-								health -= 0.023;
-						case 2:
-							dad.playAnim('singUP' + altAnim, true);
-							if (FlxG.save.data.notebaseddrain)
-								health -= 0.023;
-						case 3:
-							dad.playAnim('singRIGHT' + altAnim, true);
-							if (FlxG.save.data.notebaseddrain)
-								health -= 0.023;		
-					}
+					var animToPlay:String = singAnimations[Std.int(Math.abs(daNote.noteData))] + altAnim;
+					dad.playAnim(animToPlay, true);
+					dad.holdTimer = daNote.sustainLength; //0
 
-					dad.holdTimer = 0;
-
-					///yeah this kinda fucked me over lmaoooooooo
 					{
 						cpuStrums.forEach(function(spr:FlxSprite)
 						{
@@ -3734,22 +3713,32 @@ class PlayState extends MusicBeatState
 
 					if (SONG.needsVoices)
 						vocals.volume = 1;
-                    #if debug
-					if (FlxG.keys.pressed.O)
-						{
-							
-						}
-						else
-						#end	
-							{
-	                          daNote.kill();
-					          notes.remove(daNote, true);
-					          daNote.destroy();
-							}
 
+					if ((daNote.y < -daNote.height +120 && !FlxG.save.data.downscroll || daNote.y >= -strumLine.y +120  && FlxG.save.data.downscroll))
+						{
+							if (daNote.isSustainNote)
+							{
+								daNote.kill();
+								notes.remove(daNote, true);
+								daNote.destroy();
+								#if debug
+							    trace('deleted sust note');
+							    #end
+							}
+					}
+                    if (!daNote.isSustainNote)
+						{
+							daNote.active = false;
+							daNote.kill();
+							notes.remove(daNote, true);
+							daNote.destroy();
+							#if debug
+							trace('deleted note');
+							#end
+						} // finish fixing note shit!!!!
 					//daNote.kill();
 					//notes.remove(daNote, true);
-					//daNote.destroy();
+					//daNote.destroy();			
 				}
 
 

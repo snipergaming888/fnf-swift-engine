@@ -61,7 +61,7 @@ class GameOptions extends MusicBeatState
 		menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat-opt'));
 		menuBG.scrollFactor.set();
 		menuBG.x -= 30;		
-		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll') + "\n" + (FlxG.save.data.middlescroll ? "middlescroll on" : "middlescroll off") + "\n" + (FlxG.save.data.ghosttapping ? "Ghost Tapping" : "No Ghost Tapping") + "\n" + (FlxG.save.data.oldinput ? "OLD INPUT ON" : "OLD INPUT OFF") + "\n" + (FlxG.save.data.antimash ? "anti mash ON" : " anti mash OFF") + "\n" + (FlxG.save.data.reset ? "RESET BUTTON ON" : "RESET BUTTON OFF") + "\n" + (FlxG.save.data.pausecount ? "pause counter on" : "pause counter off") + "\n" + (FlxG.save.data.repeat ? 'loop current song on' : 'loop current song off') + "\n" + (FlxG.save.data.hitsounds ? 'hitsounds on' : 'hitsounds off')  + "\n" + (FlxG.save.data.songspeed ? 'SET SCROLL SPEED ON' : 'SET SCROLL SPEED OFF') + "\n" + (FlxG.save.data.botplay ? 'BOTPLAY ON' : 'BOTPLAY OFF') + "\n" + (FlxG.save.data.missnotes ? 'miss sounds on' : 'miss sounds off') + "\n" + (FlxG.save.data.instantRespawn ? 'instant respawn on' : 'instant respawn off') + "\n" + (FlxG.save.data.notebaseddrain ? "Note based healthdrain on" : "Note based healthdrain off") + "\n" + "EDIT OFFSET");
+		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll') + "\n" + (FlxG.save.data.middlescroll ? "middlescroll on" : "middlescroll off") + "\n" + (FlxG.save.data.ghosttapping ? "Ghost Tapping" : "No Ghost Tapping") + "\n" + (FlxG.save.data.oldinput ? "OLD INPUT ON" : "OLD INPUT OFF") + "\n" + (FlxG.save.data.antimash ? "anti mash ON" : " anti mash OFF") + "\n" + (FlxG.save.data.reset ? "RESET BUTTON ON" : "RESET BUTTON OFF") + "\n" + (FlxG.save.data.pausecount ? "pause counter on" : "pause counter off") + "\n" + (FlxG.save.data.repeat ? 'loop current song on' : 'loop current song off') + "\n" + (FlxG.save.data.hitsounds ? 'hitsounds on' : 'hitsounds off')  + "\n" + (FlxG.save.data.songspeed ? 'SET SCROLL SPEED ON' : 'SET SCROLL SPEED OFF') + "\n" + (FlxG.save.data.botplay ? 'BOTPLAY ON' : 'BOTPLAY OFF') + "\n" + (FlxG.save.data.missnotes ? 'miss sounds on' : 'miss sounds off') + "\n" + (FlxG.save.data.instantRespawn ? 'instant respawn on' : 'instant respawn off') + "\n" + "EDIT OFFSET");
 		
 		trace(controlsStrings);
 
@@ -181,8 +181,8 @@ class GameOptions extends MusicBeatState
 			if (curSelected < 0)
 				curSelected = 0;
 	
-			if (curSelected > 14)
-				curSelected = 14;
+			if (curSelected > 13)
+				curSelected = 13;
 
 			grpControls.forEach(function(sex:Alphabet)
 				{
@@ -245,8 +245,6 @@ class GameOptions extends MusicBeatState
 			if (curSelected == 12)
 				versionShit.text = "Wether or not to instantly respawn after death.";
 			if (curSelected == 13)
-				versionShit.text = "Toggle note based healthdrain.";
-			if (curSelected == 14)
 				versionShit.text = "Edit Your note timing offset.";
 
 
@@ -461,17 +459,8 @@ class GameOptions extends MusicBeatState
 						ctrl.x += 50;
 						ctrl.targetY = curSelected - 12;
 						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 13:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.notebaseddrain = !FlxG.save.data.notebaseddrain;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.notebaseddrain ? "Note based healthdrain on" : "Note based healthdrain off"), true, false);
-						ctrl.x += 50;
-						ctrl.y += 102;
-						ctrl.targetY = curSelected - 13;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));		
-						case 14:
+						FlxG.sound.play(Paths.sound('scrollMenu'));	
+						case 13:
 						FlxTransitionableState.skipNextTransIn = true;
 						FlxTransitionableState.skipNextTransOut = true;
 						LoadingStateLatency.loadAndSwitchState(new LatencyState());
