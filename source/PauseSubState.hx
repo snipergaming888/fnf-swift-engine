@@ -773,7 +773,7 @@ class PauseSubState extends MusicBeatSubstate
 								var introAlts:Array<String> = introAssets.get('default');
 								var altSuffix:String = "";
 
-								if (PlayState.SONG.song.toLowerCase() == 'senpai' || PlayState.SONG.song.toLowerCase() == 'roses' || PlayState.SONG.song.toLowerCase() == 'thorns' || PlayState.SONG.song.toLowerCase() == 'collapsing' || PlayState.SONG.song.toLowerCase() == 'bits' || PlayState.SONG.song.toLowerCase() == 'tearing' || PlayState.SONG.song.toLowerCase() == 'tulips')
+								if (PlayState.SONG.song.toLowerCase() == 'senpai' || PlayState.SONG.song.toLowerCase() == 'roses' || PlayState.SONG.song.toLowerCase() == 'thorns')
 									{
 										for (value in introAssets.keys())
 											{
@@ -796,7 +796,7 @@ class PauseSubState extends MusicBeatSubstate
 										ready.scrollFactor.set();
 										ready.updateHitbox();
 
-										if (PlayState.SONG.song.toLowerCase() == 'senpai' || PlayState.SONG.song.toLowerCase() == 'roses' || PlayState.SONG.song.toLowerCase() == 'thorns' || PlayState.SONG.song.toLowerCase() == 'collapsing' || PlayState.SONG.song.toLowerCase() == 'bits' || PlayState.SONG.song.toLowerCase() == 'tearing' || PlayState.SONG.song.toLowerCase() == 'tulips')
+										if (PlayState.SONG.song.toLowerCase() == 'senpai' || PlayState.SONG.song.toLowerCase() == 'roses' || PlayState.SONG.song.toLowerCase() == 'thorns')
 											ready.setGraphicSize(Std.int(ready.width * daPixelZoom));
 					
 					
@@ -815,7 +815,7 @@ class PauseSubState extends MusicBeatSubstate
 										var set:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[1] + altSuffix));
 										set.scrollFactor.set();
 
-										if (PlayState.SONG.song.toLowerCase() == 'senpai' || PlayState.SONG.song.toLowerCase() == 'roses' || PlayState.SONG.song.toLowerCase() == 'thorns' || PlayState.SONG.song.toLowerCase() == 'collapsing' || PlayState.SONG.song.toLowerCase() == 'bits' || PlayState.SONG.song.toLowerCase() == 'tearing' || PlayState.SONG.song.toLowerCase() == 'tulips')
+										if (PlayState.SONG.song.toLowerCase() == 'senpai' || PlayState.SONG.song.toLowerCase() == 'roses' || PlayState.SONG.song.toLowerCase() == 'thorns')
 											set.setGraphicSize(Std.int(set.width * daPixelZoom));
 					
 					
@@ -835,7 +835,7 @@ class PauseSubState extends MusicBeatSubstate
 										var go:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[2] + altSuffix));
 										go.scrollFactor.set();
 
-										if (PlayState.SONG.song.toLowerCase() == 'senpai' || PlayState.SONG.song.toLowerCase() == 'roses' || PlayState.SONG.song.toLowerCase() == 'thorns' || PlayState.SONG.song.toLowerCase() == 'collapsing' || PlayState.SONG.song.toLowerCase() == 'bits' || PlayState.SONG.song.toLowerCase() == 'tearing' || PlayState.SONG.song.toLowerCase() == 'tulips')
+										if (PlayState.SONG.song.toLowerCase() == 'senpai' || PlayState.SONG.song.toLowerCase() == 'roses' || PlayState.SONG.song.toLowerCase() == 'thorns')
 											go.setGraphicSize(Std.int(go.width * daPixelZoom));
 					
 										go.updateHitbox();
