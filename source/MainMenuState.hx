@@ -45,10 +45,10 @@ class MainMenuState extends MusicBeatState
 	var defaultCamZoom:Float = 1.05;
 	var camZoom:FlxTween;
 	public static var sniperengineversion:String = " Swift Engine 1.5.0";
-	public static var sniperengineversionA:String = " SE 1.5.0";
+	public static var sniperengineversionA:String = " SE 1.5.1";
 	public static var gameVer:String = "v0.2.7.1";
 	public static var nightly:String = "";
-	public static var testbuild:String = "PUBLIC TEST BUILD";
+	public static var testbuild:String = "";
 	
 	override function create()
 	{	

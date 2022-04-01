@@ -228,6 +228,7 @@ class PlayState extends MusicBeatState
 	public static var daPixelZoom:Float = 6;
 
 	public static var inCutscene:Bool = false;
+	var usedTimeTravel:Bool = false;
 
 	#if cpp
 	// Discord RPC variables
@@ -1433,7 +1434,7 @@ class PlayState extends MusicBeatState
 				
 		if (FlxG.save.data.downscroll)
 			{
-				scoreTxt = new FlxText(500, 100, "", 20);
+				scoreTxt = new FlxText(0, 100, FlxG.width, "", 20);
 				if (FlxG.save.data.minscore)
 				scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT);
 				else
@@ -1454,7 +1455,7 @@ class PlayState extends MusicBeatState
 			}
 				else
 				{                       ///old default is 250
-					scoreTxt = new FlxText(500, 698, "", 20);
+					scoreTxt = new FlxText(0, 698, FlxG.width, "", 20);
 					if (FlxG.save.data.minscore)
 					scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT);
 					else
@@ -2581,7 +2582,8 @@ class PlayState extends MusicBeatState
 								healthBarBG.screenCenter(X);
 								healthBarBG.scrollFactor.set();
 								add(healthBarBG);
-								healthBarBG.cameras = [camHUD];	
+								healthBarBG.cameras = [camHUD];
+								trace('x: ' + healthBarBG.x + 'y: ' + healthBarBG.y);
 				
 								healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
 								'health', 0, 2);
@@ -2609,7 +2611,7 @@ class PlayState extends MusicBeatState
 
 							if (moveminscore && FlxG.save.data.minscore)
 								{
-									scoreTxt.x = healthBarBG.x + healthBarBG.width - 190;
+									scoreTxt.x = healthBarBG.x;
 									scoreTxt.y = healthBarBG.y + 30;
 									moveminscore = false;
 									scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT);
@@ -2618,13 +2620,13 @@ class PlayState extends MusicBeatState
 				
 								if (moveminscoreback && !FlxG.save.data.minscore)
 									{
-										scoreTxt.x = 250;
+										scoreTxt.x = 0;
 										if (FlxG.save.data.downscroll)
 										scoreTxt.y = 100;
 										else
 											scoreTxt.y = 698;
 										moveminscoreback = false;
-										scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+										scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 										trace('minscore part 2');
 									}
 
@@ -2700,6 +2702,7 @@ class PlayState extends MusicBeatState
 
 			healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
 			'health', 0, 2);
+			trace('x: ' + healthBarBG.x + 'y: ' + healthBarBG.y);
 		healthBar.scrollFactor.set();
 		if (FlxG.save.data.healthcolor)
 			healthBar.createFilledBar(p2color, p1color);
@@ -2889,6 +2892,54 @@ class PlayState extends MusicBeatState
 								}
 							}
 				}
+
+				if(FlxG.keys.justPressed.TWO) { //Go 10 seconds into the future, credit: Shadow Mario#9396
+					if (!usedTimeTravel && Conductor.songPosition + 10000 < FlxG.sound.music.length) 
+					{
+						usedTimeTravel = true;
+						FlxG.sound.music.pause();
+						vocals.pause();
+						Conductor.songPosition += 10000;
+						notes.forEachAlive(function(daNote:Note)
+						{
+							if(daNote.strumTime - 500 < Conductor.songPosition) {
+								daNote.active = false;
+								daNote.visible = false;
+		
+							
+								daNote.kill();
+								notes.remove(daNote, true);
+								daNote.destroy();
+							}
+							for (i in 0...unspawnNotes.length)
+								{
+									var dunceNote:Note = unspawnNotes[i];
+									if(dunceNote.strumTime - 500 < Conductor.songPosition) {
+										dunceNote.active = false;
+										dunceNote.visible = false;
+				
+									
+										dunceNote.kill();
+										notes.remove(dunceNote, true);
+										dunceNote.destroy();
+									}
+
+									
+									
+								}
+						});
+		
+						FlxG.sound.music.time = Conductor.songPosition;
+						FlxG.sound.music.play();
+		
+						vocals.time = Conductor.songPosition;
+						vocals.play();
+						new FlxTimer().start(0.5, function(tmr:FlxTimer)
+							{
+								usedTimeTravel = false;
+							});
+					}
+				}	
 				#end
 
 				if (FlxG.save.data.songPosition && !addedsongpos && startTimer.finished)
@@ -2992,22 +3043,6 @@ class PlayState extends MusicBeatState
 
 		///FlxG.elapsed = FlxG.timeScale*(_step/1000.f);
 
-		if (boyfriend.animation.curAnim.name.startsWith('sing') && scoretxtnotmoved && !FlxG.save.data.minscore)
-			{
-				if (FlxG.save.data.nps)
-					{
-						//accuracytext.x -= 110;
-						scoreTxt.x -= 95;
-						scoretxtnotmoved = false;
-						trace("MOVED");		
-					}
-					else
-						{
-							scoreTxt.x -= 25;
-							scoretxtnotmoved = false;
-							trace("MOVED");	
-						}	
-			}
 
 	       if (FlxG.save.data.hideHUD && !inCutscene)
 	       {
@@ -3020,20 +3055,16 @@ class PlayState extends MusicBeatState
 			else if (FlxG.save.data.nps && !inCutscene)
 				{
 					if (accuracy == 0 && !inCutscene)
-						scoreTxt.text = "( Current Accuracy: " + baseText2 + " | Overall Accuracy: " + "N/A" + " | Misses: " + misses + " | " + fullcombotext + " (" + songRating + ")" + " | NPS: " + nps + " | Max NPS: " + maxNPS + " | " + "Score: " + songScore + " )";	
+						scoreTxt.text = "Score: " + songScore + " | Current Accuracy: " + baseText2 + " | Overall Accuracy: " + "N/A" + " | Misses: " + misses + " | " + fullcombotext + " (" + songRating + ")" + " | NPS: " + nps;	
 						else if (!inCutscene)
-						scoreTxt.text = "( Current Accuracy: " + baseText2 + " | Overall Accuracy: " + truncateFloat(accuracy, 2) + "%" + " | Misses: " + misses + " | " + fullcombotext + " (" + songRating + ")" + " | NPS: " + nps + " | Max NPS: " + maxNPS + " | " + "Score: " + songScore + " )";
-					if (!inCutscene)
-					scoreTxt.alignment = CENTER;
+						scoreTxt.text = "Score: " + songScore + " | Current Accuracy: " + baseText2 + " | Overall Accuracy: " + truncateFloat(accuracy, 2) + "%" + " | Misses: " + misses + " | " + fullcombotext + " (" + songRating + ")" + " | NPS: " + nps;
 				}
 				else
 					{
 						if (accuracy == 0 && !inCutscene)
-						scoreTxt.text = "( Current Accuracy: " + baseText2 + " | Overall Accuracy: " + "N/A" + " | Misses: " + misses + " | " + fullcombotext + " (" + songRating + ")" + " | " + "Score: " + songScore + " )";
+						scoreTxt.text = "Score: " + songScore + " | Current Accuracy: " + baseText2 + " | Overall Accuracy: " + "N/A" + " | Misses: " + misses + " | " + fullcombotext + " (" + songRating + ")";
 						else if (!inCutscene)
-						scoreTxt.text = "( Current Accuracy: " + baseText2 + " | Overall Accuracy: " + truncateFloat(accuracy, 2) + "%" + " | Misses: " + misses + " | " + fullcombotext + " (" + songRating + ")" + " | " + "Score: " + songScore + " )";
-					   if (!inCutscene)
-					   scoreTxt.alignment = CENTER;
+						scoreTxt.text = "Score: " + songScore + " | Current Accuracy: " + baseText2 + " | Overall Accuracy: " + truncateFloat(accuracy, 2) + "%" + " | Misses: " + misses + " | " + fullcombotext + " (" + songRating + ")";
 					}
 
 					if (addedratingstext && !FlxG.save.data.showratings)
@@ -3932,7 +3963,7 @@ class PlayState extends MusicBeatState
 				    vocals.pause();
 					FlxG.sound.music.stop();
 					vocals.stop();
-					if (SONG.validScore)
+					if (SONG.validScore && !FlxG.save.data.botplay)
 					{
 						#if !switch
 						Highscore.saveScore(SONG.song, songScore, storyDifficulty);
@@ -3964,7 +3995,7 @@ class PlayState extends MusicBeatState
 							// if ()
 							StoryMenuState.weekUnlocked[Std.int(Math.min(storyWeek + 1, StoryMenuState.weekUnlocked.length - 1))] = true;
 			
-							if (SONG.validScore)
+							if (SONG.validScore && !FlxG.save.data.botplay)
 							{
 								NGio.unlockMedal(60961);
 								Highscore.saveWeekScore(storyWeek, campaignScore, storyDifficulty);
