@@ -244,7 +244,7 @@ class GameOptions extends MusicBeatState
 				versionShit.text = "Wether or not to play miss sounds.";
 			if (curSelected == 12)
 				versionShit.text = "Wether or not to instantly respawn after death.";
-			if (curSelected == 13)
+			if (curSelected == 15)
 				versionShit.text = "Edit Your note timing offset.";
 
 
@@ -459,12 +459,10 @@ class GameOptions extends MusicBeatState
 						ctrl.x += 50;
 						ctrl.targetY = curSelected - 12;
 						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));	
+						FlxG.sound.play(Paths.sound('scrollMenu'));
 						case 13:
-						FlxTransitionableState.skipNextTransIn = true;
-						FlxTransitionableState.skipNextTransOut = true;
 						LoadingStateLatency.loadAndSwitchState(new LatencyState());
-						Conductor.changeBPM(120);										   	
+						Conductor.changeBPM(120);			   	
 				}
 			}
 	}

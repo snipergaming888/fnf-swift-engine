@@ -19,8 +19,8 @@ import flixel.FlxG;
 class GameplayCustomizeState extends MusicBeatState
 {
 
-    var defaultX:Float = FlxG.width * 0.55 - 135;
-    var defaultY:Float = FlxG.height / 2 - 50;
+    public static var defaultX:Float = FlxG.width * 0.55 - 135;
+    public static var defaultY:Float = FlxG.height / 2 - 50;
 
     var background:FlxSprite;
     var curt:FlxSprite;
@@ -33,6 +33,7 @@ class GameplayCustomizeState extends MusicBeatState
 
     var bf:Boyfriend;
     var dad:Character;
+    var defaultCamZoom:Float = 1.05;
 
     var strumLine:FlxSprite;
     var strumLineNotes:FlxTypedGroup<FlxSprite>;
@@ -51,7 +52,6 @@ class GameplayCustomizeState extends MusicBeatState
         curt = new FlxSprite(-500, -300).loadGraphic(Paths.image('stagecurtains','shared'));
         front = new FlxSprite(-650, 600).loadGraphic(Paths.image('stagefront','shared'));
 
-		Conductor.changeBPM(102);
 		persistentUpdate = true;
 
         super.create();
@@ -87,7 +87,7 @@ class GameplayCustomizeState extends MusicBeatState
 
 		FlxG.camera.follow(camFollow, LOCKON, 0.01);
 		// FlxG.camera.setScrollBounds(0, FlxG.width, 0, FlxG.height);
-		FlxG.camera.zoom = 0.9;
+		FlxG.camera.zoom = defaultCamZoom;
 		FlxG.camera.focusOn(camFollow.getPosition());
 
 		strumLine = new FlxSprite(0, 0).makeGraphic(FlxG.width, 14);
@@ -131,6 +131,11 @@ class GameplayCustomizeState extends MusicBeatState
             FlxG.save.data.changedHitY = defaultY;
         }
 
+        if ( FlxG.save.data.changedHitX == null)
+            FlxG.save.data.changedHitX = defaultX;
+        if ( FlxG.save.data.changedHitY == null)
+            FlxG.save.data.changedHitY = defaultY;
+
         sick.x = FlxG.save.data.changedHitX;
         sick.y = FlxG.save.data.changedHitY;
 
@@ -164,6 +169,7 @@ class GameplayCustomizeState extends MusicBeatState
             FlxG.save.data.changedHitX = sick.x;
             FlxG.save.data.changedHitY = sick.y;
             FlxG.save.data.changedHit = true;
+            FlxG.save.data.enablesickpositions = true;
         }
 
         if (FlxG.keys.justPressed.R)
@@ -179,7 +185,7 @@ class GameplayCustomizeState extends MusicBeatState
         {
             FlxG.mouse.visible = false;
             FlxG.sound.play(Paths.sound('cancelMenu'));
-			FlxG.switchState(new OptionsMenu());
+			FlxG.switchState(new GameOptions());
         }
 
     }
@@ -206,8 +212,8 @@ class GameplayCustomizeState extends MusicBeatState
             for (i in 0...4)
             {
                 // FlxG.log.add(i);
-                var babyArrow:FlxSprite = new FlxSprite(0, strumLine.y);
-                babyArrow.frames = Paths.getSparrowAtlas('NOTE_assets', 'shared');
+                var babyArrow:FlxSprite = new FlxSprite(30, strumLine.y - 100);
+                babyArrow.frames = Paths.getSparrowAtlas('NOTE_assets');
                 babyArrow.animation.addByPrefix('green', 'arrowUP');
                 babyArrow.animation.addByPrefix('blue', 'arrowDOWN');
                 babyArrow.animation.addByPrefix('purple', 'arrowLEFT');

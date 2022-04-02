@@ -14,9 +14,11 @@ import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxMath;
 import flixel.util.FlxTimer;
 import flixel.util.FlxColor;
+import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
+import flixel.addons.transition.FlxTransitionableState;
 
 
-class LatencyState extends FlxState
+class LatencyState extends MusicBeatState
 {
 	var offsetText:FlxText;
 	var noteGrp:FlxTypedGroup<Note>;

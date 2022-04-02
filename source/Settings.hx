@@ -182,6 +182,33 @@ class Settings extends MusicBeatState
               if (FlxG.save.data.camfollowspeedon == null)
                 FlxG.save.data.camfollowspeedon = false;
 
+              if (FlxG.save.data.swiftenginescoretext == null)
+                FlxG.save.data.swiftenginescoretext = true;
+
+              if (FlxG.save.data.kadeengine142scoretext == null)
+                FlxG.save.data.kadeengine142scoretext = false;
+
+              if (FlxG.save.data.kadeengine10scoretext == null)
+                FlxG.save.data.kadeengine10scoretext = false;
+
+              if (FlxG.save.data.unknownenginescoretext == null)
+                FlxG.save.data.unknownenginescoretext = false;
+
+              if (FlxG.save.data.sniperenginealphascoretext == null)
+                FlxG.save.data.sniperenginealphascoretext = false;
+
+              if (FlxG.save.data.swiftenginescoretext == null)
+                FlxG.save.data.pscyheenginescoretext = false;
+
+              if ( FlxG.save.data.changedHitX == null)
+                FlxG.save.data.changedHitX = GameplayCustomizeState.defaultX;
+
+            if ( FlxG.save.data.changedHitY == null)
+                FlxG.save.data.changedHitY = GameplayCustomizeState.defaultY;
+
+              if (FlxG.save.data.changedHit == null)
+                FlxG.save.data.changedHit = false;
+
               FlxG.save.data.hasplayed = false;
               trace('anim played? ' + FlxG.save.data.hasplayed);
               
@@ -299,6 +326,24 @@ class Settings extends MusicBeatState
                   FlxG.save.data.middlecam = true;
   
                   FlxG.save.data.camfollowspeedon = false;
+
+                    FlxG.save.data.swiftenginescoretext = true;
+    
+                    FlxG.save.data.kadeengine142scoretext = false;
+    
+                    FlxG.save.data.kadeengine10scoretext = false;
+    
+                    FlxG.save.data.unknownenginescoretext = false;
+    
+                    FlxG.save.data.sniperenginealphascoretext = false;
+    
+                    FlxG.save.data.pscyheenginescoretext = false;
+
+                    FlxG.save.data.changedHit = false;
+
+                    FlxG.save.data.changedHitX = GameplayCustomizeState.defaultX;
+                    
+                    FlxG.save.data.changedHitY =  GameplayCustomizeState.defaultY;
   
                 FlxG.save.data.hasplayed = false;
                 trace('anim played? ' + FlxG.save.data.hasplayed);

@@ -75,6 +75,7 @@ class PlayState extends MusicBeatState
 
 	var halloweenLevel:Bool = false;
 	public static var babyArrow:FlxSprite;
+	public static var coolText:FlxText;
 	
 
 	public static var vocals:FlxSound;
@@ -202,6 +203,7 @@ class PlayState extends MusicBeatState
 	var notesPassing:Float = 0;
 	var baseText2:String = "N/A";
 	var songRating:String = "?";
+	var songRatingPsyche:String = "?";
 	var fullcombotext:String = "N/A";
 	var baseText:String = "N/A";
 	public static var songPosBG:FlxSprite;
@@ -265,8 +267,6 @@ class PlayState extends MusicBeatState
 		addedwatermarks = false;
 		addedsongpos = false;
 		removewatermarks = false;
-		moveminscore = true;
-		moveminscoreback =true;
 		paused = false;
 		needstopitch = false;
 		//blueballed = 0;
@@ -1245,6 +1245,11 @@ class PlayState extends MusicBeatState
 
 		generateSong(SONG.song);
 
+		if (SONG.song == null)
+			trace('SONG IS NULL!?!?!?!?!?!??!?!?!?!');
+		else
+			trace('ok ur good');
+
 		// add(strumLine);
 		trace('strumpos (x,y): ' + strumLine.x + ', ' + strumLine.y);
 
@@ -1330,9 +1335,6 @@ class PlayState extends MusicBeatState
 		if (FlxG.save.data.downscroll)
 			{
 				scoreTxt = new FlxText(0, 100, FlxG.width, "", 20);
-				if (FlxG.save.data.minscore)
-				scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT);
-				else
 				scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 				scoreTxt.scrollFactor.set();
 				//scoreTxt.autoSize = false;
@@ -1351,9 +1353,6 @@ class PlayState extends MusicBeatState
 				else
 				{                       ///old default is 250
 					scoreTxt = new FlxText(0, 698, FlxG.width, "", 20);
-					if (FlxG.save.data.minscore)
-					scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT);
-					else
 					scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 					scoreTxt.scrollFactor.set();
 					if (FlxG.save.data.antialiasing)
@@ -1888,9 +1887,6 @@ class PlayState extends MusicBeatState
 		vocals.play();
 		if (FlxG.timeScale == 1)
 		songLength = FlxG.sound.music.length;
-		else
-		songLength = FlxG.sound.music.length + FreeplayState.gamespeed + 8;
-			FlxG.sound.music.time = startTime;
 		if (vocals != null)
 			vocals.time = startTime;
 		Conductor.songPosition = startTime;
@@ -2412,6 +2408,22 @@ class PlayState extends MusicBeatState
 				}
 			}
 
+			#if debug
+		if (FlxG.keys.justPressed.C)
+			{
+				FlxG.camera.zoom += 0.1;
+				defaultCamZoom += 0.1;
+				camHUD.zoom += 0.1;
+			}
+
+			if (FlxG.keys.justPressed.V)
+				{
+					FlxG.camera.zoom -= 0.1;
+					defaultCamZoom -= 0.1;
+					camHUD.zoom -= 0.1;
+				}
+				#end
+
 			if (FlxG.save.data.botplay && !addedbptext)
 				{
 					
@@ -2440,9 +2452,8 @@ class PlayState extends MusicBeatState
 		if (FlxG.save.data.showratings && !addedratingstext)
 			{
 				ratings = new FlxText(4, 300, "" , 20);
-				ratings.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+				ratings.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 				ratings.scrollFactor.set();
-				ratings.alignment = CENTER;
 				
 				if (FlxG.save.data.antialiasing)
 					{
@@ -2503,31 +2514,9 @@ class PlayState extends MusicBeatState
 							iconP2.cameras = [camHUD];	
 							addedhealthbarshit = true;
 							}
-
-							if (moveminscore && FlxG.save.data.minscore)
-								{
-									scoreTxt.x = healthBarBG.x;
-									scoreTxt.y = healthBarBG.y + 30;
-									moveminscore = false;
-									scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT);
-									trace('minscore');
-								}
-				
-								if (moveminscoreback && !FlxG.save.data.minscore)
-									{
-										scoreTxt.x = 0;
-										if (FlxG.save.data.downscroll)
-										scoreTxt.y = 100;
-										else
-											scoreTxt.y = 698;
-										moveminscoreback = false;
-										scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-										trace('minscore part 2');
-									}
-
 									if (FlxG.save.data.watermarks && !addedwatermarks)
 										{
-											var version = new FlxText(1100,700 - 4,0,MainMenuState.sniperengineversion, 12);
+											var version = new FlxText(1098,700 - 4,0,MainMenuState.sniperengineversion, 12);
 											version.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
 											version.scrollFactor.set();
 											if (FlxG.save.data.antialiasing)
@@ -2706,23 +2695,19 @@ class PlayState extends MusicBeatState
 										// and if it's deleted on songs like cocoa then it would end without finishing instrumental fully,
 										// so no reason to delete it at all
 										// seeing if length will work
-										if (FlxG.sound.music.length == 0)
-											{
-												//trace("length is zero, (END)");
-												//endingSong = true;
-												//endSong();
-											}
 
-										if (unspawnNotes.length == 0 && notes.length == 0 && FlxG.sound.music.time == 0)
-										{
-											trace("unspawned, notes, time length is zero (END)");
-						
-											//endingSong = true;
-											//new FlxTimer().start(0.5, function(tmr:FlxTimer)
-												//{
-													//endSong();
-												//});
-                                        }
+										if (notes.length == 0)
+											{
+												for (i in 0...unspawnNotes.length)
+													{
+														if (unspawnNotes.length == 0 && FlxG.sound.music.time == 0)
+															{
+																trace("unspawned and time length is zero (END)");
+																endSong();
+																trace('fuck all of you if this does not work');
+															}
+													}
+											}
 									}
 								}
 						}
@@ -2943,24 +2928,62 @@ class PlayState extends MusicBeatState
 	       {
 			scoreTxt.text = "";	
 	       }
-		   else if (FlxG.save.data.minscore && !inCutscene)
-			{
-				scoreTxt.text = "Score:" + songScore;	
-			}
-			else if (FlxG.save.data.nps && !inCutscene)
+			else if (FlxG.save.data.swiftenginescoretext)
 				{
-					if (accuracy == 0 && !inCutscene)
-						scoreTxt.text = "Score: " + songScore + " | Current Accuracy: " + baseText2 + " | Overall Accuracy: " + "N/A" + " | Misses: " + misses + " | " + fullcombotext + " (" + songRating + ")" + " | NPS: " + nps;	
-						else if (!inCutscene)
-						scoreTxt.text = "Score: " + songScore + " | Current Accuracy: " + baseText2 + " | Overall Accuracy: " + truncateFloat(accuracy, 2) + "%" + " | Misses: " + misses + " | " + fullcombotext + " (" + songRating + ")" + " | NPS: " + nps;
+					if (FlxG.save.data.nps && !inCutscene)
+						{
+							if (accuracy == 0 && !inCutscene)
+								scoreTxt.text = "Score: " + songScore + " | Current Accuracy: " + baseText2 + " | Overall Accuracy: " + "N/A" + " | Misses: " + misses + " | " + fullcombotext + " (" + songRating + ")" + " | NPS: " + nps;	
+								else if (!inCutscene)
+								scoreTxt.text = "Score: " + songScore + " | Current Accuracy: " + baseText2 + " | Overall Accuracy: " + truncateFloat(accuracy, 2) + "%" + " | Misses: " + misses + " | " + fullcombotext + " (" + songRating + ")" + " | NPS: " + nps;
+						}
+						else
+							{
+								if (accuracy == 0 && !inCutscene)
+								scoreTxt.text = "Score: " + songScore + " | Current Accuracy: " + baseText2 + " | Overall Accuracy: " + "N/A" + " | Misses: " + misses + " | " + fullcombotext + " (" + songRating + ")";
+								else if (!inCutscene)
+								scoreTxt.text = "Score: " + songScore + " | Current Accuracy: " + baseText2 + " | Overall Accuracy: " + truncateFloat(accuracy, 2) + "%" + " | Misses: " + misses + " | " + fullcombotext + " (" + songRating + ")";
+							}
 				}
-				else
+				else if (FlxG.save.data.kadeengine142scoretext)
 					{
-						if (accuracy == 0 && !inCutscene)
-						scoreTxt.text = "Score: " + songScore + " | Current Accuracy: " + baseText2 + " | Overall Accuracy: " + "N/A" + " | Misses: " + misses + " | " + fullcombotext + " (" + songRating + ")";
-						else if (!inCutscene)
-						scoreTxt.text = "Score: " + songScore + " | Current Accuracy: " + baseText2 + " | Overall Accuracy: " + truncateFloat(accuracy, 2) + "%" + " | Misses: " + misses + " | " + fullcombotext + " (" + songRating + ")";
+						scoreTxt.text = (FlxG.save.data.npsDisplay ? "NPS: " + nps + " | " : "") + "Score:" + songScore + " | Combo Breaks:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | " + generateRanking();
 					}
+					else if (FlxG.save.data.kadeengine10scoretext)
+						{
+							scoreTxt.text = "Score:" + songScore + " | Misses:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + "% " + (fc ? "| FC" : misses == 0 ? "| A" : accuracy <= 75 ? "| BAD" : "");
+						}
+						else if (FlxG.save.data.unknownenginescoretext)
+							{
+								scoreTxt.text = "Misses:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + "% |" + " Score:" + songScore;
+							}
+							else if (FlxG.save.data.sniperenginealphascoretext)
+								{
+									scoreTxt.text = " Score: " + songScore + " | " + "Misses: " + misses;
+								}
+								else if (FlxG.save.data.pscyheenginescoretext)
+									{
+										if (FlxG.save.data.nps && !inCutscene && notesHit == 0)
+											{
+												scoreTxt.text = 'Score: ' + songScore + ' | Misses: ' + misses + ' | NPS: ' + nps + ' | Rating: ' + songRatingPsyche;//peeps wanted no integer rating//peeps wanted no integer rating
+											}
+										else if (!inCutscene && notesHit == 0)
+											{
+												scoreTxt.text = 'Score: ' + songScore + ' | Misses: ' + misses + ' | Rating: ' + songRatingPsyche;//peeps wanted no integer rating
+											}
+										else if (FlxG.save.data.nps && !inCutscene)
+											{
+												scoreTxt.text = 'Score: ' + songScore + ' | Misses: ' + misses + ' | NPS: ' + nps + ' | Rating: ' + songRatingPsyche + ' (' + truncateFloat(accuracy, 2) + '%' + ')' + ' - ' + fullcombotext;//peeps wanted no integer rating//peeps wanted no integer rating
+											}
+											else
+												{
+												   scoreTxt.text = 'Score: ' + songScore + ' | Misses: ' + misses + ' | Rating: ' + songRatingPsyche + ' (' + truncateFloat(accuracy, 2) + '%' + ')' + ' - ' + fullcombotext;//peeps wanted no integer rating
+												}
+									}
+									else if (FlxG.save.data.basefnfscoretext)
+										{
+											scoreTxt.text = "Score: " + songScore;	
+										}
 
 					if (addedratingstext && !FlxG.save.data.showratings)
 						{
@@ -2972,8 +2995,6 @@ class PlayState extends MusicBeatState
 							}
 							else if (FlxG.save.data.showratings && addedratingstext && startedCountdown)
 								{
-									if (!inCutscene)
-									ratings.alignment = CENTER;
 									if (!inCutscene)
 									ratings.text = "Sicks: " + sicks + "\n" + "\n" + "Goods: " + goods + "\n" + "\n" + "Bads: " + bads + "\n" + "\n" + "Shits: " + shits + "\n" + "";	
 								}
@@ -3019,7 +3040,6 @@ class PlayState extends MusicBeatState
 			pauseBtt = FlxG.keys.justPressed.ESCAPE;
 		}
 
-		if (!FlxG.save.data.minscore)
 			{
 				if (accuracy == 0)
 					{
@@ -3960,9 +3980,21 @@ class PlayState extends MusicBeatState
 
 		var placement:String = Std.string(combo);
 
-		var coolText:FlxText = new FlxText(0, 0, 0, placement, 32);
-		coolText.screenCenter();
-		coolText.x = FlxG.width * 0.55;
+		if (FlxG.save.data.enablesickpositions)
+			{
+			coolText = new FlxText(0, 0, 0, placement, 32);
+			coolText.screenCenter();
+			coolText.x = FlxG.width * 0.55;
+			coolText.y -= 350;
+			coolText.cameras = [camHUD];
+			}
+			else
+				{
+					coolText = new FlxText(0, 0, 0, placement, 32);
+					coolText.screenCenter();
+					coolText.x = FlxG.width * 0.55;
+				}
+
 		//
 		var rating:FlxSprite = new FlxSprite();
 		var score:Int = 300;
@@ -4126,38 +4158,60 @@ class PlayState extends MusicBeatState
 			}
 
 		rating.loadGraphic(Paths.image(pixelShitPart1 + daRating + pixelShitPart2));
-		
-		if (FlxG.save.data.antialiasing)
+		rating.antialiasing = FlxG.save.data.antialiasing;
+		if (FlxG.save.data.enablesickpositions)
 			{
-				rating.antialiasing = false;
+			rating.screenCenter();
+			rating.y -= 50;
+			rating.x = coolText.x - 125;
+			
+			if (FlxG.save.data.changedHit)
+			{
+				rating.x = FlxG.save.data.changedHitX;
+				rating.y = FlxG.save.data.changedHitY;
+			}
+			rating.acceleration.y = 550;
+			rating.velocity.y -= FlxG.random.int(140, 175);
+			rating.velocity.x -= FlxG.random.int(0, 10);
 			}
 			else
 				{
-					///my if statements be like
-					rating.antialiasing = true;
+							rating.x = coolText.x - 40;
+							rating.y += 200; // -=60
+							rating.acceleration.y = 550;
+							rating.velocity.y -= FlxG.random.int(140, 175);
+							rating.velocity.x -= FlxG.random.int(0, 10);
 				}
-		rating.screenCenter();
-		rating.x = coolText.x - 40;
-		rating.y -= 60;
-		rating.acceleration.y = 550;
-		rating.velocity.y -= FlxG.random.int(140, 175);
-		rating.velocity.x -= FlxG.random.int(0, 10);
+			
+			
+
 
 		var msTiming = truncateFloat(noteDiff, 3);
 		var comboSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image(pixelShitPart1 + 'combo' + pixelShitPart2));
-		comboSpr.screenCenter();
-		if (FlxG.save.data.antialiasing)
+		comboSpr.antialiasing = FlxG.save.data.antialiasing;
+		if (FlxG.save.data.enablesickpositions)
 			{
-				comboSpr.antialiasing = true;
+				comboSpr.screenCenter();
+				comboSpr.x = rating.x;
+				comboSpr.y = rating.y + 100;
+				comboSpr.acceleration.y = 600;
+				comboSpr.velocity.y -= 150;
+	
+				comboSpr.velocity.x += FlxG.random.int(1, 10);
 			}
 			else
 				{
-					///my if statements be like part 2
-					comboSpr.antialiasing = false;
+						comboSpr.x = coolText.x;
+						comboSpr.acceleration.y = 600;
+						comboSpr.velocity.y -= 150;
 				}
-		comboSpr.x = coolText.x;
-		comboSpr.acceleration.y = 600;
-		comboSpr.velocity.y -= 150;
+
+				if (FlxG.save.data.enablesickpositions)
+					{
+						comboSpr.cameras = [camHUD];
+						rating.cameras = [camHUD];
+					}
+				
 
 		if (FlxG.save.data.hittimings)
 			{
@@ -4196,15 +4250,22 @@ class PlayState extends MusicBeatState
 					currentTimingShown.alpha = 1;
 		
 				add(currentTimingShown);
-				//currentTimingShown.cameras = [camHUD];
 		
 			}
 		comboSpr.velocity.x += FlxG.random.int(1, 10);
 		if (FlxG.save.data.hittimings)
 			{
-				currentTimingShown.screenCenter();
-			currentTimingShown.x = comboSpr.x + 100;
-			currentTimingShown.y = rating.y + 100;
+				if (FlxG.save.data.enablesickpositions)
+					{
+						currentTimingShown.x = FlxG.save.data.changedHitX + 100;
+						currentTimingShown.y = FlxG.save.data.changedHitY + 100;
+						currentTimingShown.cameras = [camHUD];
+					}
+					else
+						{
+							currentTimingShown.x = comboSpr.x + 100;
+			                currentTimingShown.y = rating.y + 100;
+						}
 			currentTimingShown.acceleration.y = 600;
 			currentTimingShown.velocity.y -= 150;
 			currentTimingShown.velocity.x += comboSpr.velocity.x;
@@ -4272,8 +4333,17 @@ class PlayState extends MusicBeatState
 		{
 			var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image(pixelShitPart1 + 'num' + Std.int(i) + pixelShitPart2));
 			numScore.screenCenter();
-			numScore.x = coolText.x + (43 * daLoop) - 90;
-			numScore.y += 80;
+			if (FlxG.save.data.enablesickpositions)
+				{
+					numScore.x = rating.x + (43 * daLoop) - 50;
+					numScore.y = rating.y + 100;
+					numScore.cameras = [camHUD];
+				}
+				else
+					{
+						numScore.x = coolText.x + (43 * daLoop) - 90;
+						numScore.y += 80;
+					}
 
 			if (!curStage.startsWith('school'))
 			{
@@ -4429,6 +4499,7 @@ class PlayState extends MusicBeatState
 									badNoteCheck();
 								updateAccuracy();
 								rating();
+								ratingPsyche();
 							}
 						}
 					}
@@ -4685,6 +4756,7 @@ class PlayState extends MusicBeatState
 			}
 			updateAccuracy();
 			rating();
+			ratingPsyche();
 		}
 
 	}
@@ -4722,6 +4794,7 @@ class PlayState extends MusicBeatState
 							
 					updateAccuracy();
 					rating();
+					ratingPsyche();
 				}
 
 				function updateAccuracy()
@@ -4735,6 +4808,7 @@ class PlayState extends MusicBeatState
 						if (SFC)
 						accuracy = 100;
 						rating();
+						ratingPsyche();
 					}
 
 					function rating()
@@ -4743,35 +4817,162 @@ class PlayState extends MusicBeatState
 								{
 									songRating = 'F';
 								}
+							else if (accuracy <= 50)
+								{
+									songRating = 'D';
+								}
+							else if (accuracy <= 60)
+								{
+								   songRating = 'C';
+								}
+							else if (accuracy <= 80)
+								{
+								   songRating = 'B';
+								}
+							else if (accuracy <= 90)
+								{
+								   songRating = 'A';
+								}
+							else if (accuracy <= 95)
+								{
+								   songRating = 'S';
+								}
+							else if (accuracy <= 99)
+								{
+								   songRating = 'S+';
+								}
+							else if (accuracy == 100)
+								{
+								   songRating = 'S+';
+								}
+						}
+
+						function ratingPsyche()
+							{
+								
+								if (accuracy <= 20)
+									{
+										songRatingPsyche = 'You Suck!';
+									}
+								else if (accuracy <= 40)
+									{
+										songRatingPsyche = 'Shit';
+									}
 								else if (accuracy <= 50)
 									{
-										songRating = 'D';
+										songRatingPsyche = 'Bad';
 									}
 								else if (accuracy <= 60)
 									{
-									     songRating = 'C';
+									    songRatingPsyche = 'Meh';
 									}
-									else if (accuracy <= 80)
+								else if (accuracy <= 80)
+									{
+									    songRatingPsyche = 'Nice';
+									}
+								else if (accuracy <= 90)
+									{
+									    songRatingPsyche = 'Good';
+									}
+								else if (accuracy <= 95)
+									{
+									    songRatingPsyche = 'Great';
+									}
+								else if (accuracy <= 99)
+									{
+									    songRatingPsyche = 'Sick!';
+									}
+								else if (accuracy == 100)
+									{
+									    songRatingPsyche = 'Perfect!!';
+									}
+							}
+
+						function generateRanking():String
+							{
+								var ranking:String = "N/A";
+						
+								if (misses == 0 && bads == 0 && shits == 0 && goods == 0) // Marvelous (SICK) Full Combo
+									ranking = "(MFC)";
+								else if (misses == 0 && bads == 0 && shits == 0 && goods >= 1) // Good Full Combo (Nothing but Goods & Sicks)
+									ranking = "(GFC)";
+								else if (misses == 0) // Regular FC
+									ranking = "(FC)";
+								else if (misses < 10) // Single Digit Combo Breaks
+									ranking = "(SDCB)";
+								else
+									ranking = "(Clear)";
+						
+								// WIFE TIME :)))) (based on Wife3)
+						
+								var wifeConditions:Array<Bool> = [
+									accuracy >= 99.9935, // AAAAA
+									accuracy >= 99.980, // AAAA:
+									accuracy >= 99.970, // AAAA.
+									accuracy >= 99.955, // AAAA
+									accuracy >= 99.90, // AAA:
+									accuracy >= 99.80, // AAA.
+									accuracy >= 99.70, // AAA
+									accuracy >= 99, // AA:
+									accuracy >= 96.50, // AA.
+									accuracy >= 93, // AA
+									accuracy >= 90, // A:
+									accuracy >= 85, // A.
+									accuracy >= 80, // A
+									accuracy >= 70, // B
+									accuracy >= 60, // C
+									accuracy < 60 // D
+								];
+						
+								for(i in 0...wifeConditions.length)
+								{
+									var b = wifeConditions[i];
+									if (b)
+									{
+										switch(i)
 										{
-											 songRating = 'B';
+											case 0:
+												ranking += " AAAAA";
+											case 1:
+												ranking += " AAAA:";
+											case 2:
+												ranking += " AAAA.";
+											case 3:
+												ranking += " AAAA";
+											case 4:
+												ranking += " AAA:";
+											case 5:
+												ranking += " AAA.";
+											case 6:
+												ranking += " AAA";
+											case 7:
+												ranking += " AA:";
+											case 8:
+												ranking += " AA.";
+											case 9:
+												ranking += " AA";
+											case 10:
+												ranking += " A:";
+											case 11:
+												ranking += " A.";
+											case 12:
+												ranking += " A";
+											case 13:
+												ranking += " B";
+											case 14:
+												ranking += " C";
+											case 15:
+												ranking += " D";
 										}
-										else if (accuracy <= 90)
-											{
-												 songRating = 'A';
-											}
-											else if (accuracy <= 95)
-												{
-													 songRating = 'S';
-												}
-												else if (accuracy <= 99)
-													{
-														 songRating = 'S+';
-													}
-													else if (accuracy == 100)
-														{
-															 songRating = 'S+';
-														}
-						}
+										break;
+									}
+								}
+						
+								if (accuracy == 0)
+									ranking = "N/A";
+						
+								return ranking;
+							}
 
 
 	function noteCheck(keyP:Bool, note:Note):Void
@@ -4811,6 +5012,7 @@ class PlayState extends MusicBeatState
 						
 			updateAccuracy();
 			rating();
+			ratingPsyche();
 			if (!note.isSustainNote)
 			{
 				notesPassing += 1;
@@ -5156,11 +5358,6 @@ class PlayState extends MusicBeatState
 			FlxG.camera.zoom += 0.015;
 			camHUD.zoom += 0.03;
 		}
-
-		if (curSong.toLowerCase() == 'collapsing' && curBeat == 118)
-			{
-				getangry();
-			}
 
 			if (FlxG.save.data.camzooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0)
 				{
