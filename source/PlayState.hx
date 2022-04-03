@@ -2984,6 +2984,10 @@ class PlayState extends MusicBeatState
 										{
 											scoreTxt.text = "Score: " + songScore;	
 										}
+										else if (FlxG.save.data.kadeengine18scoretext && FlxG.save.data.nps)
+										scoreTxt.text = "NPS: " + nps + " (Max " + maxNPS + ")" + " | " + "Score:" + songScore + " | Combo Breaks:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + " %" + " | " + generateRanking(); // Letter Rank
+										else if (FlxG.save.data.kadeengine18scoretext)
+										scoreTxt.text = "Score:" + songScore + " | Combo Breaks:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + " %" + " | " + generateRanking(); // Letter Rank
 
 					if (addedratingstext && !FlxG.save.data.showratings)
 						{
@@ -4138,12 +4142,25 @@ class PlayState extends MusicBeatState
 
 		var pixelShitPart1:String = "";
 		var pixelShitPart2:String = '';
+		var keshit1:String = '';
+		var keshit2:String = '';
 
 		if (curStage.startsWith('school'))
 		{
 			pixelShitPart1 = 'weeb/pixelUI/';
 			pixelShitPart2 = '-pixel';
 		}
+
+		if (FlxG.save.data.ke142ratings)
+			{
+			    keshit1 = '-keold';
+			}
+
+		if (FlxG.save.data.ke154ratings)
+			{
+				keshit2 = '-kenew';
+			}	
+	
 
 		if (curStage.startsWith('school'))
 			{
@@ -4157,7 +4174,7 @@ class PlayState extends MusicBeatState
 						}
 			}
 
-		rating.loadGraphic(Paths.image(pixelShitPart1 + daRating + pixelShitPart2));
+		rating.loadGraphic(Paths.image(pixelShitPart1 + daRating + keshit1 + keshit2 + pixelShitPart2));
 		rating.antialiasing = FlxG.save.data.antialiasing;
 		if (FlxG.save.data.enablesickpositions)
 			{
@@ -4499,6 +4516,7 @@ class PlayState extends MusicBeatState
 									badNoteCheck();
 								updateAccuracy();
 								rating();
+								if (FlxG.save.data.pscyheenginescoretext)
 								ratingPsyche();
 							}
 						}
@@ -4756,6 +4774,7 @@ class PlayState extends MusicBeatState
 			}
 			updateAccuracy();
 			rating();
+			if (FlxG.save.data.pscyheenginescoretext)
 			ratingPsyche();
 		}
 
@@ -4794,6 +4813,7 @@ class PlayState extends MusicBeatState
 							
 					updateAccuracy();
 					rating();
+					if (FlxG.save.data.pscyheenginescoretext)
 					ratingPsyche();
 				}
 
@@ -4808,6 +4828,7 @@ class PlayState extends MusicBeatState
 						if (SFC)
 						accuracy = 100;
 						rating();
+						if (FlxG.save.data.pscyheenginescoretext)
 						ratingPsyche();
 					}
 
@@ -5012,6 +5033,7 @@ class PlayState extends MusicBeatState
 						
 			updateAccuracy();
 			rating();
+			if (FlxG.save.data.pscyheenginescoretext)
 			ratingPsyche();
 			if (!note.isSustainNote)
 			{

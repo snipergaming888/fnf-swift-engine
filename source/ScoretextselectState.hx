@@ -190,8 +190,9 @@ class ScoretextselectState extends MusicBeatState
 		if (scoretextlayout == 5)
 		scoreTxt.text = 'Score: ' + songScore + ' | Misses: ' + misses + ' | Rating: ' + songRating;
 		if (scoretextlayout == 6)
-		scoreTxt.text = "Score:" + songScore;	
-
+		scoreTxt.text = "Score:" + songScore;
+		if (scoretextlayout == 7)
+		scoreTxt.text = "Score:" + songScore + " | Combo Breaks:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + " %" + " | " + generateRanking(); // Letter Rank
 		var multiply:Int = 1;
 
 		if (FlxG.keys.pressed.SHIFT)
@@ -213,12 +214,12 @@ class ScoretextselectState extends MusicBeatState
 					scoretextlayout = 0;
 				}
 
-			if (FlxG.keys.justPressed.UP && scoretextlayout >= 0 && scoretextlayout < 6)
+			if (FlxG.keys.justPressed.UP && scoretextlayout >= 0 && scoretextlayout < 7)
 				{
 					scoretextlayout += 1;
 				}
 
-			if (FlxG.keys.justPressed.DOWN && scoretextlayout > 0 && scoretextlayout <= 6)
+			if (FlxG.keys.justPressed.DOWN && scoretextlayout > 0 && scoretextlayout <= 7)
 				{
 					scoretextlayout -= 1;
 				}
@@ -237,6 +238,8 @@ class ScoretextselectState extends MusicBeatState
 					scoretextlayouttext = 'Psyche Engine';
 				if (scoretextlayout == 6)
 					scoretextlayouttext = 'Base FNF';
+				if (scoretextlayout == 7)
+					scoretextlayouttext = 'Kade Engine 1.8';
 
 		if (FlxG.keys.justPressed.SPACE)
 		{
@@ -260,6 +263,7 @@ class ScoretextselectState extends MusicBeatState
 					 FlxG.save.data.sniperenginealphascoretext = false;
 					 FlxG.save.data.pscyheenginescoretext = false;
 					 FlxG.save.data.basefnfscoretext = false;
+					 FlxG.save.data.kadeengine18scoretext = false;
 					}
 				if (scoretextlayout == 1)
 					{
@@ -270,6 +274,7 @@ class ScoretextselectState extends MusicBeatState
 						FlxG.save.data.sniperenginealphascoretext = false;
 						FlxG.save.data.pscyheenginescoretext = false;
 						FlxG.save.data.basefnfscoretext = false;
+						FlxG.save.data.kadeengine18scoretext = false;
 					}
 				if (scoretextlayout == 2)
 					{
@@ -280,6 +285,7 @@ class ScoretextselectState extends MusicBeatState
 						FlxG.save.data.sniperenginealphascoretext = false;
 						FlxG.save.data.pscyheenginescoretext = false;
 						FlxG.save.data.basefnfscoretext = false;
+						FlxG.save.data.kadeengine18scoretext = false;
 					}
 				if (scoretextlayout == 3)
 					{
@@ -290,6 +296,7 @@ class ScoretextselectState extends MusicBeatState
 						FlxG.save.data.sniperenginealphascoretext = false;
 						FlxG.save.data.pscyheenginescoretext = false;
 						FlxG.save.data.basefnfscoretext = false;
+						FlxG.save.data.kadeengine18scoretext = false;
 					}
 				if (scoretextlayout == 4)
 					{
@@ -300,6 +307,7 @@ class ScoretextselectState extends MusicBeatState
 						FlxG.save.data.sniperenginealphascoretext = true;
 						FlxG.save.data.pscyheenginescoretext = false;
 						FlxG.save.data.basefnfscoretext = false;
+						FlxG.save.data.kadeengine18scoretext = false;
 					}
 				if (scoretextlayout == 5)
 					{
@@ -310,6 +318,7 @@ class ScoretextselectState extends MusicBeatState
 						FlxG.save.data.sniperenginealphascoretext = false;
 						FlxG.save.data.pscyheenginescoretext = true;
 						FlxG.save.data.basefnfscoretext = false;
+						FlxG.save.data.kadeengine18scoretext = false;
 					}
 				if (scoretextlayout == 6)
 					{
@@ -320,12 +329,32 @@ class ScoretextselectState extends MusicBeatState
 						FlxG.save.data.sniperenginealphascoretext = false;
 						FlxG.save.data.pscyheenginescoretext = false;
 						FlxG.save.data.basefnfscoretext = true;
+						FlxG.save.data.kadeengine18scoretext = false;
+					}
+				if (scoretextlayout == 7)
+					{
+						FlxG.save.data.swiftenginescoretext = false;
+						FlxG.save.data.kadeengine142scoretext = false;
+						FlxG.save.data.kadeengine10scoretext = false;
+						FlxG.save.data.unknownenginescoretext = false;
+						FlxG.save.data.sniperenginealphascoretext = false;
+						FlxG.save.data.pscyheenginescoretext = false;
+						FlxG.save.data.basefnfscoretext = false;
+						FlxG.save.data.kadeengine18scoretext = true;
 					}
 			}
 		if (addedhealthbarshit)
 			{
-				iconP1.setGraphicSize(Std.int(FlxMath.lerp(iconP1.width, 150, 0.15)));
-				iconP2.setGraphicSize(Std.int(FlxMath.lerp(iconP2.width, 150, 0.15)));
+				if (FlxG.save.data.newhealthheadbump)
+					{
+					iconP1.setGraphicSize(Std.int(FlxMath.lerp(iconP1.width, 150, 0.15)));
+					iconP2.setGraphicSize(Std.int(FlxMath.lerp(iconP2.width, 150, 0.15)));
+					}
+					else
+						{
+						iconP1.setGraphicSize(Std.int(FlxMath.lerp(150, iconP1.width, 0.50)));
+						iconP2.setGraphicSize(Std.int(FlxMath.lerp(150, iconP2.width, 0.50)));
+						}
 		
 				iconP1.updateHitbox();
 				iconP2.updateHitbox();
@@ -362,7 +391,9 @@ class ScoretextselectState extends MusicBeatState
 			function generateRanking():String
 				{
 					var ranking:String = "N/A";
-			
+
+					if (FlxG.save.data.botplay)
+						ranking = "BotPlay";
 					if (misses == 0 && bads == 0 && shits == 0 && goods == 0) // Marvelous (SICK) Full Combo
 						ranking = "(MFC)";
 					else if (misses == 0 && bads == 0 && shits == 0 && goods >= 1) // Good Full Combo (Nothing but Goods & Sicks)
@@ -441,6 +472,8 @@ class ScoretextselectState extends MusicBeatState
 			
 					if (accuracy == 0)
 						ranking = "N/A";
+					else if (FlxG.save.data.botplay)
+						ranking = "BotPlay";
 			
 					return ranking;
 				}
