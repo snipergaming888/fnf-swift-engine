@@ -6,6 +6,8 @@ i made this cuz i was bored if i am being fr, but its pretty good imo for being 
 
 the main reason this exists is for people who have chromebooks, web compat is really good
 
+read the GB desc for more info: https://gamebanana.com/tools/8831
+
 ///////////////////////////
 
 This is the repository for Friday Night Funkin, a game originally made for Ludum Dare 47 "Stuck In a Loop".
