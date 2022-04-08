@@ -206,11 +206,20 @@ class Settings extends MusicBeatState
               if (FlxG.save.data.kadeengine18scoretext == null)
                 FlxG.save.data.kadeengine18scoretext = false;
 
+              if (FlxG.save.data.fpsplusenginescoretext == null)
+                FlxG.save.data.fpsplusenginescoretext = false;
+
               if (FlxG.save.data.ke142ratings == null)
                 FlxG.save.data.ke142ratings = false;
 
               if (FlxG.save.data.ke154ratings == null)
                 FlxG.save.data.ke154ratings = false;
+
+              if (FlxG.save.data.disguiseaske142 == null)
+                FlxG.save.data.disguiseaske142 = false;
+
+              if (FlxG.save.data.disguiseaske154 == null)
+                FlxG.save.data.disguiseaske154 = false;
 
               if ( FlxG.save.data.changedHitX == null)
                 FlxG.save.data.changedHitX = GameplayCustomizeState.defaultX;
@@ -355,6 +364,8 @@ class Settings extends MusicBeatState
       
                     FlxG.save.data.kadeengine18scoretext = false;
 
+                    FlxG.save.data.fpsplusenginescoretext = false;
+
                     FlxG.save.data.changedHit = false;
 
                     FlxG.save.data.changedHitX = GameplayCustomizeState.defaultX;
@@ -364,6 +375,10 @@ class Settings extends MusicBeatState
                     FlxG.save.data.ke142ratings = false;
       
                     FlxG.save.data.ke154ratings = false;
+
+                    FlxG.save.data.disguiseaske142 = false;
+      
+                    FlxG.save.data.disguiseaske154 = false;
   
                 FlxG.save.data.hasplayed = false;
                 trace('anim played? ' + FlxG.save.data.hasplayed);

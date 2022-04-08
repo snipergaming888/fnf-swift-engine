@@ -148,7 +148,6 @@ class PlayState extends MusicBeatState
 
 	var halloweenBG:FlxSprite;
 	var isHalloween:Bool = false;
-	var scoretxtnotmoved:Bool = true;
 	var addedoffset:Bool = true;
 
 	var phillyCityLights:FlxTypedGroup<FlxSprite>;
@@ -269,6 +268,7 @@ class PlayState extends MusicBeatState
 		removewatermarks = false;
 		paused = false;
 		needstopitch = false;
+		notesHit = 0;
 		//blueballed = 0;
 		if (!Settings.enablebotplay)
 			{
@@ -919,11 +919,11 @@ class PlayState extends MusicBeatState
 		          {
 		                  curStage = 'schoolEvil';
 
-		                  var waveEffectBG = new FlxWaveEffect(FlxWaveMode.ALL, 2, -1, 3, 2);
-		                  var waveEffectFG = new FlxWaveEffect(FlxWaveMode.ALL, 2, -1, 5, 2);
+		                  //var waveEffectBG = new FlxWaveEffect(FlxWaveMode.ALL, 2, -1, 3, 2);
+		                 // var waveEffectFG = new FlxWaveEffect(FlxWaveMode.ALL, 2, -1, 5, 2);
 
 		                  var posX = 400;
-	                          var posY = 200;
+	                      var posY = 200;
 
 		                  var bg:FlxSprite = new FlxSprite(posX, posY);
 		                  bg.frames = Paths.getSparrowAtlas('weeb/animatedEvilSchool', 'shared');
@@ -1555,6 +1555,7 @@ class PlayState extends MusicBeatState
 		unspawnNotes = [];
 		notes.clear();
 		totalNotesHit = 0;
+		notesHit = 0;
 		totalPlayed = 0;
 		songTime = 0;
 		combo = 0;
@@ -1562,6 +1563,9 @@ class PlayState extends MusicBeatState
 		baseText2 = "N/A";
 		baseText = "N/A";
 		songRating = "?";
+		notesPassing = 0;
+		if (FlxG.save.data.pscyheenginescoretext)
+		songRatingPsyche = "?";
 		startingSong = false;
 		misses = 0;
 		health = 1;
@@ -1603,12 +1607,16 @@ class PlayState extends MusicBeatState
 			notes.clear();
 			totalNotesHit = 0;
 			totalPlayed = 0;
+			notesHit = 0;
 			songTime = 0;
 			combo = 0;
 			accuracy = 0;
 			baseText2 = "N/A";
 			baseText = "N/A";
 			songRating = "?";
+			notesPassing = 0;
+			if (FlxG.save.data.pscyheenginescoretext)
+			songRatingPsyche = "?";
 			startingSong = false;
 			misses = 0;
 			health = 1;
@@ -2516,22 +2524,28 @@ class PlayState extends MusicBeatState
 							}
 									if (FlxG.save.data.watermarks && !addedwatermarks)
 										{
-											var version = new FlxText(1098,700 - 4,0,MainMenuState.sniperengineversion, 12);
-											version.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
-											version.scrollFactor.set();
-											if (FlxG.save.data.antialiasing)
+											if (!FlxG.save.data.disguiseaske142)
 												{
-													version.antialiasing = false;
-												}
-												else
-													{
-														version.antialiasing = true;
-													}
-													if(FlxG.save.data.watermarks)
+													if (!FlxG.save.data.disguiseaske154)
 														{
-															add(version);
-															version.cameras = [camHUD];
+															var version = new FlxText(1098,700 - 4,0,MainMenuState.sniperengineversion, 12);
+															version.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
+															version.scrollFactor.set();
+															if (FlxG.save.data.antialiasing)
+																{
+																	version.antialiasing = false;
+																}
+																else
+																	{
+																		version.antialiasing = true;
+																	}
+																	if(FlxG.save.data.watermarks)
+																		{
+																			add(version);
+																			version.cameras = [camHUD];
+																		}
 														}
+												}
 		
 											var nightlyandtest = new FlxText(4,680 - 4,0,MainMenuState.nightly + MainMenuState.testbuild, 12);
 											nightlyandtest.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
@@ -2551,6 +2565,10 @@ class PlayState extends MusicBeatState
 														}
                                                         
 														var sniperenginemark = new FlxText(4,700 - 4,0,SONG.song + " " + (storyDifficulty == 2 ? "Hard" : storyDifficulty == 1 ? "Normal" : "Easy"), 12);
+														if (FlxG.save.data.disguiseaske142)
+														sniperenginemark.text = SONG.song + " " + (storyDifficulty == 2 ? "Hard" : storyDifficulty == 1 ? "Normal" : "Easy") + MainMenuState.KE142;
+														if (FlxG.save.data.disguiseaske154)
+														sniperenginemark.text = SONG.song + " " + (storyDifficulty == 2 ? "Hard" : storyDifficulty == 1 ? "Normal" : "Easy") + MainMenuState.KE154;
 														sniperenginemark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
 														sniperenginemark.scrollFactor.set();
 														if (FlxG.save.data.antialiasing)
@@ -2928,6 +2946,10 @@ class PlayState extends MusicBeatState
 	       {
 			scoreTxt.text = "";	
 	       }
+		   else if (inCutscene)
+			{
+			 scoreTxt.text = "";	
+			}
 			else if (FlxG.save.data.swiftenginescoretext)
 				{
 					if (FlxG.save.data.nps && !inCutscene)
@@ -2987,8 +3009,9 @@ class PlayState extends MusicBeatState
 										else if (FlxG.save.data.kadeengine18scoretext && FlxG.save.data.nps)
 										scoreTxt.text = "NPS: " + nps + " (Max " + maxNPS + ")" + " | " + "Score:" + songScore + " | Combo Breaks:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + " %" + " | " + generateRanking(); // Letter Rank
 										else if (FlxG.save.data.kadeengine18scoretext)
-										scoreTxt.text = "Score:" + songScore + " | Combo Breaks:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + " %" + " | " + generateRanking(); // Letter Rank
-
+										scoreTxt.text = "Score:" + songScore + " | Combo Breaks:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + " %" + " | " + generateRanking();
+										else if (FlxG.save.data.fpsplusenginescoretext)
+										scoreTxt.text = "Score:" + songScore + " | Misses:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + "%";
 					if (addedratingstext && !FlxG.save.data.showratings)
 						{
 							//nothin
@@ -3049,7 +3072,7 @@ class PlayState extends MusicBeatState
 					{
 						baseText2 = "N/A";
 					}
-					else if (SFC && accuracy != 0)
+					else if (SFC && accuracy != 0 && misses == 0)
 						baseText2 = "100%";
 					else if (accuracy != 0)
 					{
@@ -3057,9 +3080,6 @@ class PlayState extends MusicBeatState
 
 						if (notesPassing != 0) {
 							baseText = Math.round((notesHit/notesPassing) * 100) + "%";
-						} else if (scoretxtnotmoved)
-						{
-							baseText2 = "N/A";
 						}
 						else 
 						{
@@ -3068,10 +3088,7 @@ class PlayState extends MusicBeatState
 						
 						if (notesPassing != 0) {
 							baseText2 = Math.round((notesHit/notesPassing) * 100) + "%";
-						} else if (scoretxtnotmoved)
-						{
-							baseText2 = "N/A";
-						}
+						} 
 						else 
 						{
 							baseText2 = "100%";
@@ -3876,9 +3893,10 @@ class PlayState extends MusicBeatState
 				    vocals.pause();
 					FlxG.sound.music.stop();
 					vocals.stop();
-					if (SONG.validScore && !FlxG.save.data.botplay)
+					if (SONG.validScore)
 					{
 						#if !switch
+						if (!FlxG.save.data.botplay)
 						Highscore.saveScore(SONG.song, songScore, storyDifficulty);
 						#end
 					}
@@ -3908,10 +3926,13 @@ class PlayState extends MusicBeatState
 							// if ()
 							StoryMenuState.weekUnlocked[Std.int(Math.min(storyWeek + 1, StoryMenuState.weekUnlocked.length - 1))] = true;
 			
-							if (SONG.validScore && !FlxG.save.data.botplay)
+							if (SONG.validScore)
 							{
-								NGio.unlockMedal(60961);
-								Highscore.saveWeekScore(storyWeek, campaignScore, storyDifficulty);
+								if (!FlxG.save.data.botplay)
+									{
+										NGio.unlockMedal(60961);
+										Highscore.saveWeekScore(storyWeek, campaignScore, storyDifficulty);
+									}
 							}
 			
 							FlxG.save.data.weekUnlocked = StoryMenuState.weekUnlocked;
@@ -3920,7 +3941,7 @@ class PlayState extends MusicBeatState
 						else
 						{
 							if (!FlxG.save.data.usedeprecatedloading)// && isnotweb)
-							loadnextsong(); //  new way for loadin songs, OG code backup here | cuz it is to performance heavy to reload the state every time
+							loadnextsong(); //  new way for loadin songs, cuz it is to performance heavy to reload the state every time
 							else
 								{
 							var difficulty:String = "";
@@ -4051,44 +4072,6 @@ class PlayState extends MusicBeatState
 			}
 			else
 				{
-					/*if (noteDiff > Conductor.safeZoneOffset * 0.9)
-						{
-							daRating = 'shit';
-							score = 50;
-							notesHit += 0.25;
-							notesnotmissed += 1;
-							totalNotesHit -= 2;
-							if (FlxG.save.data.debug)
-								{
-									trace('shit');
-								}
-						}
-						else if (noteDiff > Conductor.safeZoneOffset * 0.75)
-						{
-							daRating = 'bad';
-							score = 100;
-							notesHit += 0.25;
-							notesnotmissed += 1;
-							totalNotesHit += 0.2;
-							if (FlxG.save.data.debug)
-								{
-									trace('bad');
-								}
-						}
-						else if (noteDiff > Conductor.safeZoneOffset * 0.2)
-						{
-							daRating = 'good';
-							score = 200;
-							notesHit += 0.95;
-							notesnotmissed += 1;
-							totalNotesHit += 0.65;
-							if (FlxG.save.data.debug)
-								{
-									trace('good');
-								}
-							*////}
-
-
 							if (noteDiff > Conductor.safeZoneOffset * 0.55)
 								{
 									daRating = 'shit';
@@ -4131,14 +4114,6 @@ class PlayState extends MusicBeatState
 				
 				}
 		songScore += score;
-
-		/* if (combo > 60)
-				daRating = 'sick';
-			else if (combo > 12)
-				daRating = 'good'
-			else if (combo > 4)
-				daRating = 'bad';
-		 */
 
 		var pixelShitPart1:String = "";
 		var pixelShitPart2:String = '';
@@ -4247,17 +4222,32 @@ class PlayState extends MusicBeatState
 				switch(daRating)
 				{
 					case 'shit' | 'bad':
+						if (!FlxG.save.data.ke142ratings && !FlxG.save.data.ke154ratings)
+							{
+								currentTimingShown.color = FlxColor.GRAY;
+							}
+							else
 						currentTimingShown.color = FlxColor.RED;
 					case 'good':
+						if (!FlxG.save.data.ke142ratings && !FlxG.save.data.ke154ratings)
+							{
+								currentTimingShown.color = FlxColor.WHITE;
+							}
+							else
 						currentTimingShown.color = FlxColor.GREEN;
 					case 'sick':
+						if (!FlxG.save.data.ke142ratings && !FlxG.save.data.ke154ratings)
+							{
+								currentTimingShown.color = FlxColor.WHITE;
+							}
+							else
 						currentTimingShown.color = FlxColor.CYAN;
 				}
 				currentTimingShown.borderStyle = OUTLINE;
 				currentTimingShown.borderSize = 1;
 				currentTimingShown.borderColor = FlxColor.BLACK;
 				if (FlxG.save.data.botplay)
-					 currentTimingShown.text = "1" + "ms";
+					 currentTimingShown.text = "0" + "ms";
 					else
 				     currentTimingShown.text = msTiming + "ms";
 				currentTimingShown.size = 20;
@@ -4402,22 +4392,54 @@ class PlayState extends MusicBeatState
 			startDelay: Conductor.crochet * 0.001,
 			onUpdate: function(tween:FlxTween)
 			{
+				/*
 				if (currentTimingShown != null)
 					currentTimingShown.alpha -= 0.03;
-				timeShown++;
+				timeShown++;*/
 			}
 		});
+
+		if (currentTimingShown != null)
+			{
+				if (currentTimingShown.alpha != 1)
+					currentTimingShown.alpha = 1;
+				FlxTween.tween(currentTimingShown, {alpha: 0}, 0.8, {ease: FlxEase.quadInOut, startDelay: 0, onComplete: function(tween:FlxTween)
+					{
+						//currentTimingShown.destroy();
+					},
+				});
+			}
+
+			FlxTween.tween(comboSpr, {alpha: 0}, 0.2, {
+				onComplete: function(tween:FlxTween)
+				{
+					coolText.destroy();
+					comboSpr.destroy();
+					/*
+					if (currentTimingShown != null && timeShown >= 20)
+					{
+						remove(currentTimingShown);
+						currentTimingShown = null;
+					}*/
+					rating.destroy();
+				},
+				startDelay: Conductor.crochet * 0.001
+			});
+
+			
+
 
 		FlxTween.tween(comboSpr, {alpha: 0}, 0.2, {
 			onComplete: function(tween:FlxTween)
 			{
 				coolText.destroy();
 				comboSpr.destroy();
+				/*
 				if (currentTimingShown != null && timeShown >= 20)
 				{
 					remove(currentTimingShown);
 					currentTimingShown = null;
-				}
+				}*/
 				rating.destroy();
 			},
 			startDelay: Conductor.crochet * 0.001
@@ -4619,7 +4641,7 @@ class PlayState extends MusicBeatState
 		}
 			
 				
-					if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && (!holdArray.contains(true) && !onbeat || FlxG.save.data.botPlay))
+					if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && (!holdArray.contains(true) && !onbeat))
 						{
 							if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss') && (boyfriend.animation.curAnim.curFrame >= 10 || boyfriend.animation.curAnim.finished))
 								boyfriend.playAnim('idle');
@@ -4825,7 +4847,7 @@ class PlayState extends MusicBeatState
 							fc = true;
 						totalPlayed += 1;
 						accuracy = totalNotesHit / totalPlayed * 100;
-						if (SFC)
+						if (SFC && misses == 0)
 						accuracy = 100;
 						rating();
 						if (FlxG.save.data.pscyheenginescoretext)
@@ -5358,7 +5380,7 @@ class PlayState extends MusicBeatState
 			if (SONG.notes[Math.floor(curStep / 16)].changeBPM)
 			{
 				Conductor.changeBPM(SONG.notes[Math.floor(curStep / 16)].bpm);
-				FlxG.log.add('CHANGED BPM!');
+				trace('change bpm' + SONG.notes[Std.int(curStep / 16)].changeBPM);
 			}
 			// else
 			// Conductor.changeBPM(SONG.bpm);
@@ -5499,16 +5521,6 @@ class PlayState extends MusicBeatState
 			lightningStrikeShit();
 		}
 	}
-
-	function getangry():Void
-		{
-		  remove(dad);
-		  dad = new Character(250, 460, 'senpai-angry');
-		  add(dad);
-		  FlxG.sound.play(Paths.sound('ANGRY'));
-		  FlxG.sound.play(Paths.sound('ANGRY_TEXT_BOX'));
-		  bgGirls.getScared();	  
-		}
 
 	public static function speedchange():Void
 	{

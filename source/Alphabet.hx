@@ -290,11 +290,11 @@ class AlphaCharacter extends FlxSprite
 	{
 		switch (letter)
 		{
-			/*case '.':
+			case '.':
 				animation.addByPrefix(letter, 'period', 24);
 				animation.play(letter);
 				y += 50;
-				*/
+				
 			case "'":
 				animation.addByPrefix(letter, 'apostraphie', 24);
 				animation.play(letter);

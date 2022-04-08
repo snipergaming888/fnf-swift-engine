@@ -49,11 +49,7 @@ class MiscOptions extends MusicBeatState
 		menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat-opt'));
 		menuBG.scrollFactor.set();
 		menuBG.x -= 30;	
-		#if debug
-		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.freeplaysongs ? 'freeplay song previews on' : 'freeplay song previews off') +"\n" + (FlxG.save.data.discordrpc ? 'discord presence on' : 'discord presence off') +"\n" + (FlxG.save.data.KEidle ? 'KADE ENGINE IDLE ON' : 'KADE ENGINE IDLE OFF') +"\n" + (FlxG.save.data.idleonbeat ? 'idle on beat on' : 'idle on beat off'));
-		#else
-		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.freeplaysongs ? 'freeplay song previews on' : 'freeplay song previews off') +"\n" + (FlxG.save.data.discordrpc ? 'discord presence on' : 'discord presence off'));
-		#end
+		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.freeplaysongs ? 'freeplay song previews on' : 'freeplay song previews off') +"\n" + (FlxG.save.data.discordrpc ? 'discord presence on' : 'discord presence off') +"\n" + (FlxG.save.data.disguiseaske142 ? 'KE four version txt on' : 'KE four version txt off') +"\n" + (FlxG.save.data.disguiseaske154 ? 'KE five version txt on' : 'KE five version txt off'));
 		
 		trace(controlsStrings);
 
@@ -166,8 +162,8 @@ class MiscOptions extends MusicBeatState
 			if (curSelected < 0)
 				curSelected = 0;
 				
-			if (curSelected > 1)
-				curSelected = 1;
+			if (curSelected > 3)
+				curSelected = 3;
 					
 
 			grpControls.forEach(function(sex:Alphabet)
@@ -213,10 +209,10 @@ class MiscOptions extends MusicBeatState
 				versionShit.text = "Disable or enable the games discord presence.";
 
 			if (curSelected == 2)
-				versionShit.text = "Wether or not to enable the Kade Engine idle bug. (BFs idle interupts notes)";
+				versionShit.text = "Enable Kade Engine 1.4.2 version text.";
 
 			if (curSelected == 3)
-				versionShit.text = "Wether or not player 2 should be forced to idle to the beat. (may not work for some characters, EXPERAMENTAL!)";
+				versionShit.text = "Enable Kade Engine 1.5.4 version text.";
 
 			if (controls.ACCEPT)
 			{
@@ -252,17 +248,21 @@ class MiscOptions extends MusicBeatState
 						#end
 					case 2:
 						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.KEidle = !FlxG.save.data.KEidle;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.KEidle ? 'KADE ENGINE IDLE ON' : 'KADE ENGINE IDLE OFF'), true, false);
+						FlxG.save.data.disguiseaske142 = !FlxG.save.data.disguiseaske142;
+						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.disguiseaske142 ? 'KE four version txt on' : 'KE four version txt off'), true, false);
+						ctrl.y += 102;
+			        	ctrl.x += 50;
 						ctrl.isMenuItem = true;
-						ctrl.targetY = curSelected - 2;
+						ctrl.targetY = curSelected - 3;
 						grpControls.add(ctrl);
 					case 3:
 						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.idleonbeat = !FlxG.save.data.idleonbeat;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.idleonbeat ? 'idle on beat on' : 'idle on beat off'), true, false);
+						FlxG.save.data.disguiseaske154 = !FlxG.save.data.disguiseaske154;
+						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.disguiseaske154 ? 'KE five version txt on' : 'KE five version txt off'), true, false);
+						ctrl.y += 102;
+			        	ctrl.x += 50;
 						ctrl.isMenuItem = true;
-						ctrl.targetY = curSelected - 3;
+						ctrl.targetY = curSelected - 4;
 						grpControls.add(ctrl);						
 				}
 			}
