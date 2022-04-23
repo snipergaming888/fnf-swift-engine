@@ -33,6 +33,7 @@ import io.newgrounds.NG;
 import lime.app.Application;
 import openfl.Assets;
 import openfl.Lib;
+import lime.ui.Window;
 using StringTools;
 
 class TitleState extends MusicBeatState

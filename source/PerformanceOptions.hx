@@ -24,6 +24,13 @@ import flixel.FlxObject;
 import flixel.tweens.FlxEase;
 import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
 import flixel.addons.transition.FlxTransitionableState;
+import flixel.system.scaleModes.FillScaleMode;
+import flixel.system.scaleModes.FixedScaleMode;
+import flixel.system.scaleModes.RatioScaleMode;
+import flixel.system.scaleModes.RelativeScaleMode;
+import openfl.display.Stage;
+import lime.ui.Window;
+import openfl.Lib;
 
 using StringTools;
 
@@ -38,12 +45,17 @@ class PerformanceOptions extends MusicBeatState
 	var descBG:FlxSprite;
 	var menuBG:FlxSprite;
 	var camFollow:FlxObject;
+	var scaleMode:ScaleMode;
 
 	var controlsStrings:Array<String> = [];
 
 	private var grpControls:FlxTypedGroup<Alphabet>;
 	var versionShit:FlxText;
 	var desc:FlxText;
+	var scaleModes:Array<ScaleMode> = [RATIO_DEFAULT, RATIO_FILL_SCREEN, FIXED, RELATIVE, FILL];
+	var scaleModeIndex:Int = 0;
+	var width:Int = 1280;
+	var height:Int = 720;
 	override function create()
 	{
 		menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
@@ -55,9 +67,9 @@ class PerformanceOptions extends MusicBeatState
 		ISDESKTOP = true;
 		#end
 		if (ISDESKTOP)
-		controlsStrings = CoolUtil.coolStringFile("\nAntialiasing " + (FlxG.save.data.antialiasing ? "on" : "off") + "\noptimizations " + (FlxG.save.data.optimizations ? "on" : "off") + "\ndeprecated loading " + (FlxG.save.data.usedeprecatedloading ? "on" : "off") + "\n" + "CACHING");
+		controlsStrings = CoolUtil.coolStringFile("\nAntialiasing " + (FlxG.save.data.antialiasing ? "on" : "off") + "\noptimizations " + (FlxG.save.data.optimizations ? "on" : "off") + "\ndeprecated loading " + (FlxG.save.data.usedeprecatedloading ? "on" : "off") + "\n" + "CACHING" + "\n" + 'Set ScaleMode' + "\n" + 'Set Resolution');
 		else
-			controlsStrings = CoolUtil.coolStringFile("\nAntialiasing " + (FlxG.save.data.antialiasing ? "on" : "off") + "\noptimizations " + (FlxG.save.data.optimizations ? "on" : "off") + "\ndeprecated loading " + (FlxG.save.data.usedeprecatedloading ? "on" : "off"));
+			controlsStrings = CoolUtil.coolStringFile("\nAntialiasing " + (FlxG.save.data.antialiasing ? "on" : "off") + "\noptimizations " + (FlxG.save.data.optimizations ? "on" : "off") + "\ndeprecated loading " + (FlxG.save.data.usedeprecatedloading ? "on" : "off") + "\n" + 'Set ScaleMode' + "\n" + 'Set Resolution');
 		
 		trace(controlsStrings);
 
@@ -189,6 +201,11 @@ class PerformanceOptions extends MusicBeatState
 									// item.setGraphicSize(Std.int(item.width));
 								}
 							}
+
+							if (curSelected == 4)
+								desc.text = "Set the Scaling mode. Mode: " + scaleMode;
+							if (curSelected == 3 && !ISDESKTOP)
+								desc.text = "Set the Scaling mode. Mode: " + scaleMode;
 					}
 		
 				if (controls.DOWN_P)
@@ -207,6 +224,11 @@ class PerformanceOptions extends MusicBeatState
 									// item.setGraphicSize(Std.int(item.width));
 								}
 							}
+
+							if (curSelected == 4)
+								desc.text = "Set the Scaling mode. Mode: " + scaleMode;
+							if (curSelected == 3 && !ISDESKTOP)
+								desc.text = "Set the Scaling mode. Mode: " + scaleMode;
 					}
 			
 
@@ -215,13 +237,13 @@ class PerformanceOptions extends MusicBeatState
 
 			if (ISDESKTOP)
 				{
-					if (curSelected > 3)
-						curSelected = 3;
+					if (curSelected > 5)
+						curSelected = 5;
 				}
 				else
 					{
-						if (curSelected > 2)
-							curSelected = 2;
+						if (curSelected > 4)
+							curSelected = 4;
 					}
 	
 
@@ -287,8 +309,128 @@ class PerformanceOptions extends MusicBeatState
 				if (curSelected == 2)
 					desc.text = "Use the deprecated way to load things in-game. load times are slower than using the new loading scheme.";
 
-				if (curSelected == 3)
+				if (curSelected == 3 && ISDESKTOP)
 					desc.text = "Cache assets.";
+
+
+				if (curSelected == 5 && ISDESKTOP)
+					desc.text = "Set the resolution of the game." + " Width: " + width + " height: " + height + " (Left, Right , shift to go faster, enter to confirm, Hold CTRL for height adjustment)";
+
+				if (curSelected == 4 && !ISDESKTOP)
+					desc.text = "Set the resolution of the game." + " Width: " + width + " height: " + height + " (Left, Right , shift to go faster, enter to confirm, Hold CTRL for height adjustment)";
+
+				if (ISDESKTOP)
+					{
+						if (curSelected == 5 && !FlxG.keys.pressed.CONTROL)
+							{
+								var multiply:Int = 1;
+			
+								if (FlxG.keys.pressed.SHIFT && width > 10)
+									multiply = 10;
+						
+								if (FlxG.keys.justPressed.RIGHT && width > 0)
+									{
+											{
+												width += 1 * multiply;
+											}
+									}
+								if (FlxG.keys.justPressed.LEFT && width > 0)
+									{
+											{
+												width -= 1 * multiply;
+											}
+									}
+						
+								if (FlxG.keys.justPressed.SPACE)
+								{
+									width = 1280;
+									height = 720;
+								}
+							}
+		
+					if (curSelected == 5 && FlxG.keys.pressed.CONTROL)
+							{
+								var multiply:Int = 1;
+			
+								if (FlxG.keys.pressed.SHIFT && height > 10)
+									multiply = 10;
+						
+								if (FlxG.keys.justPressed.RIGHT && height > 0)
+									{
+											{
+												height += 1 * multiply;
+											}
+									}
+								if (FlxG.keys.justPressed.LEFT && height > 0)
+									{
+											{
+												height -= 1 * multiply;
+											}
+									}
+						
+								if (FlxG.keys.justPressed.SPACE)
+								{
+									width = 1280;
+									height = 720;
+								}
+							}		
+					}
+					else
+						{
+							if (curSelected == 4 && !FlxG.keys.pressed.CONTROL && !ISDESKTOP)
+								{
+									var multiply:Int = 1;
+				
+									if (FlxG.keys.pressed.SHIFT && width > 10)
+										multiply = 10;
+							
+									if (FlxG.keys.justPressed.RIGHT && width > 0)
+										{
+												{
+													width += 1 * multiply;
+												}
+										}
+									if (FlxG.keys.justPressed.LEFT && width > 0)
+										{
+												{
+													width -= 1 * multiply;
+												}
+										}
+							
+									if (FlxG.keys.justPressed.SPACE)
+									{
+										width = 1280;
+										height = 720;
+									}
+								}
+			
+						if (curSelected == 4 && FlxG.keys.pressed.CONTROL && !ISDESKTOP)
+								{
+									var multiply:Int = 1;
+				
+									if (FlxG.keys.pressed.SHIFT && height > 10)
+										multiply = 10;
+							
+									if (FlxG.keys.justPressed.RIGHT && height > 0)
+										{
+												{
+													height += 1 * multiply;
+												}
+										}
+									if (FlxG.keys.justPressed.LEFT && height > 0)
+										{
+												{
+													height -= 1 * multiply;
+												}
+										}
+							
+									if (FlxG.keys.justPressed.SPACE)
+									{
+										width = 1280;
+										height = 720;
+									}
+								}	
+						}
 				
 
 			if (controls.ACCEPT)
@@ -299,42 +441,118 @@ class PerformanceOptions extends MusicBeatState
                   remove(boyfriend);
 				  add(boyfriend);
 			    }
-				
-				switch(curSelected)
-				{
-					case 0:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.antialiasing = !FlxG.save.data.antialiasing;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Antialiasing " + (FlxG.save.data.antialiasing ? "on" : "off"), true, false);
-						ctrl.y += 102;
-			        	ctrl.x += 50;
-						ctrl.targetY = curSelected - 0;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-						
-					case 1:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.optimizations = !FlxG.save.data.optimizations;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "optimizations " + (FlxG.save.data.optimizations ? "on" : "off"), true, false);
-						ctrl.y += 102;
-			        	ctrl.x += 50;
-						ctrl.targetY = curSelected - 1;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 2:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.usedeprecatedloading = !FlxG.save.data.usedeprecatedloading;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "deprecated loading " + (FlxG.save.data.usedeprecatedloading ? "on" : "off"), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 2;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-						case 3:
-							FlxTransitionableState.skipNextTransIn = true;
-							FlxTransitionableState.skipNextTransOut = true;
-							FlxG.switchState(new CacheState());
+
+				if (ISDESKTOP)
+					{
+						switch(curSelected)
+						{			
+									case 0:
+										grpControls.remove(grpControls.members[curSelected]);
+										FlxG.save.data.antialiasing = !FlxG.save.data.antialiasing;
+										var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Antialiasing " + (FlxG.save.data.antialiasing ? "on" : "off"), true, false);
+										ctrl.y += 102;
+										ctrl.x += 50;
+										ctrl.targetY = curSelected - 0;
+										grpControls.add(ctrl);
+										FlxG.sound.play(Paths.sound('scrollMenu'));
+										
+									case 1:
+										grpControls.remove(grpControls.members[curSelected]);
+										FlxG.save.data.optimizations = !FlxG.save.data.optimizations;
+										var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "optimizations " + (FlxG.save.data.optimizations ? "on" : "off"), true, false);
+										ctrl.y += 102;
+										ctrl.x += 50;
+										ctrl.targetY = curSelected - 1;
+										grpControls.add(ctrl);
+										FlxG.sound.play(Paths.sound('scrollMenu'));
+									case 2:
+										grpControls.remove(grpControls.members[curSelected]);
+										FlxG.save.data.usedeprecatedloading = !FlxG.save.data.usedeprecatedloading;
+										var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "deprecated loading " + (FlxG.save.data.usedeprecatedloading ? "on" : "off"), true, false);
+										ctrl.y += 102;
+										ctrl.x += 50;
+										ctrl.targetY = curSelected - 2;
+										grpControls.add(ctrl);
+										FlxG.sound.play(Paths.sound('scrollMenu'));
+									case 3:
+										FlxTransitionableState.skipNextTransIn = true;
+										FlxTransitionableState.skipNextTransOut = true;
+										FlxG.switchState(new CacheState());
+									case 4:
+										grpControls.remove(grpControls.members[curSelected]);
+										var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Set ScaleMode", true, false);
+										ctrl.y += 102;
+										ctrl.x += 50;
+										ctrl.targetY = curSelected - 4;
+										grpControls.add(ctrl);
+										FlxG.sound.play(Paths.sound('scrollMenu'));
+										scaleModeIndex = FlxMath.wrap(scaleModeIndex + 1, 0, scaleModes.length - 1);
+										setScaleMode(scaleModes[scaleModeIndex]);
+									case 5:
+										grpControls.remove(grpControls.members[curSelected]);
+										var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Set Resolution", true, false);
+										ctrl.y += 102;
+										ctrl.x += 50;
+										ctrl.targetY = curSelected - 4;
+										grpControls.add(ctrl);
+										FlxG.sound.play(Paths.sound('scrollMenu'));
+										Lib.application.window.resize(width, height);							
+					}
 				}
+				else
+					{
+						switch(curSelected)
+						{
+							case 0:
+								grpControls.remove(grpControls.members[curSelected]);
+								FlxG.save.data.antialiasing = !FlxG.save.data.antialiasing;
+								var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Antialiasing " + (FlxG.save.data.antialiasing ? "on" : "off"), true, false);
+								ctrl.y += 102;
+								ctrl.x += 50;
+								ctrl.targetY = curSelected - 0;
+								grpControls.add(ctrl);
+								FlxG.sound.play(Paths.sound('scrollMenu'));
+								
+							case 1:
+								grpControls.remove(grpControls.members[curSelected]);
+								FlxG.save.data.optimizations = !FlxG.save.data.optimizations;
+								var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "optimizations " + (FlxG.save.data.optimizations ? "on" : "off"), true, false);
+								ctrl.y += 102;
+								ctrl.x += 50;
+								ctrl.targetY = curSelected - 1;
+								grpControls.add(ctrl);
+								FlxG.sound.play(Paths.sound('scrollMenu'));
+							case 2:
+								grpControls.remove(grpControls.members[curSelected]);
+								FlxG.save.data.usedeprecatedloading = !FlxG.save.data.usedeprecatedloading;
+								var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "deprecated loading " + (FlxG.save.data.usedeprecatedloading ? "on" : "off"), true, false);
+								ctrl.y += 102;
+								ctrl.x += 50;
+								ctrl.targetY = curSelected - 2;
+								grpControls.add(ctrl);
+								FlxG.sound.play(Paths.sound('scrollMenu'));
+							case 3:
+								grpControls.remove(grpControls.members[curSelected]);
+								var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Set ScaleMode", true, false);
+								ctrl.y += 102;
+								ctrl.x += 50;
+								ctrl.targetY = curSelected - 3;
+								grpControls.add(ctrl);
+								FlxG.sound.play(Paths.sound('scrollMenu'));
+								scaleModeIndex = FlxMath.wrap(scaleModeIndex + 1, 0, scaleModes.length - 1);
+								setScaleMode(scaleModes[scaleModeIndex]);
+							case 4:
+								grpControls.remove(grpControls.members[curSelected]);
+								var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Set Resolution", true, false);
+								ctrl.y += 102;
+								ctrl.x += 50;
+								ctrl.targetY = curSelected - 4;
+								grpControls.add(ctrl);
+								FlxG.sound.play(Paths.sound('scrollMenu'));
+								Lib.application.window.resize(width, height);
+						}
+
+					}
 			}
 	}
 
@@ -364,6 +582,32 @@ class PerformanceOptions extends MusicBeatState
 					trace(curBeat);
 				}
 		}
+
+		function setScaleMode(scaleMode:ScaleMode)
+			{
+				if (curSelected == 4 && ISDESKTOP)
+					desc.text = "Set the Scaling mode. Mode: " + scaleMode;
+				if (curSelected == 3 && !ISDESKTOP)
+					desc.text = "Set the Scaling mode. Mode: " + scaleMode;
+
+				FlxG.scaleMode = switch (scaleMode)
+				{
+					case ScaleMode.RATIO_DEFAULT:
+						new RatioScaleMode();
+		
+					case ScaleMode.RATIO_FILL_SCREEN:
+						new RatioScaleMode(true);
+		
+					case ScaleMode.FIXED:
+						new FixedScaleMode();
+		
+					case ScaleMode.RELATIVE:
+						new RelativeScaleMode(0.75, 0.75);
+		
+					case ScaleMode.FILL:
+						new FillScaleMode();
+				}
+			}
 
 		function bopOnBeat()
 			{
@@ -398,4 +642,14 @@ class PerformanceOptions extends MusicBeatState
 			}
 
 	var accepted:Bool = true;
+}
+
+@:enum
+abstract ScaleMode(String) to String
+{
+	var RATIO_DEFAULT = "ratio";
+	var RATIO_FILL_SCREEN = "ratio screenfill";
+	var FIXED = "fixed";
+	var RELATIVE = "relative 75%";
+	var FILL = "fill";
 }

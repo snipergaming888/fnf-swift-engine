@@ -233,7 +233,7 @@ class PauseSubState extends MusicBeatSubstate
 		function regenappearance():Void
 		{
 			remove(grpMenuShit);
-			menuItems =	CoolUtil.coolStringFile("\n" + (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD") + "\n" + (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF") + "\n" + (FlxG.save.data.hittimings ? "MS Timing info ON" : "MS Timing info OFF") + "\n" + (FlxG.save.data.showratings ? "ratings info ON" : "ratings info OFF") + "\n" + (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION off")+ "\n" + (FlxG.save.data.transparency ? "hold note transparency ON" : "hold note transparency off")+ "\n" + (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF") + "\n" + (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF") + "\n" + (FlxG.save.data.nps ? "NPS ON" : "NPS OFF") + "\n" + (FlxG.save.data.healthcolor ? 'new healthbar on' : 'new healthbar off') + "\n" + (FlxG.save.data.newhealthheadbump ? 'new healthhead bump on' : 'new healthhead bump off') + "\n" + (FlxG.save.data.fps ? "FPS COUNTER ON" : "FPS COUNTER OFF") + "\n" + (FlxG.save.data.togglecap ? "FPS CAP ON" : "FPS CAP OFF") + "\n" + (FlxG.save.data.memoryMonitor ? "memoryMonitor ON" : "memoryMonitor OFF") + "\n" + (FlxG.save.data.middlecam ? "Camera focusing ON" : "camera focusing Off") + "\n" + "BACK");
+			menuItems =	CoolUtil.coolStringFile("\n" + (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD") + "\n" + (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF") + "\n" + (FlxG.save.data.hittimings ? "MS Timing info ON" : "MS Timing info OFF") + "\n" + (FlxG.save.data.showratings ? "ratings info ON" : "ratings info OFF") + "\n" + (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION off")+ "\n" + (FlxG.save.data.transparency ? "hold note transparency ON" : "hold note transparency off")+ "\n" + (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF") + "\n" + (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF") + "\n" + (FlxG.save.data.nps ? "NPS ON" : "NPS OFF") + "\n" + (FlxG.save.data.healthcolor ? 'new healthbar on' : 'new healthbar off') + "\n" + (FlxG.save.data.newhealthheadbump ? 'new healthhead bump on' : 'new healthhead bump off') + "\n" + (FlxG.save.data.fps ? "FPS COUNTER ON" : "FPS COUNTER OFF") + "\n" + (FlxG.save.data.togglecap ? "FPS CAP ON" : "FPS CAP OFF") + "\n" + (FlxG.save.data.memoryMonitor ? "memoryMonitor ON" : "memoryMonitor OFF") + "\n" + (FlxG.save.data.middlecam ? "Camera focusing ON" : "camera focusing Off") + "\n" + (FlxG.save.data.camfollowspeedon ? "Camera speed modif on" : "Camera speed modif off") + "\n" + "BACK");
 					trace(menuItems);		
 
 					grpMenuShit = new FlxTypedGroup<Alphabet>();
@@ -467,21 +467,21 @@ class PauseSubState extends MusicBeatSubstate
 		if (curSelected == 9 && isinappearance)
 			versionShit.text = "Wether or not to show engine watermarks. (will not remove botplay text)";
 		if (curSelected == 10 && isinappearance)
-			versionShit.text = "Wether or not to show only score info.";
-		if (curSelected == 11 && isinappearance)
 			versionShit.text = "Wether or not to show notes per second.";
-		if (curSelected == 12 && isinappearance)
+		if (curSelected == 11 && isinappearance)
 			versionShit.text = "If the healthbar should be the color of the player (1 or 2).";
-		if (curSelected == 13 && isinappearance)
+		if (curSelected == 12 && isinappearance)
 			versionShit.text = "If the healthbar heads should act like the ones from week 7. (new healthhead bump)";
-		if (curSelected == 14 && isinappearance)
+		if (curSelected == 13 && isinappearance)
 			versionShit.text = "Toggle the FPS counter on and off.";
-		if (curSelected == 15 && isinappearance)
+		if (curSelected == 14 && isinappearance)
 			versionShit.text = "Set the FPS cap. FPS: " + FlxG.save.data.fpsCap + " (Left, Right, Space to reset, Shift to go faster)";
-		if (curSelected == 16 && isinappearance)
+		if (curSelected == 15 && isinappearance)
 			versionShit.text = "Toggle the memory monitor on and off.";
-		if (curSelected == 17 && isinappearance)
+		if (curSelected == 16 && isinappearance)
 			versionShit.text = "Toggle if the camera should point at player 1 and 2 when they are singing.";
+		if (curSelected == 17 && isinappearance)
+			versionShit.text = "Set the custom camera panning speed. (lower values = faster pan) cur speed: " + FlxG.save.data.camfollowspeed + " (Left, Right, Space to reset, Shift to go faster)";
 		if (isinkeybinds)
 			versionShit.text = "Press enter on the key you want to rebind then press the key you want to rebind it to.";
         if (FlxG.save.data.antialiasing && curSelected == 0 && isinperformance)
@@ -616,6 +616,33 @@ class PauseSubState extends MusicBeatSubstate
 						}
 					}
 
+					
+				if (curSelected == 17 && isinappearance)
+					{
+						var multiply:Float = 1;
+	
+						if (FlxG.keys.pressed.SHIFT && FlxG.save.data.camfollowspeed < 1000 && FlxG.save.data.camfollowspeed > 0 && FlxG.save.data.camfollowspeedon)
+							multiply = 10;
+				
+						if (FlxG.keys.justPressed.RIGHT && FlxG.save.data.camfollowspeed < 1000 && FlxG.save.data.camfollowspeedon)
+							{
+									{
+										FlxG.save.data.camfollowspeed += 1 * multiply;
+									}
+							}
+						if (FlxG.keys.justPressed.LEFT && FlxG.save.data.camfollowspeed > 0 && FlxG.save.data.camfollowspeedon)
+							{
+									{
+										FlxG.save.data.camfollowspeed -= 1 * multiply;
+									}
+							}
+				
+						if (FlxG.keys.justPressed.SPACE && FlxG.save.data.camfollowspeedon)
+						{
+							FlxG.save.data.camfollowspeed = 60;
+						}
+					}
+
 				if (FlxG.keys.justPressed.ESCAPE)
 					{
 						close();
@@ -738,7 +765,10 @@ class PauseSubState extends MusicBeatSubstate
 					if (needstoreload)
 						{
 							if (!FlxG.save.data.usedeprecatedloading)
-								PlayState.instance.restart();
+								{
+									
+									//PlayState.instance.restart();
+								}
 								else
 									{
 											FlxG.resetState();
@@ -862,399 +892,17 @@ class PauseSubState extends MusicBeatSubstate
 								{
 								close();
 								}
-				#if debug
 				case "Chart Editor":
-					FlxG.switchState(new ChartingState());	
+					PlayState.triggeredalready = false;	
+					FlxG.switchState(new ChartingState());
 				case "Restart Song":
 					if (!FlxG.save.data.usedeprecatedloading)
-					PlayState.instance.restart();
-					else
 						{
-							    FlxG.resetState();
-						}
-				case "Skip Song":
-					if (!FlxG.save.data.usedeprecatedloading) //&& PlayState.isnotweb)
-						{
-							PlayState.storyPlaylist.remove(PlayState.storyPlaylist[0]);
-
-								var difficulty:String = "";
-			
-								if (PlayState.storyDifficulty == 0) {
-									difficulty = '-easy';
-								}
-			
-								if (PlayState.storyDifficulty == 2) {
-									difficulty = '-hard';
-								}
-			
-								trace('LOADING NEXT SONG');
-								trace(PlayState.storyPlaylist[0].toLowerCase() + difficulty);
-			
-								PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0].toLowerCase() + difficulty, PlayState.storyPlaylist[0]);
-								FlxG.sound.music.stop();
-							    PlayState.instance.restart();
-						}
-						else
-							{
-								PlayState.storyPlaylist.remove(PlayState.storyPlaylist[0]);
-
-								var difficulty:String = "";
-			
-								if (PlayState.storyDifficulty == 0) {
-									difficulty = '-easy';
-								}
-			
-								if (PlayState.storyDifficulty == 2) {
-									difficulty = '-hard';
-								}
-			
-								trace('LOADING NEXT SONG');
-								trace(PlayState.storyPlaylist[0].toLowerCase() + difficulty);
-			
-								PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0].toLowerCase() + difficulty, PlayState.storyPlaylist[0]);
-								FlxG.sound.music.stop();
-								LoadingState.loadAndSwitchState(new PlayState());
-							}
-				case "Exit to storymode menu":
-					FlxG.switchState(new StoryMenuState());
-					FlxG.sound.playMusic(Paths.music('freakyMenu'));
-					PlayState.blueballed = 0;
-					FlxG.timeScale = 1;
-					case "Exit to freeplay menu":
-						#if web
-						trace("Freeplay HTML5");
-						FlxG.switchState(new FreeplayStateHTML5());
-						FlxG.timeScale = 1;
-						PlayState.blueballed = 0;
-						#else
-						FlxG.switchState(new FreeplayState());
-						trace("Freeplay Menu");
-						FlxG.timeScale = 1;
-						PlayState.blueballed = 0;
-						#end	
-				case "Exit to main menu":
-					FlxG.switchState(new MainMenuState());
-					FlxG.timeScale = 1;
-					PlayState.blueballed = 0;
-					case "Animation Debug dad":
-						FlxG.switchState(new AnimationDebug(PlayState.SONG.player2));
-					case "Animation Debug bf":
-						FlxG.switchState(new AnimationDebug(PlayState.SONG.player1));	
-				case "Change Difficulty":
-					menuItems = difficultyChoices;
-					regenMenu();
-				case "EASY" | "NORMAL" | "HARD":
-					if (!FlxG.save.data.usedeprecatedloading)
-						{
-							PlayState.SONG = Song.loadFromJson(Highscore.formatSong(PlayState.SONG.song.toLowerCase(), curSelected),
-							PlayState.SONG.song.toLowerCase());
-						    PlayState.storyDifficulty = curSelected;
-						    PlayState.instance.restart();
-						    trace('changing difficulty to' + curSelected);
-						}
-						else
-							{
-									PlayState.SONG = Song.loadFromJson(Highscore.formatSong(PlayState.SONG.song.toLowerCase(), curSelected),
-										PlayState.SONG.song.toLowerCase());
-									PlayState.storyDifficulty = curSelected;
-									FlxG.resetState();
-									trace('changing difficulty to' + curSelected);
-							}
-				case "BACK":
-					if (isingameplay)
-						{
-							isingameplay = false;
-						}
-					if (isinappearance)
-						{
-							isinappearance = false;
-						}
-					if (isinkeybinds)
-						{
-							isinkeybinds = false;
-							PlayerSettings.player1.controls.loadKeyBinds();
-							trace('SAVED BINDS');
-							FlxG.save.data.controls = true;
-						}
-					if (isinmisc)
-						{
-							isinmisc = false;
-						}
-					if (isinperformance)
-						{
-							isinperformance = false;
-						}
-					if (StoryMenuState.isStoryMode)
-						{
-							if (PlayState.storyPlaylist.length != 1) {
-								menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'toggle practice mode', 'Change Speed', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'options', 'Exit to storymode menu', 'Exit to main menu'];
-								regenMenu();
-							}	
-						}
-						else
-					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'toggle practice mode', 'Chart Editor', 'Change Speed', 'Animation Debug dad', 'Animation Debug bf', 'options', 'Exit to freeplay menu', 'Exit to main menu'];
-					regenMenu();
-                case "DFJK":
-					controls.setKeyboardScheme(KeyboardScheme.Duo(true), true);
-					FlxG.save.data.controls = false;
-					Main.Custom = false;
-					if (StoryMenuState.isStoryMode)
-						{
-							if (PlayState.storyPlaylist.length != 1) {
-								menuItems = ['Resume', 'Restart Song', 'Skip Song', 'Change Difficulty', 'toggle practice mode', 'Change Speed', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'options', 'Exit to storymode menu', 'Exit to main menu'];
-								regenMenu();
-							}	
-						}
-						else
-					menuItems = ['Resume', 'Restart Song', 'Change Difficulty', 'toggle practice mode', 'Change Speed', 'Chart Editor', 'Animation Debug dad', 'Animation Debug bf', 'options', 'Exit to freeplay menu', 'Exit to main menu'];
-					regenMenu();
-				case "options":
-					menuItems = ['GAMEPLAY', 'APPEARANCE', 'KEYBINDS', 'PERFORMANCE', 'MISC', 'BACK'];
-					regenMenu();
-					case "GAMEPLAY":
-					remove(grpMenuShit);
-					isingameplay = true;
-					menuItems = CoolUtil.coolStringFile("\n" + (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll') + "\n" + (FlxG.save.data.middlescroll ? "middlescroll on" : "middlescroll off") + "\n" + (FlxG.save.data.ghosttapping ? "Ghost Tapping" : "No Ghost Tapping") + "\n" + (FlxG.save.data.oldinput ? "OLD INPUT ON" : "OLD INPUT OFF") + "\n" + (FlxG.save.data.antimash ? "anti mash ON" : " anti mash OFF") + "\n" + (FlxG.save.data.reset ? "RESET BUTTON ON" : "RESET BUTTON OFF") + "\n" + (FlxG.save.data.pausecount ? "pause counter on" : "pause counter off") + "\n" + (FlxG.save.data.repeat ? 'loop current song on' : 'loop current song off') + "\n" + (FlxG.save.data.hitsounds ? 'hitsounds on' : 'hitsounds off')  + "\n" + (FlxG.save.data.songspeed ? 'SET SCROLL SPEED ON' : 'SET SCROLL SPEED OFF') + "\n" + (FlxG.save.data.botplay ? 'BOTPLAY ON' : 'BOTPLAY OFF') + "\n" + (FlxG.save.data.missnotes ? 'miss sounds on' : 'miss sounds off') + "\n" + (FlxG.save.data.instantRespawn ? 'instant respawn on' : 'instant respawn off') + "\n" + "EDIT OFFSET" + "\n" + "BACK");
-					trace(menuItems);		
-
-					grpMenuShit = new FlxTypedGroup<Alphabet>();
-					add(grpMenuShit);
-			
-					for (i in 0...menuItems.length)
-					{
-							var songText:Alphabet = new Alphabet(0, (70 * i) + 30, menuItems[i], true, false);
-							songText.isMenuItem = true;
-							songText.targetY = i;
-							grpMenuShit.add(songText);
-						// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
-					}
-			
-					changeSelection();
-
-					case "APPEARANCE":
-					remove(grpMenuShit);
-					isinappearance = true;
-					menuItems =	CoolUtil.coolStringFile("\n" + (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD") + "\n" + (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF") + "\n" + (FlxG.save.data.hittimings ? "MS Timing info ON" : "MS Timing info OFF") + "\n" + (FlxG.save.data.showratings ? "ratings info ON" : "ratings info OFF") + "\n" + (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION off")+ "\n" + (FlxG.save.data.transparency ? "hold note transparency ON" : "hold note transparency off")+ "\n" + (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF") + "\n" + (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF") + "\n" + (FlxG.save.data.nps ? "NPS ON" : "NPS OFF") + "\n" + (FlxG.save.data.healthcolor ? 'new healthbar on' : 'new healthbar off') + "\n" + (FlxG.save.data.newhealthheadbump ? 'new healthhead bump on' : 'new healthhead bump off') + "\n" + (FlxG.save.data.fps ? "FPS COUNTER ON" : "FPS COUNTER OFF") + "\n" + (FlxG.save.data.togglecap ? "FPS CAP ON" : "FPS CAP OFF") + "\n" + (FlxG.save.data.memoryMonitor ? "memoryMonitor ON" : "memoryMonitor OFF") + "\n" + (FlxG.save.data.middlecam ? "Camera focusing ON" : "camera focusing Off") + "\n" + "BACK");
-					trace(menuItems);		
-
-					grpMenuShit = new FlxTypedGroup<Alphabet>();
-					add(grpMenuShit);
-			
-					for (i in 0...menuItems.length)
-					{
-							var songText:Alphabet = new Alphabet(0, (70 * i) + 30, menuItems[i], true, false);
-							songText.isMenuItem = true;
-							songText.targetY = i;
-							grpMenuShit.add(songText);
-						// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
-					}
-					changeSelection();
-					case "Upscroll" | "Downscroll":
-				    if (FlxG.save.data.downscroll)
-						{
-							FlxG.save.data.downscroll = false;
-							PlayState.strumLine.y = 50;
+							FlxTransitionableState.skipNextTransIn = false;
+							FlxTransitionableState.skipNextTransOut = false;
 							PlayState.instance.restart();
-							regengameplay();
+								
 						}
-						else if (!FlxG.save.data.downscroll)
-							{
-								FlxG.save.data.downscroll = true;
-								PlayState.strumLine.y = FlxG.height - 165;
-								PlayState.instance.restart();
-								regengameplay();
-							}
-				case "BOTPLAY ON" | "BOTPLAY OFF":
-				    if (FlxG.save.data.botplay)
-						{
-							FlxG.save.data.botplay = false;
-							PlayState.botplaycheck();
-							PlayState.addedbptext = true;
-							regengameplay();
-						}
-						else if (!FlxG.save.data.botplay)
-							{
-								FlxG.save.data.botplay = true;
-								PlayState.botplaycheck();
-								PlayState.addedbptext = false;
-								regengameplay();
-							}		
-				case "middlescroll on" | "middlescroll off":
-				    if (FlxG.save.data.middlescroll)
-						{
-							FlxG.save.data.middlescroll = false;
-							regengameplay();
-						}
-						else if (!FlxG.save.data.middlescroll)
-							{
-								FlxG.save.data.middlescroll = true;
-								regengameplay();
-							}
-				case "Ghost Tapping" | "No Ghost Tapping":
-				    if (FlxG.save.data.ghosttapping)
-						{
-							FlxG.save.data.ghosttapping = false;
-							regengameplay();
-						}
-						else if (!FlxG.save.data.ghosttapping)
-							{
-								FlxG.save.data.ghosttapping = true;
-								regengameplay();
-							}
-				case "OLD INPUT ON" | "OLD INPUT OFF":
-				    if (FlxG.save.data.oldinput)
-						{
-							FlxG.save.data.oldinput = false;
-							regengameplay();
-						}
-						else if (!FlxG.save.data.oldinput)
-							{
-								FlxG.save.data.oldinput = true;
-								regengameplay();
-							}
-				case "anti mash ON" | "anti mash OFF":
-				    if (FlxG.save.data.antimash)
-						{
-							FlxG.save.data.antimash = false;
-							regengameplay();
-						}
-						else if (!FlxG.save.data.antimash)
-							{
-								FlxG.save.data.antimash = true;
-								regengameplay();
-							}			
-				case "RESET BUTTON ON" | "RESET BUTTON OFF":
-				    if (FlxG.save.data.reset)
-						{
-							FlxG.save.data.reset = false;
-							regengameplay();
-						}
-						else if (!FlxG.save.data.reset)
-							{
-								FlxG.save.data.reset = true;
-								regengameplay();
-							}
-				case "pause counter on" | "pause counter off":
-				    if (FlxG.save.data.pausecount)
-						{
-							FlxG.save.data.pausecount = false;
-							regengameplay();
-						}
-						else if (!FlxG.save.data.pausecount)
-							{
-								FlxG.save.data.pausecount = true;
-								regengameplay();
-							}
-				case "loop current song on" | "loop current song off":
-				    if (FlxG.save.data.repeat)
-						{
-							FlxG.save.data.repeat = false;
-							regengameplay();
-						}
-						else if (!FlxG.save.data.repeat)
-							{
-								FlxG.save.data.repeat = true;
-								regengameplay();
-							}
-				case "hitsounds on" | "hitsounds off":
-				    if (FlxG.save.data.hitsounds)
-						{
-							FlxG.save.data.hitsounds = false;
-							regengameplay();
-						}
-						else if (!FlxG.save.data.hitsounds)
-							{
-								FlxG.save.data.hitsounds = true;
-								regengameplay();
-							}
-			    case "SET SCROLL SPEED ON" | "SET SCROLL SPEED OFF":
-				    if (FlxG.save.data.songspeed)
-						{
-							FlxG.save.data.songspeed = false;
-							PlayState.resetlength = true;
-							regengameplay();
-						}
-						else if (!FlxG.save.data.songspeed)
-							{
-								FlxG.save.data.songspeed = true;
-								PlayState.resetlength = true;
-								regengameplay();
-							}
-				 case "miss sounds on" | "miss sounds off":
-				    if (FlxG.save.data.missnotes)
-						{
-							FlxG.save.data.missnotes = false;
-							regengameplay();
-						}
-						else if (!FlxG.save.data.missnotes)
-							{
-								FlxG.save.data.missnotes = true;
-								regengameplay();
-							}
-				 case "instant respawn on" | "instant respawn off":
-				    if (FlxG.save.data.instantRespawn)
-						{
-							FlxG.save.data.instantRespawn = false;
-							regengameplay();
-						}
-						else if (!FlxG.save.data.instantRespawn)
-							{
-								FlxG.save.data.instantRespawn = true;
-								regengameplay();
-							}
-				// appearance shit
-				case "HIDE HUD" | "DO NOT HIDE HUD":
-				    if (FlxG.save.data.hideHUD)
-						{
-							FlxG.save.data.hideHUD = false;
-							regenappearance();
-						}
-						else if (!FlxG.save.data.hideHUD)
-							{
-								FlxG.save.data.hideHUD = true;
-								regenappearance();
-							}
-				case "cinematic MODE ON" | "cinematic MODE OFF":
-				    if (FlxG.save.data.cinematic)
-						{
-							FlxG.save.data.cinematic = false;
-							regenappearance();
-						}
-						else if (!FlxG.save.data.cinematic)
-							{
-								FlxG.save.data.cinematic = true;
-								regenappearance();
-							}
-				case "MS Timing info ON" | "MS Timing info OFF":
-				    if (FlxG.save.data.hittimings)
-						{
-							FlxG.save.data.hittimings = false;
-							regenappearance();
-						}
-						else if (!FlxG.save.data.hittimings)
-							{
-								FlxG.save.data.hittimings = true;
-								regenappearance();
-							}
-				case "ratings info ON" | "ratings info OFF":
-				    if (FlxG.save.data.showratings)
-						{
-							FlxG.save.data.showratings = false;
-							PlayState.addedratingstext = true;
-							regenappearance();
-						}
-						else if (!FlxG.save.data.showratings)
-							{
-								FlxG.save.data.showratings = true;
-								PlayState.addedratingstext = false;
-								regenappearance();
-							}		
-				#else
-				case "Chart Editor":
-					FlxG.switchState(new ChartingState());	
-				case "Restart Song":
-					if (!FlxG.save.data.usedeprecatedloading)
-						PlayState.instance.restart();
 						else
 							{
 									FlxG.resetState();
@@ -1307,17 +955,20 @@ class PauseSubState extends MusicBeatSubstate
 					FlxG.timeScale = 1;
 					FlxG.switchState(new StoryMenuState());
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
+					PlayState.triggeredalready = false;
 					case "Exit to freeplay menu":
 						#if web
 						trace("Freeplay HTML5");
 						PlayState.blueballed = 0;
 						FlxG.switchState(new FreeplayStateHTML5());
 						FlxG.timeScale = 1;
+						PlayState.triggeredalready = false;
 						#else
 						PlayState.blueballed = 0;
 						FlxG.switchState(new FreeplayState());
 						trace("Freeplay Menu");
 						FlxG.timeScale = 1;
+						PlayState.triggeredalready = false;
 						#end
 						#if desktop 
 				case "Change Speed":
@@ -1330,10 +981,7 @@ class PauseSubState extends MusicBeatSubstate
 					PlayState.blueballed = 0;
 					FlxG.switchState(new MainMenuState());
 					FlxG.timeScale = 1;
-					case "Animation Debug dad":
-						FlxG.switchState(new AnimationDebug(PlayState.SONG.player2));
-					case "Animation Debug bf":
-						FlxG.switchState(new AnimationDebug(PlayState.SONG.player1));	
+					PlayState.triggeredalready = false;
 				case "Change Difficulty":
 					menuItems = difficultyChoices;
 					regenMenu();
@@ -1361,6 +1009,7 @@ class PauseSubState extends MusicBeatSubstate
 						    PlayState.storyDifficulty = curSelected;
 						    PlayState.instance.restart();
 						    trace('changing difficulty to' + curSelected);
+							PlayState.triggeredalready = false;
 						}
 						else
 							{
@@ -1369,7 +1018,9 @@ class PauseSubState extends MusicBeatSubstate
 									PlayState.storyDifficulty = curSelected;
 									FlxG.resetState();
 									trace('changing difficulty to' + curSelected);
+									PlayState.triggeredalready = false;
 							}
+							PlayState.triggeredalready = false;			
 				case "BACK":
 					if (StoryMenuState.isStoryMode && PlayState.storyPlaylist.length != 1)
 						{
@@ -1432,7 +1083,7 @@ class PauseSubState extends MusicBeatSubstate
 				case "APPEARANCE":
 					remove(grpMenuShit);
 					isinappearance = true;
-					menuItems =	CoolUtil.coolStringFile("\n" + (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD") + "\n" + (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF") + "\n" + (FlxG.save.data.hittimings ? "MS Timing info ON" : "MS Timing info OFF") + "\n" + (FlxG.save.data.showratings ? "ratings info ON" : "ratings info OFF") + "\n" + (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION off")+ "\n" + (FlxG.save.data.transparency ? "hold note transparency ON" : "hold note transparency off")+ "\n" + (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF") + "\n" + (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF") + "\n" + (FlxG.save.data.nps ? "NPS ON" : "NPS OFF") + "\n" + (FlxG.save.data.healthcolor ? 'new healthbar on' : 'new healthbar off') + "\n" + (FlxG.save.data.newhealthheadbump ? 'new healthhead bump on' : 'new healthhead bump off') + "\n" + (FlxG.save.data.fps ? "FPS COUNTER ON" : "FPS COUNTER OFF") + "\n" + (FlxG.save.data.togglecap ? "FPS CAP ON" : "FPS CAP OFF") + "\n" + (FlxG.save.data.memoryMonitor ? "memoryMonitor ON" : "memoryMonitor OFF") + "\n" + (FlxG.save.data.middlecam ? "Camera focusing ON" : "camera focusing Off") + "\n" + "BACK");
+					menuItems =	CoolUtil.coolStringFile("\n" + (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD") + "\n" + (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF") + "\n" + (FlxG.save.data.hittimings ? "MS Timing info ON" : "MS Timing info OFF") + "\n" + (FlxG.save.data.showratings ? "ratings info ON" : "ratings info OFF") + "\n" + (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION off")+ "\n" + (FlxG.save.data.transparency ? "hold note transparency ON" : "hold note transparency off")+ "\n" + (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF") + "\n" + (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF") + "\n" + (FlxG.save.data.nps ? "NPS ON" : "NPS OFF") + "\n" + (FlxG.save.data.healthcolor ? 'new healthbar on' : 'new healthbar off') + "\n" + (FlxG.save.data.newhealthheadbump ? 'new healthhead bump on' : 'new healthhead bump off') + "\n" + (FlxG.save.data.fps ? "FPS COUNTER ON" : "FPS COUNTER OFF") + "\n" + (FlxG.save.data.togglecap ? "FPS CAP ON" : "FPS CAP OFF") + "\n" + (FlxG.save.data.memoryMonitor ? "memoryMonitor ON" : "memoryMonitor OFF") + "\n" + (FlxG.save.data.middlecam ? "Camera focusing ON" : "camera focusing Off") + "\n" + (FlxG.save.data.camfollowspeedon ? "Camera speed modif on" : "Camera speed modif off") + "\n" + "BACK");
 					trace(menuItems);		
 
 					grpMenuShit = new FlxTypedGroup<Alphabet>();
@@ -1860,7 +1511,18 @@ class PauseSubState extends MusicBeatSubstate
 						{
 							FlxG.save.data.middlecam = true;
 							regenappearance();	
-						}		
+						}
+			    case "Camera speed modif on" | "Camera speed modif off":
+					if (FlxG.save.data.camfollowspeedon)
+						{
+							FlxG.save.data.camfollowspeedon = false;
+							regenappearance();
+						}
+					else if (!FlxG.save.data.camfollowspeedon)
+						{
+							FlxG.save.data.camfollowspeedon = true;
+							regenappearance();	
+						}			
 				case "memoryMonitor ON" | "memoryMonitor OFF":
 				    if (FlxG.save.data.memoryMonitor)
 						{
@@ -1936,8 +1598,6 @@ class PauseSubState extends MusicBeatSubstate
 								DiscordClient.initialize();
 								#end
 							}
-											
-					#end
 			}
 		}
 	}

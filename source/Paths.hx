@@ -8,6 +8,7 @@ import openfl.utils.Assets as OpenFlAssets;
 import flixel.FlxSprite;
 import flixel.graphics.FlxGraphic;
 
+
 class Paths
 {
 	inline public static var SOUND_EXT = #if web "mp3" #else "ogg" #end;

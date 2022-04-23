@@ -16,6 +16,7 @@ class Character extends FlxSprite
 	public var curCharacter:String = 'bf';
 
 	public var holdTimer:Float = 0;
+	public var playercolor:String = 'FFFFFF';
 
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false)
 	{
@@ -34,6 +35,7 @@ class Character extends FlxSprite
 		switch (curCharacter)
 		{
 			case 'gf':
+				playercolor = 'A5024D';
 				// GIRLFRIEND CODE
 				tex = Paths.getSparrowAtlas('GF_assets', 'shared');
 				frames = tex;
@@ -66,6 +68,7 @@ class Character extends FlxSprite
 				playAnim('danceRight');
 
 			case 'gf-christmas':
+				playercolor = 'A5024D';
 				tex = Paths.getSparrowAtlas('gfChristmas', 'week5');
 				frames = tex;
 				animation.addByPrefix('cheer', 'GF Cheer', 24, false);
@@ -97,6 +100,7 @@ class Character extends FlxSprite
 				playAnim('danceRight');
 
 			case 'gf-car':
+				playercolor = 'A5024D';
 				tex = Paths.getSparrowAtlas('gfCar', 'week4');
 				frames = tex;
 				animation.addByIndices('singUP', 'GF Dancing Beat Hair blowing CAR', [0], "", 24, false);
@@ -110,6 +114,7 @@ class Character extends FlxSprite
 				playAnim('danceRight');
 
 			case 'gf-pixel':
+				playercolor = 'A5024D';
 				tex = Paths.getSparrowAtlas('weeb/gfPixel', 'shared');
 				frames = tex;
 				animation.addByIndices('singUP', 'GF IDLE', [2], "", 24, false);
@@ -159,6 +164,7 @@ class Character extends FlxSprite
 
 			case 'dad':
 				// DAD ANIMATION LOADING CODE
+				playercolor = '9456AE';
 				tex = Paths.getSparrowAtlas('DADDY_DEAREST', 'shared');
 				frames = tex;
 				animation.addByPrefix('idle', 'Dad idle dance', 24);
@@ -175,6 +181,7 @@ class Character extends FlxSprite
 				playAnim('idle');
 
 			case 'spooky':
+				playercolor = 'D57E00';
 				tex = Paths.getSparrowAtlas('spooky_kids_assets', 'week2');
 				frames = tex;
 				animation.addByPrefix('singUP', 'spooky UP NOTE', 24, false);
@@ -194,6 +201,7 @@ class Character extends FlxSprite
 
 				playAnim('danceRight');
 			case 'mom':
+				playercolor = 'D8558E';
 				tex = Paths.getSparrowAtlas('Mom_Assets', 'week4');
 				frames = tex;
 
@@ -213,6 +221,7 @@ class Character extends FlxSprite
 				playAnim('idle');
 
 			case 'mom-car':
+				playercolor = 'D8558E';
 				tex = Paths.getSparrowAtlas('momCar', 'week4');
 				frames = tex;
 
@@ -231,6 +240,7 @@ class Character extends FlxSprite
 				addOffset("singDOWN", 20, -160);
 				playAnim('idle');
 			case 'monster':
+				playercolor = 'F3FD6E';
 				tex = Paths.getSparrowAtlas('Monster_Assets', 'week2');
 				frames = tex;
 				animation.addByPrefix('idle', 'monster idle', 24, false);
@@ -246,6 +256,7 @@ class Character extends FlxSprite
 				addOffset("singDOWN", -30, -40);
 				playAnim('idle');
 			case 'monster-christmas':
+				playercolor = 'F3FD6E';
 				tex = Paths.getSparrowAtlas('monsterChristmas', 'week5');
 				frames = tex;
 				animation.addByPrefix('idle', 'monster idle', 24, false);
@@ -261,6 +272,7 @@ class Character extends FlxSprite
 				addOffset("singDOWN", -40, -94);
 				playAnim('idle');
 			case 'pico':
+				playercolor = 'B7D854';
 				tex = Paths.getSparrowAtlas('Pico_FNF_assetss','week3');
 				frames = tex;
 				animation.addByPrefix('idle', "Pico Idle Dance", 24, false);
@@ -299,6 +311,7 @@ class Character extends FlxSprite
 				flipX = true;
 
 			case 'bf':
+	            playercolor = '31B0D1';
 				var tex = Paths.getSparrowAtlas('BOYFRIEND', 'shared');
 				frames = tex;
 				animation.addByPrefix('idle', 'BF idle dance', 24, false);
@@ -385,6 +398,7 @@ class Character extends FlxSprite
 					flipX = true;
 
 			case 'bf-christmas':
+				playercolor = '31B0D1';
 				var tex = Paths.getSparrowAtlas('bfChristmas', 'week5');
 				frames = tex;
 				animation.addByPrefix('idle', 'BF idle dance', 24, false);
@@ -412,6 +426,7 @@ class Character extends FlxSprite
 
 				flipX = true;
 			case 'bf-car':
+				playercolor = '31B0D1';
 				var tex = Paths.getSparrowAtlas('bfCar', 'week4');
 				frames = tex;
 				animation.addByPrefix('idle', 'BF idle dance', 24, false);
@@ -437,6 +452,7 @@ class Character extends FlxSprite
 
 				flipX = true;
 			case 'bf-pixel':
+				playercolor = '7BD6F6';
 				frames = Paths.getSparrowAtlas('weeb/bfPixel', 'shared');
 				animation.addByPrefix('idle', 'BF IDLE', 24, false);
 				animation.addByPrefix('singUP', 'BF UP NOTE', 24, false);
@@ -469,72 +485,8 @@ class Character extends FlxSprite
 
 				flipX = true;
 
-				case 'bf-pixel-glitch':
-				frames = Paths.getSparrowAtlas('weeb/bfPixelglitch1', 'shared');
-				animation.addByPrefix('idle', 'BF IDLE', 24, false);
-				animation.addByPrefix('singUP', 'BF UP NOTE', 24, false);
-				animation.addByPrefix('singLEFT', 'BF LEFT NOTE', 24, false);
-				animation.addByPrefix('singRIGHT', 'BF RIGHT NOTE', 24, false);
-				animation.addByPrefix('singDOWN', 'BF DOWN NOTE', 24, false);
-				animation.addByPrefix('singUPmiss', 'BF UP MISS', 24, false);
-				animation.addByPrefix('singLEFTmiss', 'BF LEFT MISS', 24, false);
-				animation.addByPrefix('singRIGHTmiss', 'BF RIGHT MISS', 24, false);
-				animation.addByPrefix('singDOWNmiss', 'BF DOWN MISS', 24, false);
-
-				addOffset('idle');
-				addOffset("singUP");
-				addOffset("singRIGHT");
-				addOffset("singLEFT");
-				addOffset("singDOWN");
-				addOffset("singUPmiss");
-				addOffset("singRIGHTmiss");
-				addOffset("singLEFTmiss");
-				addOffset("singDOWNmiss");
-
-				setGraphicSize(Std.int(width * 6));
-				updateHitbox();
-				playAnim('idle');
-
-				width -= 100;
-				height -= 100;
-
-				antialiasing = false;
-
-				flipX = true;
-
-				case 'bf-pixel-glitch2':
-					frames = Paths.getSparrowAtlas('weeb/bfPixelglitch2', 'shared');
-					animation.addByPrefix('idle', 'BF IDLE', 24, false);
-					animation.addByPrefix('singUP', 'BF UP NOTE', 24, false);
-					animation.addByPrefix('singLEFT', 'BF LEFT NOTE', 24, false);
-					animation.addByPrefix('singRIGHT', 'BF RIGHT NOTE', 24, false);
-					animation.addByPrefix('singDOWN', 'BF DOWN NOTE', 24, false);
-					animation.addByPrefix('singUPmiss', 'BF UP MISS', 24, false);
-					animation.addByPrefix('singLEFTmiss', 'BF LEFT MISS', 24, false);
-					animation.addByPrefix('singRIGHTmiss', 'BF RIGHT MISS', 24, false);
-					animation.addByPrefix('singDOWNmiss', 'BF DOWN MISS', 24, false);
-	
-					addOffset('idle');
-					addOffset("singUP");
-					addOffset("singRIGHT");
-					addOffset("singLEFT");
-					addOffset("singDOWN");
-					addOffset("singUPmiss");
-					addOffset("singRIGHTmiss");
-					addOffset("singLEFTmiss");
-					addOffset("singDOWNmiss");
-	
-					setGraphicSize(Std.int(width * 6));
-					updateHitbox();
-					playAnim('idle');
-	
-					width -= 100;
-					height -= 100;
-	
-					antialiasing = false;
-	
-					flipX = true;
 			case 'bf-pixel-dead':
+				playercolor = '7BD6F6';
 				frames = Paths.getSparrowAtlas('weeb/bfPixelsDEAD', 'shared');
 				animation.addByPrefix('singUP', "BF Dies pixel", 24, false);
 				animation.addByPrefix('firstDeath', "BF Dies pixel", 24, false);
@@ -553,6 +505,7 @@ class Character extends FlxSprite
 				flipX = true;
 
 			case 'senpai':
+				playercolor = 'FFAA6F';
 				frames = Paths.getSparrowAtlas('weeb/senpai', 'shared');
 				animation.addByPrefix('idle', 'Senpai Idle', 24, false);
 				animation.addByPrefix('singUP', 'SENPAI UP NOTE', 24, false);
@@ -572,6 +525,7 @@ class Character extends FlxSprite
 
 				antialiasing = false;
 			case 'senpai-angry':
+				playercolor = 'FFAA6F';
 				frames = Paths.getSparrowAtlas('weeb/senpai', 'shared');
 				animation.addByPrefix('idle', 'Angry Senpai Idle', 24, false);
 				animation.addByPrefix('singUP', 'Angry Senpai UP NOTE', 24, false);
@@ -632,6 +586,7 @@ class Character extends FlxSprite
 					antialiasing = false;
 
 			case 'spirit':
+				playercolor = 'FE3C6E';
 				frames = Paths.getPackerAtlas('weeb/spirit', 'shared');
 				animation.addByPrefix('idle', "idle spirit_", 24, false);
 				animation.addByPrefix('singUP', "up_", 24, false);
@@ -652,6 +607,7 @@ class Character extends FlxSprite
 				antialiasing = false;
 
 			case 'parents-christmas':
+				playercolor = 'D8558E';
 				frames = Paths.getSparrowAtlas('mom_dad_christmas_assets', 'week5');
 				animation.addByPrefix('idle', 'Parent Christmas Idle', 24, false);
 				animation.addByPrefix('singUP', 'Parent Up Note Dad', 24, false);

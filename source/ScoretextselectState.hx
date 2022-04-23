@@ -239,7 +239,7 @@ class ScoretextselectState extends MusicBeatState
 				if (scoretextlayout == 5)
 					scoretextlayouttext = 'Psyche Engine';
 				if (scoretextlayout == 6)
-					scoretextlayouttext = 'Base FNF';
+					scoretextlayouttext = 'Base FNF (centered)';
 				if (scoretextlayout == 7)
 				scoretextlayouttext = 'Kade Engine 1.8';
 				if (scoretextlayout == 8)

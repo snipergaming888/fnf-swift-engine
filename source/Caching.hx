@@ -161,6 +161,7 @@ class Caching extends MusicBeatState
     override function update(elapsed)
         {
             text.text = "Caching... (" + done + " l " + toBeDone + ")";
+            trace("Caching... (" + done + " l " + toBeDone + ")");
     
             super.update(elapsed);
         }

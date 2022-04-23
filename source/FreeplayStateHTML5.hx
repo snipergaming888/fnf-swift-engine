@@ -35,6 +35,7 @@ class FreeplayStateHTML5 extends MusicBeatState
 
 	override function create()
 	{
+		PlayState.triggeredalready = false;
 		var initSonglist = CoolUtil.coolTextFile(Paths.txt('freeplaySonglist'));
 
 		for (i in 0...initSonglist.length)

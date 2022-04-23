@@ -244,7 +244,7 @@ class GameOptions extends MusicBeatState
 				versionShit.text = "Wether or not to play miss sounds.";
 			if (curSelected == 12)
 				versionShit.text = "Wether or not to instantly respawn after death.";
-			if (curSelected == 15)
+			if (curSelected == 13)
 				versionShit.text = "Edit Your note timing offset.";
 
 

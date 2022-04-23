@@ -56,7 +56,7 @@ class FreeplayState extends MusicBeatState
 
 	override function create()
 	{
-
+		PlayState.triggeredalready = false;
 		if (FlxG.save.data.curselected == null)
 			FlxG.save.data.curselected = "0";
 

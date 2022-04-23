@@ -99,6 +99,7 @@ class StoryMenuState extends MusicBeatState
 
 	override function create()
 	{
+		PlayState.triggeredalready = false;
 		PRESSED = false;
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
@@ -253,6 +254,7 @@ class StoryMenuState extends MusicBeatState
 		add(txtWeekTitle);
 
 		updateText();
+		changeWeek();
 
 		trace("Line 234");
 
@@ -407,6 +409,11 @@ class StoryMenuState extends MusicBeatState
 								trace(curWeek);
 							});
 					}
+					if(FreeplayState.voicesplaying)
+						{
+							FreeplayState.voicesplaying = false;
+							FreeplayState.voices.stop();
+						}	
 		}
 	}
 

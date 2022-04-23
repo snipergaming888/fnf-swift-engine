@@ -221,6 +221,12 @@ class Settings extends MusicBeatState
               if (FlxG.save.data.disguiseaske154 == null)
                 FlxG.save.data.disguiseaske154 = false;
 
+              if (FlxG.save.data.combotext == null)
+                FlxG.save.data.combotext = false;
+              
+              if (FlxG.save.data.songinfo == null)
+                FlxG.save.data.songinfo = false;
+
               if ( FlxG.save.data.changedHitX == null)
                 FlxG.save.data.changedHitX = GameplayCustomizeState.defaultX;
 

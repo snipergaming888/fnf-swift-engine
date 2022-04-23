@@ -20,6 +20,7 @@ class GameOverState extends FlxTransitionableState
 
 		bfX = x;
 		bfY = y;
+		GameOverSubstate.bfneedstofade = false;
 	}
 
 
