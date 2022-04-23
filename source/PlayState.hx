@@ -3884,13 +3884,16 @@ class PlayState extends MusicBeatState
 				    vocals.pause();
 					FlxG.sound.music.stop();
 					vocals.stop();
-					if (SONG.validScore)
-					{
-						#if !switch
-						if (!FlxG.save.data.botplay)
-						Highscore.saveScore(SONG.song, songScore, storyDifficulty);
-						#end
-					}
+
+					if (!FlxG.save.data.botplay)
+						{
+							if (SONG.validScore)
+								{
+									#if !switch
+									Highscore.saveScore(SONG.song, songScore, storyDifficulty);
+									#end
+								}
+						}
 			
 					if (StoryMenuState.isStoryMode)
 					{
@@ -3915,15 +3918,16 @@ class PlayState extends MusicBeatState
 			
 							// if ()
 							StoryMenuState.weekUnlocked[Std.int(Math.min(storyWeek + 1, StoryMenuState.weekUnlocked.length - 1))] = true;
-			
-							if (SONG.validScore)
-							{
-								if (!FlxG.save.data.botplay)
-									{
-										NGio.unlockMedal(60961);
-										Highscore.saveWeekScore(storyWeek, campaignScore, storyDifficulty);
-									}
-							}
+							if (!FlxG.save.data.botplay)
+								{
+									if (SONG.validScore)
+										{
+												{
+													NGio.unlockMedal(60961);
+													Highscore.saveWeekScore(storyWeek, campaignScore, storyDifficulty);
+												}
+										}
+								}
 			
 							FlxG.save.data.weekUnlocked = StoryMenuState.weekUnlocked;
 							FlxG.save.flush();
