@@ -187,7 +187,6 @@ class PlayState extends MusicBeatState
 	public static var version:FlxText;
 	public static var nightlyandtest:FlxText;
 	var ratings:FlxText;
-	var composer:String = 'Kawai Sprite';
 	///that is alot of FlxTexts am i right
 	//shut the fuck up
 	public static var songInfo:FlxText;
@@ -1383,7 +1382,7 @@ class PlayState extends MusicBeatState
 		songInfo.cameras = [camHUD];
 
 		songInfo2 = new FlxText(20, 50, 0, "", 20);
-		songInfo2.text += 'Composed by ' + composer;
+		songInfo2.text += 'Composed by ' + SONG.composer;
 		songInfo2.scrollFactor.set();
 		songInfo2.setFormat(Paths.font("vcr.ttf"), 20);
 		songInfo2.updateHitbox();
@@ -2561,7 +2560,7 @@ class PlayState extends MusicBeatState
 										if (FlxG.save.data.downscroll)
 										scoreTxt.y = 110;
 										else	
-										scoreTxt.y = 685;
+										scoreTxt.y = 690;
 										moveminscoreback = false;
 										scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 										trace('minscore part 2');
@@ -2860,8 +2859,6 @@ class PlayState extends MusicBeatState
 									if(dunceNote.strumTime - 500 < Conductor.songPosition) {
 										dunceNote.active = false;
 										dunceNote.visible = false;
-				
-									
 										dunceNote.kill();
 										notes.remove(dunceNote, true);
 										dunceNote.destroy();
@@ -5231,9 +5228,9 @@ class PlayState extends MusicBeatState
 	function getsonginfo():Void
 		{
 			songwithoutdashes = StringTools.replace(PlayState.SONG.song, "-", " ").toLowerCase();
-			if (SONG.song.toLowerCase() == 'monster' || SONG.song.toLowerCase() == 'winter-horrorland')
-				composer = 'Kawai Sprite, Bassetfilms';
 			//note to self: i should probably automate this procces somehow so people don't have to type out what song has what composers and whatnot...
+			// i did it is in the json now
+			// thank you
 		}
 
 	function resetFastCar():Void

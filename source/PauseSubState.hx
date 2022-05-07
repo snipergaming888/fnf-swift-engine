@@ -140,7 +140,7 @@ class PauseSubState extends MusicBeatSubstate
 		changeSelection();
 
 		var levelInfo:FlxText = new FlxText(20, 15, 0, "", 32);
-		levelInfo.text += PlayState.SONG.song;
+		levelInfo.text += StringTools.replace(PlayState.SONG.song, "-", " ").toLowerCase();
 		levelInfo.scrollFactor.set();
 		levelInfo.setFormat(Paths.font("vcr.ttf"), 32);
 		levelInfo.updateHitbox();

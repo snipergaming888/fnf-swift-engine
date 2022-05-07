@@ -31,6 +31,7 @@ import flixel.system.scaleModes.RelativeScaleMode;
 import openfl.display.Stage;
 import lime.ui.Window;
 import openfl.Lib;
+import flixel.graphics.FlxGraphic;
 
 using StringTools;
 
@@ -67,9 +68,9 @@ class PerformanceOptions extends MusicBeatState
 		ISDESKTOP = true;
 		#end
 		if (ISDESKTOP)
-		controlsStrings = CoolUtil.coolStringFile("\nAntialiasing " + (FlxG.save.data.antialiasing ? "on" : "off") + "\noptimizations " + (FlxG.save.data.optimizations ? "on" : "off") + "\ndeprecated loading " + (FlxG.save.data.usedeprecatedloading ? "on" : "off") + "\n" + "CACHING" + "\n" + 'Set ScaleMode' + "\n" + 'Set Resolution');
+		controlsStrings = CoolUtil.coolStringFile("\nAntialiasing " + (FlxG.save.data.antialiasing ? "on" : "off") + "\noptimizations " + (FlxG.save.data.optimizations ? "on" : "off") + "\ndeprecated loading " + (FlxG.save.data.usedeprecatedloading ? "on" : "off") + "\n" + "CACHING" + "\n" + 'Set ScaleMode' + "\n" + 'Set Windowed Resolution' + "\npersistent caching " + (FlxG.save.data.graphicpersist ? "on" : "off"));
 		else
-			controlsStrings = CoolUtil.coolStringFile("\nAntialiasing " + (FlxG.save.data.antialiasing ? "on" : "off") + "\noptimizations " + (FlxG.save.data.optimizations ? "on" : "off") + "\ndeprecated loading " + (FlxG.save.data.usedeprecatedloading ? "on" : "off") + "\n" + 'Set ScaleMode' + "\n" + 'Set Resolution');
+			controlsStrings = CoolUtil.coolStringFile("\nAntialiasing " + (FlxG.save.data.antialiasing ? "on" : "off") + "\noptimizations " + (FlxG.save.data.optimizations ? "on" : "off") + "\ndeprecated loading " + (FlxG.save.data.usedeprecatedloading ? "on" : "off") + "\n" + 'Set ScaleMode' + "\n" + 'Set Windowed Resolution' + "\npersistent caching " + (FlxG.save.data.graphicpersist ? "on" : "off"));
 		
 		trace(controlsStrings);
 
@@ -237,13 +238,13 @@ class PerformanceOptions extends MusicBeatState
 
 			if (ISDESKTOP)
 				{
-					if (curSelected > 5)
-						curSelected = 5;
+					if (curSelected > 6)
+						curSelected = 6;
 				}
 				else
 					{
-						if (curSelected > 4)
-							curSelected = 4;
+						if (curSelected > 5)
+							curSelected = 5;
 					}
 	
 
@@ -318,6 +319,12 @@ class PerformanceOptions extends MusicBeatState
 
 				if (curSelected == 4 && !ISDESKTOP)
 					desc.text = "Set the resolution of the game." + " Width: " + width + " height: " + height + " (Left, Right , shift to go faster, enter to confirm, Hold CTRL for height adjustment)";
+
+				if (curSelected == 6 && ISDESKTOP)
+					desc.text = "Graphic caching persist through each state.";
+
+				if (curSelected == 5 && !ISDESKTOP)
+					desc.text = "Graphic caching persist through each state.";
 
 				if (ISDESKTOP)
 					{
@@ -490,13 +497,23 @@ class PerformanceOptions extends MusicBeatState
 										setScaleMode(scaleModes[scaleModeIndex]);
 									case 5:
 										grpControls.remove(grpControls.members[curSelected]);
-										var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Set Resolution", true, false);
+										var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Set Windowed Resolution", true, false);
 										ctrl.y += 102;
 										ctrl.x += 50;
-										ctrl.targetY = curSelected - 4;
+										ctrl.targetY = curSelected - 5;
 										grpControls.add(ctrl);
 										FlxG.sound.play(Paths.sound('scrollMenu'));
-										Lib.application.window.resize(width, height);							
+										Lib.application.window.resize(width, height);
+									case 6:
+										grpControls.remove(grpControls.members[curSelected]);
+										FlxG.save.data.graphicpersist = !FlxG.save.data.graphicpersist;
+										var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "persistent caching " + (FlxG.save.data.graphicpersist ? "on" : "off"), true, false);
+										ctrl.y += 102;
+										ctrl.x += 50;
+										ctrl.targetY = curSelected - 6;
+										grpControls.add(ctrl);
+										FlxG.sound.play(Paths.sound('scrollMenu'));	
+										FlxGraphic.defaultPersist = FlxG.save.data.graphicpersist;						
 					}
 				}
 				else
@@ -543,13 +560,23 @@ class PerformanceOptions extends MusicBeatState
 								setScaleMode(scaleModes[scaleModeIndex]);
 							case 4:
 								grpControls.remove(grpControls.members[curSelected]);
-								var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Set Resolution", true, false);
+								var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Set Windowed Resolution", true, false);
 								ctrl.y += 102;
 								ctrl.x += 50;
 								ctrl.targetY = curSelected - 4;
 								grpControls.add(ctrl);
 								FlxG.sound.play(Paths.sound('scrollMenu'));
 								Lib.application.window.resize(width, height);
+							case 5:
+								grpControls.remove(grpControls.members[curSelected]);
+								FlxG.save.data.graphicpersist = !FlxG.save.data.graphicpersist;
+								var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "persistent caching " + (FlxG.save.data.graphicpersist ? "on" : "off"), true, false);
+								ctrl.y += 102;
+								ctrl.x += 50;
+								ctrl.targetY = curSelected - 5;
+								grpControls.add(ctrl);
+								FlxG.sound.play(Paths.sound('scrollMenu'));
+								FlxGraphic.defaultPersist = FlxG.save.data.graphicpersist;								
 						}
 
 					}

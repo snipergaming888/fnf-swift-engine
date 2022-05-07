@@ -2,6 +2,10 @@ package;
 
 import openfl.Lib;
 import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.graphics.atlas.FlxAtlas;
+import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.graphics.FlxGraphic;
 
 
 class Settings extends MusicBeatState
@@ -235,6 +239,11 @@ class Settings extends MusicBeatState
 
               if (FlxG.save.data.changedHit == null)
                 FlxG.save.data.changedHit = false;
+
+              if (FlxG.save.data.graphicpersist == null)
+                 FlxG.save.data.graphicpersist = false;
+
+              FlxGraphic.defaultPersist = FlxG.save.data.graphicpersist;
 
               FlxG.save.data.hasplayed = false;
               trace('anim played? ' + FlxG.save.data.hasplayed);

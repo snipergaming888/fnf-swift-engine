@@ -76,6 +76,7 @@ class ChartingState extends MusicBeatState
 
 	var typingShit:FlxInputText;
 	var typingShit2:FlxInputText;
+	var typingShit3:FlxInputText;
 	/*
 	 * WILL BE THE CURRENT / LAST PLACED NOTE
 	**/
@@ -96,9 +97,11 @@ class ChartingState extends MusicBeatState
 	var bpmtext:FlxText;
 	var scrollspeedtext:FlxText;
 	var sectionsback:FlxText;
+	var menuBG:FlxSprite;
 
 	override function create()
 	{
+		menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		switch (diff)
 		{
 			case 0:
@@ -111,6 +114,14 @@ class ChartingState extends MusicBeatState
 		#if cpp
 		DiscordClient.changePresence("Editing " + PlayState.SONG.song + " in the Chart Editor", null, null, true);
 		#end
+
+		menuBG.color = 0xFF0026ff;
+		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
+		menuBG.updateHitbox();
+		menuBG.scrollFactor.set(0, 0);
+		menuBG.screenCenter();
+		menuBG.antialiasing = true;
+		add(menuBG);
 
 		curSection = lastSection;
 
@@ -149,6 +160,7 @@ class ChartingState extends MusicBeatState
 				player1: 'bf',
 				player2: 'dad',
 				stage: 'stage',
+				composer: 'Kawai Sprite',
 				speed: 1,
 				validScore: false
 			};
@@ -211,7 +223,10 @@ class ChartingState extends MusicBeatState
 		var UI_songDifficulty = new FlxUIInputText(10, 25, 70, storyDifficultyString, 8);
 		typingShit2 = UI_songDifficulty;
 
-		var check_voices = new FlxUICheckBox(10, 40, null, null, "Has voice track", 100);
+		var UI_songComposer = new FlxUIInputText(10, 40, 70, _song.composer, 8);
+		typingShit3 = UI_songComposer;
+
+		var check_voices = new FlxUICheckBox(10, 55, null, null, "Has voice track", 100);
 		check_voices.checked = _song.needsVoices;
 		// _song.needsVoices = check_voices.checked;
 		check_voices.callback = function()
@@ -220,7 +235,7 @@ class ChartingState extends MusicBeatState
 			trace('CHECKED!');
 		};
 
-		check_mute_inst = new FlxUICheckBox(10, 105, null, null, "Mute Instrumental (in editor)", 100);
+		check_mute_inst = new FlxUICheckBox(10, 120, null, null, "Mute Instrumental (in editor)", 100);
 		check_mute_inst.checked = false;
 		check_mute_inst.callback = function()
 		{
@@ -232,7 +247,7 @@ class ChartingState extends MusicBeatState
 			FlxG.sound.music.volume = vol;
 		};
 
-		check_mute_voices = new FlxUICheckBox(10, 120, null, null, "Mute Voices (in editor)", 100);
+		check_mute_voices = new FlxUICheckBox(10, 135, null, null, "Mute Voices (in editor)", 100);
 		check_mute_voices.checked = false;
 		check_mute_voices.callback = function()
 		{
@@ -244,27 +259,27 @@ class ChartingState extends MusicBeatState
 			vocals.volume = vol;
 		};
 
-		instVol = new FlxUINumericStepper(10, 150, 0.1, 1, 0.1, 1, 1);
+		instVol = new FlxUINumericStepper(10, 180, 0.1, 1, 0.1, 1, 1);
 		instVol.value = 1;
 		instVol.name = 'inst_volume';
 
-		instVoltext = new FlxText(75, 150, "Instrumental Volume", 12);
+		instVoltext = new FlxText(75, 180, "Instrumental Volume", 12);
 		instVoltext.scrollFactor.set();
 		instVoltext.setFormat("Pixel Arial 11 Bold", 8, FlxColor.WHITE, LEFT);
 
-		voicesVol = new FlxUINumericStepper(10, 175, 0.1, 1, 0.1, 1, 1);
+		voicesVol = new FlxUINumericStepper(10, 195, 0.1, 1, 0.1, 1, 1);
 		voicesVol.value = 1;
 		voicesVol.name = 'voices_volume';
 
-		voicesVoltext = new FlxText(75, 175, "Voices Volume", 12);
+		voicesVoltext = new FlxText(75, 195, "Voices Volume", 12);
 		voicesVoltext.scrollFactor.set();
 		voicesVoltext.setFormat("Pixel Arial 11 Bold", 8, FlxColor.WHITE, LEFT);
 
-		bpmtext = new FlxText(75, 65, "BPM", 12);
+		bpmtext = new FlxText(75, 80, "BPM", 12);
 		bpmtext.scrollFactor.set();
 		bpmtext.setFormat("Pixel Arial 11 Bold", 8, FlxColor.WHITE, LEFT);
 
-		scrollspeedtext = new FlxText(75, 80, "Scroll Speed", 12);
+		scrollspeedtext = new FlxText(75, 95, "Scroll Speed", 12);
 		scrollspeedtext.scrollFactor.set();
 		scrollspeedtext.setFormat("Pixel Arial 11 Bold", 8, FlxColor.WHITE, LEFT);
 
@@ -287,11 +302,11 @@ class ChartingState extends MusicBeatState
 
 		var clearSongButton:FlxButton = new FlxButton(loadAutosaveBtn.x, loadAutosaveBtn.y + 30, "Clear Song", clearSong);
 
-		var stepperSpeed:FlxUINumericStepper = new FlxUINumericStepper(10, 80, 0.1, 1, 0.1, 10, 1);
+		var stepperSpeed:FlxUINumericStepper = new FlxUINumericStepper(10, 95, 0.1, 1, 0.1, 10, 1);
 		stepperSpeed.value = _song.speed;
 		stepperSpeed.name = 'song_speed';
 
-		var stepperBPM:FlxUINumericStepper = new FlxUINumericStepper(10, 65, 1, 1, 1, 1000, 0);
+		var stepperBPM:FlxUINumericStepper = new FlxUINumericStepper(10, 80, 1, 1, 1, 1000, 0);
 		stepperBPM.value = Conductor.bpm;                                            ///339
 		stepperBPM.name = 'song_bpm';
 
@@ -304,16 +319,16 @@ class ChartingState extends MusicBeatState
 		});
 		player1DropDown.selectedLabel = _song.player1;
 
-		var player1Label = new FlxText(10,210,64,'Player 1');
+		var player1Label = new FlxText(10,215,64,'Player 1');
 
-		var player2DropDown = new FlxUIDropDownMenu(140, 235, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
+		var player2DropDown = new FlxUIDropDownMenu(155, 235, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
 			_song.player2 = characters[Std.parseInt(character)];
 		});
 
-		var player2Label = new FlxText(140,210,64,'Player 2');
+		var player2Label = new FlxText(140,215,64,'Player 2');
 
-		var stageDropDown = new FlxUIDropDownMenu(140, 280, FlxUIDropDownMenu.makeStrIdLabelArray(stages, true), function(stage:String)
+		var stageDropDown = new FlxUIDropDownMenu(155, 280, FlxUIDropDownMenu.makeStrIdLabelArray(stages, true), function(stage:String)
 			{
 				_song.stage = stages[Std.parseInt(stage)];
 			});
@@ -327,6 +342,7 @@ class ChartingState extends MusicBeatState
 		tab_group_song.name = "Song";
 		tab_group_song.add(UI_songTitle);
 		tab_group_song.add(UI_songDifficulty);
+		tab_group_song.add(UI_songComposer);
 
 		tab_group_song.add(check_voices);
 		tab_group_song.add(check_mute_inst);
@@ -579,6 +595,7 @@ class ChartingState extends MusicBeatState
 		Conductor.songPosition = FlxG.sound.music.time;
 		_song.song = typingShit.text;
 		storyDifficultyString = typingShit2.text;
+		_song.composer = typingShit3.text;
 
 		strumLine.y = getYfromStrum((Conductor.songPosition - sectionStartTime()) % (Conductor.stepCrochet * _song.notes[curSection].lengthInSteps));
 
@@ -649,42 +666,17 @@ class ChartingState extends MusicBeatState
 		}
 
 		if (FlxG.keys.justPressed.ENTER)
-		{
-			lastSection = curSection;
-
-			PlayState.SONG = _song;
-			FlxG.sound.music.stop();
-			vocals.stop();
-			PlayState.triggeredalready = false;	
-			LoadingState.loadAndSwitchState(new PlayState());
-		}
-
-		if (FlxG.keys.justPressed.E)
-		{
-			changeNoteSustain(Conductor.stepCrochet);
-		}
-		if (FlxG.keys.justPressed.Q)
-		{
-			changeNoteSustain(-Conductor.stepCrochet);
-		}
-
-		if (FlxG.keys.justPressed.TAB)
-		{
-			if (FlxG.keys.pressed.SHIFT)
 			{
-				UI_box.selected_tab -= 1;
-				if (UI_box.selected_tab < 0)
-					UI_box.selected_tab = 2;
+				lastSection = curSection;
+	
+				PlayState.SONG = _song;
+				FlxG.sound.music.stop();
+				vocals.stop();
+				PlayState.triggeredalready = false;	
+				LoadingState.loadAndSwitchState(new PlayState());
 			}
-			else
-			{
-				UI_box.selected_tab += 1;
-				if (UI_box.selected_tab >= 3)
-					UI_box.selected_tab = 0;
-			}
-		}
 
-		if (!typingShit.hasFocus || !typingShit2.hasFocus)
+		if (!typingShit.hasFocus || !typingShit2.hasFocus || !typingShit3.hasFocus)
 		{
 			if (FlxG.keys.justPressed.SPACE)
 			{
@@ -755,6 +747,31 @@ class ChartingState extends MusicBeatState
 					vocals.time = FlxG.sound.music.time;
 				}
 			}
+		
+				if (FlxG.keys.justPressed.E)
+				{
+					changeNoteSustain(Conductor.stepCrochet);
+				}
+				if (FlxG.keys.justPressed.Q)
+				{
+					changeNoteSustain(-Conductor.stepCrochet);
+				}
+		
+				if (FlxG.keys.justPressed.TAB)
+				{
+					if (FlxG.keys.pressed.SHIFT)
+					{
+						UI_box.selected_tab -= 1;
+						if (UI_box.selected_tab < 0)
+							UI_box.selected_tab = 2;
+					}
+					else
+					{
+						UI_box.selected_tab += 1;
+						if (UI_box.selected_tab >= 3)
+							UI_box.selected_tab = 0;
+					}
+				}
 		}
 
 		_song.bpm = tempBpm;
