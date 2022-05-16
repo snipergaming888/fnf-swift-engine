@@ -526,32 +526,32 @@ class PauseSubState extends MusicBeatSubstate
 				{
 						isSettingControlleft = true;
 						abletochange = false;
-						FlxG.sound.play(Paths.soundRandom('GF_', 1, 4), FlxG.random.float(0.7, 0.7));
+						FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 				}
 				
 				if (isinkeybinds && curSelected == 1 && FlxG.keys.justPressed.ENTER)
 				{
 						isSettingControldown = true;
 						abletochange = false;
-						FlxG.sound.play(Paths.soundRandom('GF_', 1, 4), FlxG.random.float(0.7, 0.7));
+						FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 				}
 				if (isinkeybinds && curSelected == 2 && FlxG.keys.justPressed.ENTER)
 				{
 						isSettingControlup = true;
 						abletochange = false;
-						FlxG.sound.play(Paths.soundRandom('GF_', 1, 4), FlxG.random.float(0.7, 0.7));
+						FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 				}
 				if (isinkeybinds && curSelected == 3 && FlxG.keys.justPressed.ENTER)
 				{
 						isSettingControlright = true;
 						abletochange = false;
-						FlxG.sound.play(Paths.soundRandom('GF_', 1, 4), FlxG.random.float(0.7, 0.7));
+						FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 				}
 				if (isinkeybinds && curSelected == 4 && FlxG.keys.justPressed.ENTER)
 				{
 						///controls.setKeyboardScheme(Solo);
 						TitleState.resetBinds();
-						FlxG.sound.play(Paths.sound('GF_4'), 0.7);
+						FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 						regenkeybinds();
 						//FlxG.switchState(new OptionsMenu());
 				}			

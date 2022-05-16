@@ -36,6 +36,7 @@ import openfl.net.FileReference;
 import openfl.utils.ByteArray;
 import openfl.net.FileReference;
 import openfl.net.FileFilter;
+import flixel.util.FlxTimer;
 
 using StringTools;
 
@@ -679,14 +680,14 @@ class ChartingState extends MusicBeatState
 			playanimon.scrollFactor.set();
 			playanimon.setFormat("Pixel Arial 11 Bold", 8, FlxColor.WHITE, LEFT);
 
-			var UI_AnimtoPlay = new FlxUIInputText(10, 470, 70, _song.notes[curSection].animtoplay, 8);
+			var UI_AnimtoPlay = new FlxUIInputText(10, 470, 70, "", 8);
 			typingShit4 = UI_AnimtoPlay;
 
 			playanimtext = new FlxText(80, 470, "Animation name", 12);
 			playanimtext.scrollFactor.set();
 			playanimtext.setFormat("Pixel Arial 11 Bold", 8, FlxColor.WHITE, LEFT);
 
-			var UI_charactertoplayon = new FlxUIInputText(10, 490, 70, _song.notes[curSection].charactertoplayon, 8);
+			var UI_charactertoplayon = new FlxUIInputText(10, 490, 70, "", 8);
 			typingShit5 = UI_charactertoplayon;
 
 			playanimtext2 = new FlxText(80, 490, "Character name (dad, boyfriend, gf)", 12);
@@ -1437,8 +1438,17 @@ class ChartingState extends MusicBeatState
 		currentgfspeed.value = sec.sectiongfspeed;
 		camerazoompercentinput.value = sec.camerazoompercentinput;
 		steppernumanim.value = sec.steppernumanim;
+		#if desktop
 		typingShit4.text = sec.animtoplay;
 		typingShit5.text = sec.charactertoplayon;
+		#else
+		new FlxTimer().start(0.1, function(tmr:FlxTimer)
+			{
+				typingShit4.text = sec.animtoplay;
+				typingShit5.text = sec.charactertoplayon;
+			});	
+		#end
+		// temp fix, i REALLY need to fix this longterm (THIS IS REALLY BAD CODE!!!!!!)
 		check_isforced.checked = sec.isforced;
 		check_islooped.checked = sec.islooped;
 		updateHeads();

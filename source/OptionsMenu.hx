@@ -301,23 +301,23 @@ class OptionsMenu extends MusicBeatState
 						case 0:
 							isSettingControlleft = true;
 							abletochange = false;
-							FlxG.sound.play(Paths.soundRandom('GF_', 1, 4), FlxG.random.float(0.7, 0.7));
+							FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 						case 1:
 							isSettingControldown = true;
 							abletochange = false;
-							FlxG.sound.play(Paths.soundRandom('GF_', 1, 4), FlxG.random.float(0.7, 0.7));
+							FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 						case 2:
 							isSettingControlup = true;
 							abletochange = false;
-							FlxG.sound.play(Paths.soundRandom('GF_', 1, 4), FlxG.random.float(0.7, 0.7));
+							FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 						case 3:
 							isSettingControlright = true;
 							abletochange = false;
-							FlxG.sound.play(Paths.soundRandom('GF_', 1, 4), FlxG.random.float(0.7, 0.7));
+							FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 						case 4:
 							///controls.setKeyboardScheme(Solo);
 							TitleState.resetBinds();
-							FlxG.sound.play(Paths.sound('GF_4'), 0.7);
+							FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 							FlxTransitionableState.skipNextTransIn = true;
 							FlxTransitionableState.skipNextTransOut = true;
 							FlxG.resetState();
