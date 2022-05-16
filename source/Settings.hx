@@ -357,7 +357,6 @@ class Settings extends MusicBeatState
                 {
                   GameOptions.ghosttappinghitsoundsenabled = true;
                 }
-                  FlxG.save.data.notebaseddrain = false;
   
                   FlxG.save.data.middlecam = true;
   
@@ -394,6 +393,8 @@ class Settings extends MusicBeatState
                     FlxG.save.data.disguiseaske142 = false;
       
                     FlxG.save.data.disguiseaske154 = false;
+                    
+                    FlxG.save.data.enablesickpositions = false;
   
                 FlxG.save.data.hasplayed = false;
                 trace('anim played? ' + FlxG.save.data.hasplayed);

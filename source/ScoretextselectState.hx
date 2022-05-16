@@ -59,6 +59,11 @@ class ScoretextselectState extends MusicBeatState
 
 	override function create()
 	{
+		if (!FlxG.sound.music.playing)
+			{	
+				FlxG.sound.playMusic(Paths.music('freakyMenu'));
+				Conductor.changeBPM(102);
+			}
 		if (FreeplayState.voicesplaying)
 			{
 				FreeplayState.voicesplaying = false;

@@ -20,6 +20,20 @@ typedef SwagSong =
 	var validScore:Bool;
 	var stage:String;
 	var composer:String;
+	var camzoomamountp1:Float;
+	var camerashakeamount:Float;
+	var camerashakeduration:Float;
+	var camerashaketrigger:Float;
+	var camerazoomtrigger:Float;
+	var camerazoomtrigger2:Float;
+	var camzoomtime:Float;
+	var curbeatzooming:Bool;
+	var curstepzooming:Bool;
+	var camerazoompercentinput:Float;
+	var flixelcamerazoom:Float;
+	var flixelHUDzoom:Float;
+	var sectiongfspeed:Int;
+	var steppernumanim:Float;
 }
 
 class Song
@@ -29,6 +43,18 @@ class Song
 	public var bpm:Int;
 	public var needsVoices:Bool = true;
 	public var speed:Float = 1;
+	public var camzoomamountp1:Float;
+	public var camerashaketrigger:Float;
+	public var camerashakeduration:Float;
+	public var camzoomtime:Float;
+    public var camerashakeamount:Float;
+	public var camerazoomtrigger:Float;
+	public var camerazoomtrigger2:Float;
+	public var camerazoompercentinput:Float;
+	public var flixelcamerazoom:Float;
+	public var steppernumanim:Float;
+	public var flixelHUDzoom:Float;
+	public var sectiongfspeed:Int;
 
 	public var player1:String = 'bf';
 	public var player2:String = 'dad';
@@ -70,6 +96,35 @@ class Song
 
 		return parseJSONshit(rawJson);
 	}
+
+	public static function loadFromFileSystem(jsonInput:String):SwagSong
+		{
+			var rawJson = jsonInput.toLowerCase().trim();
+	
+			while (!rawJson.endsWith("}"))
+			{
+				rawJson = rawJson.substr(0, rawJson.length - 1);
+				// LOL GOING THROUGH THE BULLSHIT TO CLEAN IDK WHATS STRANGE
+			}
+	
+			// FIX THE CASTING ON WINDOWS/NATIVE
+			// Windows???
+			// trace(songData);
+			 if (FlxG.save.data.debug)
+			 trace('LOADED FROM JSON: ' + rawJson);
+			/* 
+				for (i in 0...songData.notes.length)
+				{
+					trace('LOADED FROM JSON: ' + songData.notes[i].sectionNotes);
+					// songData.notes[i].sectionNotes = songData.notes[i].sectionNotes
+				}
+	
+					daNotes = songData.notes;
+					daSong = songData.song;
+					daBpm = songData.bpm; */
+	
+			return parseJSONshit(rawJson);
+		}
 
 	public static function parseJSONshit(rawJson:String):SwagSong
 	{

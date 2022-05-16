@@ -34,12 +34,15 @@ import openfl.events.IOErrorEvent;
 import openfl.media.Sound;
 import openfl.net.FileReference;
 import openfl.utils.ByteArray;
+import openfl.net.FileReference;
+import openfl.net.FileFilter;
 
 using StringTools;
 
 class ChartingState extends MusicBeatState
 {
 	var _file:FileReference;
+	var fr:FileReference;
 
 	var UI_box:FlxUITabMenu;
 
@@ -59,8 +62,11 @@ class ChartingState extends MusicBeatState
 	var bullshitUI:FlxGroup;
 	var diff:Int = PlayState.storyDifficulty;
 	public static var storyDifficultyString:String = "";
+	public var mustPress:Bool = false;
+	public var canBeHit:Bool = false;
 
 	var highlight:FlxSprite;
+	var hasplayed:Bool = false;
 
 	var GRID_SIZE:Int = 40;
 
@@ -77,6 +83,8 @@ class ChartingState extends MusicBeatState
 	var typingShit:FlxInputText;
 	var typingShit2:FlxInputText;
 	var typingShit3:FlxInputText;
+	var typingShit4:FlxInputText;
+	var typingShit5:FlxInputText;
 	/*
 	 * WILL BE THE CURRENT / LAST PLACED NOTE
 	**/
@@ -91,16 +99,39 @@ class ChartingState extends MusicBeatState
 	var check_mute_inst:FlxUICheckBox;
 	var check_mute_voices:FlxUICheckBox;
 	var instVol:FlxUINumericStepper;
+	var check_camerashake:FlxUICheckBox;
+	var check_gfspeed:FlxUICheckBox;
+	var check_playanim:FlxUICheckBox;
+	var camerashaketrigger:FlxUINumericStepper;
+	var camerazoomtrigger:FlxUINumericStepper;
+	var camerazoomtrigger2:FlxUINumericStepper;
 	var voicesVol:FlxUINumericStepper;
 	var instVoltext:FlxText;
+	var camZoomtext:FlxText;
+	var camZoomtext2:FlxText;
+	var camshaketext:FlxText;
+	var camzoomtext:FlxText;
+	var camzoomtext2:FlxText;
+	var camshaketext2:FlxText;
+	var camshaketext3:FlxText;
 	var voicesVoltext:FlxText;
+	var camzoomtextpercent:FlxText;
+	var copylabel:FlxText;
 	var bpmtext:FlxText;
 	var scrollspeedtext:FlxText;
 	var sectionsback:FlxText;
+	var flixelcameratext:FlxText;
+	var flixelHUDtext:FlxText;
+	var gfspeedtext:FlxText;
+	var playanimon:FlxText;
+	var playanimtext:FlxText;
+	var playanimtext2:FlxText;
 	var menuBG:FlxSprite;
+	var steppercopyfloat:Float = 0;
 
 	override function create()
 	{
+		//add option to disable camzooming for the section, also add option to have custom zooming (which curbeats to start and end, curbeat %, camzoom and camHUD zoom amount)
 		menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		switch (diff)
 		{
@@ -161,6 +192,21 @@ class ChartingState extends MusicBeatState
 				player2: 'dad',
 				stage: 'stage',
 				composer: 'Kawai Sprite',
+				camzoomamountp1: 0,
+				camerashakeamount: 0,
+				camerashakeduration: 0,
+				camerashaketrigger: 0,
+				camerazoomtrigger: 0,
+				camerazoomtrigger2: 0,
+				flixelcamerazoom: 0,
+				flixelHUDzoom: 0,
+				sectiongfspeed: 0,
+				camerazoompercentinput: 0,
+				curbeatzooming: false,
+				curstepzooming: false,
+				steppernumanim: 0,
+				camzoomtime: 0,
+				
 				speed: 1,
 				validScore: false
 			};
@@ -194,6 +240,7 @@ class ChartingState extends MusicBeatState
 		var tabs = [
 			{name: "Song", label: 'Song'},
 			{name: "Section", label: 'Section'},
+			{name: "Effects", label: 'Effects'},
 			{name: "Note", label: 'Note'}
 		];
 
@@ -207,6 +254,7 @@ class ChartingState extends MusicBeatState
 		addSongUI();
 		addSectionUI();
 		addNoteUI();
+		addEffectsUI();
 
 		add(curRenderedNotes);
 		add(curRenderedSustains);
@@ -298,9 +346,11 @@ class ChartingState extends MusicBeatState
 			loadJson(_song.song.toLowerCase());
 		});
 
-		var loadAutosaveBtn:FlxButton = new FlxButton(reloadSongJson.x, reloadSongJson.y + 30, 'load autosave', loadAutosave);
+		var loadAutosaveBtn:FlxButton = new FlxButton(reloadSongJson.x, reloadSongJson.y + 30, 'Load Autosave', loadAutosave);
 
-		var clearSongButton:FlxButton = new FlxButton(loadAutosaveBtn.x, loadAutosaveBtn.y + 30, "Clear Song", clearSong);
+		var loadjsonButton:FlxButton = new FlxButton(loadAutosaveBtn.x, loadAutosaveBtn.y + 30, "Load JSON", _onClick);
+
+		var clearSongButton:FlxButton = new FlxButton(loadAutosaveBtn.x, loadAutosaveBtn.y + 60, "Clear Song", clearSong);
 
 		var stepperSpeed:FlxUINumericStepper = new FlxUINumericStepper(10, 95, 0.1, 1, 0.1, 10, 1);
 		stepperSpeed.value = _song.speed;
@@ -366,6 +416,7 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(stageDropDown);
 		tab_group_song.add(player1Label);
 		tab_group_song.add(player2Label);
+		tab_group_song.add(loadjsonButton);
 
 		UI_box.addGroup(tab_group_song);
 		UI_box.scrollFactor.set();
@@ -375,9 +426,31 @@ class ChartingState extends MusicBeatState
 
 	var stepperLength:FlxUINumericStepper;
 	var check_mustHitSection:FlxUICheckBox;
+	var check_playnoisemusthit:FlxUICheckBox;
+	var check_playnoisemusthitdad:FlxUICheckBox;
 	var check_changeBPM:FlxUICheckBox;
+	var check_camzoomonp1:FlxUICheckBox;
+	var check_disablecamzooming:FlxUICheckBox;
+	var check_camzooming:FlxUICheckBox;
+	var check_curbeatzooming:FlxUICheckBox;
+	var check_curstepzooming:FlxUICheckBox;
+	var curstepzooming:FlxUICheckBox;
 	var stepperSectionBPM:FlxUINumericStepper;
+	var camzoomamountp1:FlxUINumericStepper;
+	var camerashakeamount:FlxUINumericStepper;
+	var camerashakeduration:FlxUINumericStepper;
+	var camzoomtime:FlxUINumericStepper;
 	var check_altAnim:FlxUICheckBox;
+	var check_curbeatanim:FlxUICheckBox;
+	var check_isforced:FlxUICheckBox;
+	var check_curstepanim:FlxUICheckBox;
+	var check_altAnim2:FlxUICheckBox;
+	var check_islooped:FlxUICheckBox;
+	var camerazoompercentinput:FlxUINumericStepper;
+	var flixelcamerazoom:FlxUINumericStepper;
+	var flixelHUDzoom:FlxUINumericStepper;
+	var currentgfspeed:FlxUINumericStepper;
+	var steppernumanim:FlxUINumericStepper;
 
 	function addSectionUI():Void
 	{
@@ -393,7 +466,7 @@ class ChartingState extends MusicBeatState
 		stepperLength.value = _song.notes[curSection].lengthInSteps;
 		stepperLength.name = "section_length";
 
-		stepperSectionBPM = new FlxUINumericStepper(10, 80, 1, Conductor.bpm, 0, 999, 0);
+		stepperSectionBPM = new FlxUINumericStepper(10, 110, 1, Conductor.bpm, 0, 999, 0);
 		stepperSectionBPM.value = Conductor.bpm;
 		stepperSectionBPM.name = 'section_bpm';
 
@@ -417,15 +490,20 @@ class ChartingState extends MusicBeatState
 			}
 		});
 
+		check_playnoisemusthit = new FlxUICheckBox(10, 190, null, null, "Play Noise (P1)", 100);
+		check_playnoisemusthit.name = '	check_playnoisemusthit';
+		check_playnoisemusthit.checked = false;
+
+		check_playnoisemusthitdad = new FlxUICheckBox(10, 210, null, null, "Play Noise (P2)", 100);
+		check_playnoisemusthitdad.name = '	check_playnoisemusthitdad';
+		check_playnoisemusthitdad.checked = false;
+
 		check_mustHitSection = new FlxUICheckBox(10, 30, null, null, "Camera Focuses on Player 1", 100);
 		check_mustHitSection.name = 'check_mustHit';
 		check_mustHitSection.checked = true;
 		// _song.needsVoices = check_mustHit.checked;
 
-		check_altAnim = new FlxUICheckBox(10, 400, null, null, "Alternate Animation", 100);
-		check_altAnim.name = 'check_altAnim';
-
-		check_changeBPM = new FlxUICheckBox(10, 60, null, null, 'Change BPM', 100);
+		check_changeBPM = new FlxUICheckBox(10, 90, null, null, 'Change BPM', 100);
 		check_changeBPM.name = 'check_changeBPM';
 
 		tab_group_section.add(stepperLength);
@@ -433,14 +511,246 @@ class ChartingState extends MusicBeatState
 		tab_group_section.add(stepperCopy);
 		tab_group_section.add(sectionsback);
 		tab_group_section.add(check_mustHitSection);
-		tab_group_section.add(check_altAnim);
 		tab_group_section.add(check_changeBPM);
 		tab_group_section.add(copyButton);
 		tab_group_section.add(clearSectionButton);
 		tab_group_section.add(swapSection);
+		tab_group_section.add(check_playnoisemusthit);
+		tab_group_section.add(check_playnoisemusthitdad);
 
 		UI_box.addGroup(tab_group_section);
 	}
+
+	function addEffectsUI():Void
+		{
+			var stepperCopydata:FlxUINumericStepper = new FlxUINumericStepper(225, 120, 1, 1, -999, 999, 0);
+
+			var copyButton:FlxButton = new FlxButton(215, 100, "Copy Data", function()
+			{
+				copylastsectiondata(Std.int(stepperCopydata.value));
+			});
+
+			copylabel = new FlxText(225, 140, "Section", 12);
+			copylabel.scrollFactor.set();
+			copylabel.setFormat("Pixel Arial 11 Bold", 8, FlxColor.WHITE, CENTER);
+
+			var tab_group_effects = new FlxUI(null, UI_box);
+			tab_group_effects.name = 'Effects';
+	
+			check_camzoomonp1 = new FlxUICheckBox(10, 0, null, null, 'Camera Zoom', 100);
+			check_camzoomonp1.name = 'check_camzoomonp1';
+			check_camzoomonp1.checked = false;
+	
+			camzoomamountp1 = new FlxUINumericStepper(10, 20, 0.1, 100, 0, 999, 1);
+			camzoomamountp1.value = _song.notes[curSection].camzoomamountp1;
+			camzoomamountp1.name = 'camzoomamountp1';
+	
+			camzoomtime = new FlxUINumericStepper(150, 20, 1, 8, 0, 999, 0);
+			camzoomtime.value = _song.notes[curSection].camzoomtime;
+			camzoomtime.name = 'camzoomtime';
+	
+			camZoomtext = new FlxText(67, 20, "Zoom amount", 12);
+			camZoomtext.scrollFactor.set();
+			camZoomtext.setFormat("Pixel Arial 11 Bold", 8, FlxColor.WHITE, LEFT);
+	
+			camZoomtext2 = new FlxText(208, 20, "Zoom Time" +"\n(stepCrochets)", 12);
+			camZoomtext2.scrollFactor.set();
+			camZoomtext2.setFormat("Pixel Arial 11 Bold", 8, FlxColor.WHITE, LEFT);
+
+			check_camerashake = new FlxUICheckBox(10, 40, null, null, 'Camera Shake', 100);
+			check_camerashake.name = 'check_camerashake';
+			check_camerashake.checked = false;
+
+			camerashaketrigger = new FlxUINumericStepper(10, 60, 1, 8, 0, 999, 0);
+			camerashaketrigger.value = _song.notes[curSection].camerashaketrigger;
+			camerashaketrigger.name = 'camerashaketrigger';
+
+			camshaketext = new FlxText(67, 60, "curstep to trigger" +"\n(Must be in this section)", 12);
+			camshaketext.scrollFactor.set();
+			camshaketext.setFormat("Pixel Arial 11 Bold", 8, FlxColor.WHITE, LEFT);
+
+			camerashakeamount = new FlxUINumericStepper(10, 80, 0.01, 100, 0, 999, 2);
+			camerashakeamount.value = _song.notes[curSection].camerashakeamount;
+			camerashakeamount.name = 'camerashakeamount';
+
+			camshaketext2 = new FlxText(67, 80, "Shake Amount", 12);
+			camshaketext2.scrollFactor.set();
+			camshaketext2.setFormat("Pixel Arial 11 Bold", 8, FlxColor.WHITE, LEFT);
+
+			camerashakeduration = new FlxUINumericStepper(10, 100, 0.1, 100, 0, 999, 1);
+			camerashakeduration.value = _song.notes[curSection].camerashakeduration;
+			camerashakeduration.name = 'camerashakeduration';
+
+			camshaketext3 = new FlxText(67, 100, "Shake Duration", 12);
+			camshaketext3.scrollFactor.set();
+			camshaketext3.setFormat("Pixel Arial 11 Bold", 8, FlxColor.WHITE, LEFT);
+			
+			check_disablecamzooming = new FlxUICheckBox(10, 120, null, null, 'Disable Camzooming', 100);
+			check_disablecamzooming.name = 'check_disablecamzooming';
+			check_disablecamzooming.checked = false;
+
+			check_camzooming = new FlxUICheckBox(10, 140, null, null, 'Additional Camzooming', 100);
+			check_camzooming.name = 'check_camzooming';
+			check_camzooming.checked = false;
+
+			check_curstepzooming = new FlxUICheckBox(10, 160, null, null, 'Use curStep', 100);
+			check_curstepzooming.name = 'check_curstepzooming';
+			check_curstepzooming.checked = false;
+
+			check_curbeatzooming = new FlxUICheckBox(10, 180, null, null, 'Use curBeat', 100);
+			check_curbeatzooming.name = 'check_curbeatzooming';
+			check_curbeatzooming.checked = false;
+
+			camerazoomtrigger = new FlxUINumericStepper(10, 200, 1, 8, 0, 999, 0);
+			camerazoomtrigger.value = _song.notes[curSection].camerazoomtrigger;
+			camerazoomtrigger.name = 'camerazoomtrigger';
+
+			camzoomtext = new FlxText(67, 200, "Beginning curstep/curbeat" +"\n(Must be in this section)", 12);
+			camzoomtext.scrollFactor.set();
+			camzoomtext.setFormat("Pixel Arial 11 Bold", 8, FlxColor.WHITE, LEFT);
+
+			camerazoomtrigger2 = new FlxUINumericStepper(10, 225, 1, 8, 0, 999, 0);
+			camerazoomtrigger2.value = _song.notes[curSection].camerazoomtrigger2;
+			camerazoomtrigger2.name = 'camerazoomtrigger2';
+
+			camzoomtext2 = new FlxText(67, 225, "Ending curstep/curbeat" +"\n(Must be in this section)", 12);
+			camzoomtext2.scrollFactor.set();
+			camzoomtext2.setFormat("Pixel Arial 11 Bold", 8, FlxColor.WHITE, LEFT);
+
+			camerazoompercentinput = new FlxUINumericStepper(10, 250, 1, 8, 0, 999, 0);
+			camerazoompercentinput.value = _song.notes[curSection].camerazoompercentinput;
+			camerazoompercentinput.name = 'camerazoompercentinput';
+
+			camzoomtextpercent = new FlxText(67, 250, "CurBeat/curStep percentage", 12);
+			camzoomtextpercent.scrollFactor.set();
+			camzoomtextpercent.setFormat("Pixel Arial 11 Bold", 8, FlxColor.WHITE, LEFT);
+
+			flixelcamerazoom = new FlxUINumericStepper(10, 270, 0.001, 8, 0, 999, 3);
+			flixelcamerazoom.value = _song.notes[curSection].flixelcamerazoom;
+			flixelcamerazoom.name = 'flixelcamerazoom';
+
+			flixelcameratext = new FlxText(67, 270, "Camera zoom amount", 12);
+			flixelcameratext.scrollFactor.set();
+			flixelcameratext.setFormat("Pixel Arial 11 Bold", 8, FlxColor.WHITE, LEFT);
+
+			flixelHUDzoom = new FlxUINumericStepper(10, 290, 0.001, 8, 0, 999, 3);
+			flixelHUDzoom.value = _song.notes[curSection].flixelHUDzoom;
+			flixelHUDzoom.name = 'flixelHUDzoom';
+
+			flixelHUDtext = new FlxText(67, 290, "CamHUD zoom amount", 12);
+			flixelHUDtext.scrollFactor.set();
+			flixelHUDtext.setFormat("Pixel Arial 11 Bold", 8, FlxColor.WHITE, LEFT);
+
+			check_gfspeed = new FlxUICheckBox(10, 310, null, null, 'Set GF Speed', 100);
+			check_gfspeed.name = 'check_gfspeed';
+			check_gfspeed.checked = false;
+
+			currentgfspeed = new FlxUINumericStepper(10, 330, 1, 8, 1, 999, 1);
+			currentgfspeed.value = _song.notes[curSection].sectiongfspeed;
+			currentgfspeed.name = 'currentgfspeed';
+
+			gfspeedtext = new FlxText(67, 330, "GF speed amount", 12);
+			gfspeedtext.scrollFactor.set();
+			gfspeedtext.setFormat("Pixel Arial 11 Bold", 8, FlxColor.WHITE, LEFT);
+
+			check_altAnim = new FlxUICheckBox(10, 370, null, null, "Alternate Animation (P2)", 100);
+		    check_altAnim.name = 'check_altAnim';
+
+			check_altAnim2 = new FlxUICheckBox(10, 350, null, null, "Alternate Animation (P1)", 100);
+		    check_altAnim2.name = 'check_altAnim';
+
+			check_playanim = new FlxUICheckBox(10, 390, null, null, 'Play animation', 100);
+			check_playanim.name = 'check_playanim';
+			check_playanim.checked = _song.notes[curSection].playanim;
+
+			check_curstepanim = new FlxUICheckBox(10, 410, null, null, 'On curStep', 100);
+			check_curstepanim.name = 'check_curstepanim';
+			check_curstepanim.checked = _song.notes[curSection].curstepanim;
+
+			check_curbeatanim = new FlxUICheckBox(10, 430, null, null, 'On curBeat', 100);
+			check_curbeatanim.name = 'check_curbeatanim';
+			check_curbeatanim.checked = _song.notes[curSection].curbeatanim;
+
+			steppernumanim = new FlxUINumericStepper(10, 450, 1, 8, 1, 999, 1);
+			steppernumanim.value = _song.notes[curSection].steppernumanim;
+			steppernumanim.name = 'steppernumanim';
+			
+			playanimon = new FlxText(67, 450, "CurStep/curBeat to play animation", 12);
+			playanimon.scrollFactor.set();
+			playanimon.setFormat("Pixel Arial 11 Bold", 8, FlxColor.WHITE, LEFT);
+
+			var UI_AnimtoPlay = new FlxUIInputText(10, 470, 70, _song.notes[curSection].animtoplay, 8);
+			typingShit4 = UI_AnimtoPlay;
+
+			playanimtext = new FlxText(80, 470, "Animation name", 12);
+			playanimtext.scrollFactor.set();
+			playanimtext.setFormat("Pixel Arial 11 Bold", 8, FlxColor.WHITE, LEFT);
+
+			var UI_charactertoplayon = new FlxUIInputText(10, 490, 70, _song.notes[curSection].charactertoplayon, 8);
+			typingShit5 = UI_charactertoplayon;
+
+			playanimtext2 = new FlxText(80, 490, "Character name (dad, boyfriend, gf)", 12);
+			playanimtext2.scrollFactor.set();
+			playanimtext2.setFormat("Pixel Arial 11 Bold", 8, FlxColor.WHITE, LEFT);
+
+			check_isforced = new FlxUICheckBox(10, 510, null, null, 'Forced', 100);
+			check_isforced.name = 'check_isforced';
+			check_isforced.checked = _song.notes[curSection].isforced;
+
+			check_islooped = new FlxUICheckBox(10, 530, null, null, 'Looped', 100);
+			check_islooped.name = 'check_isforced';
+			check_islooped.checked = _song.notes[curSection].islooped;
+			
+	
+	
+			tab_group_effects.add(check_camzoomonp1);
+			tab_group_effects.add(camzoomamountp1);
+			tab_group_effects.add(camerashakeamount);
+			tab_group_effects.add(camzoomtime);
+			tab_group_effects.add(camZoomtext);
+			tab_group_effects.add(camZoomtext2);
+			tab_group_effects.add(check_camerashake);
+			tab_group_effects.add(camerashaketrigger);
+			tab_group_effects.add(camshaketext);
+			tab_group_effects.add(camshaketext2);
+			tab_group_effects.add(camshaketext3);
+			tab_group_effects.add(camerashakeduration);
+			tab_group_effects.add(check_disablecamzooming);
+			tab_group_effects.add(check_camzooming);
+			tab_group_effects.add(camerazoomtrigger);
+			tab_group_effects.add(camerazoomtrigger2);
+			tab_group_effects.add(camzoomtext);
+			tab_group_effects.add(camzoomtext2);
+			tab_group_effects.add(check_curstepzooming);
+			tab_group_effects.add(check_curbeatzooming);
+			tab_group_effects.add(camerazoompercentinput);
+			tab_group_effects.add(camzoomtextpercent);
+			tab_group_effects.add(copyButton);
+			tab_group_effects.add(stepperCopydata);
+			tab_group_effects.add(copylabel);
+			tab_group_effects.add(flixelcamerazoom);
+			tab_group_effects.add(flixelHUDzoom);
+			tab_group_effects.add(flixelcameratext);
+			tab_group_effects.add(flixelHUDtext);
+			tab_group_effects.add(check_gfspeed);
+			tab_group_effects.add(currentgfspeed);
+			tab_group_effects.add(gfspeedtext);
+			tab_group_effects.add(check_altAnim);
+			tab_group_effects.add(check_altAnim2);
+			tab_group_effects.add(check_playanim);
+			tab_group_effects.add(check_curbeatanim);
+			tab_group_effects.add(check_curstepanim);
+			tab_group_effects.add(steppernumanim);
+			tab_group_effects.add(playanimon);
+			tab_group_effects.add(UI_AnimtoPlay);
+			tab_group_effects.add(playanimtext);
+			tab_group_effects.add(UI_charactertoplayon);
+			tab_group_effects.add(playanimtext2);
+			tab_group_effects.add(check_isforced);
+			tab_group_effects.add(check_islooped);
+	
+			UI_box.addGroup(tab_group_effects);
+		}
 
 	var stepperSusLength:FlxUINumericStepper;
 
@@ -522,8 +832,34 @@ class ChartingState extends MusicBeatState
 				case 'Change BPM':
 					_song.notes[curSection].changeBPM = check.checked;
 					trace('changed bpm shit');
-				case "Alternate Animation":
+				case 'Camera Zoom':
+					_song.notes[curSection].camzoomonp1 = check.checked;
+				case "Alternate Animation (P2)":
 					_song.notes[curSection].altAnim = check.checked;
+				case "Alternate Animation (P1)":
+					_song.notes[curSection].altAnim2 = check.checked;	
+				case "Camera Shake":
+					_song.notes[curSection].camerashake = check.checked;
+				case "Disable Camzooming":
+					_song.notes[curSection].disablecamzooming = check.checked;
+				case "Additional Camzooming":
+					_song.notes[curSection].camzooming = check.checked;
+				case "Use curBeat":
+				    _song.notes[curSection].curbeatzooming = check.checked;
+				case "Use curStep":
+					_song.notes[curSection].curstepzooming = check.checked;
+				case "On curBeat":
+				    _song.notes[curSection].curbeatanim = check.checked;
+				case "On curStep":
+					_song.notes[curSection].curstepanim = check.checked;
+				case "Set GF Speed":
+					_song.notes[curSection].gfspeed = check.checked;
+				case "Play animation":
+					_song.notes[curSection].playanim = check.checked;
+				case "Forced":
+					_song.notes[curSection].isforced = check.checked;
+				case "Looped":
+					_song.notes[curSection].islooped = check.checked;					
 			}
 		}
 		else if (id == FlxUINumericStepper.CHANGE_EVENT && (sender is FlxUINumericStepper))
@@ -557,8 +893,68 @@ class ChartingState extends MusicBeatState
 				_song.notes[curSection].bpm = Std.int(nums.value);
 				updateGrid();
 			}
+			else if (wname == 'camzoomamountp1')
+				{
+					_song.notes[curSection].camzoomamountp1 = nums.value;
+					updateGrid();
+				}
+			else if (wname == 'camerashakeamount')
+				{
+					_song.notes[curSection].camerashakeamount = nums.value;
+					updateGrid();
+				}
+			else if (wname == 'camerashakeduration')
+				{
+					_song.notes[curSection].camerashakeduration = nums.value;
+					updateGrid();
+				}
+			else if (wname == 'camzoomtime')
+				{
+					_song.notes[curSection].camzoomtime = nums.value;
+					updateGrid();
+				}
+			else if (wname == 'camerashaketrigger')
+				{
+					_song.notes[curSection].camerashaketrigger = nums.value;
+					updateGrid();
+				}
+			else if (wname == 'camerazoomtrigger')
+				{
+					_song.notes[curSection].camerazoomtrigger = nums.value;
+					updateGrid();
+				}
+			else if (wname == 'camerazoomtrigger2')
+				{
+					_song.notes[curSection].camerazoomtrigger2 = nums.value;
+					updateGrid();
+				}
+			else if (wname == 'camerazoompercentinput')
+				{
+					_song.notes[curSection].camerazoompercentinput = nums.value;
+					updateGrid();
+				}
+			else if (wname == 'flixelcamerazoom')
+				{
+					_song.notes[curSection].flixelcamerazoom = nums.value;
+					updateGrid();
+				}
+			else if (wname == 'flixelHUDzoom')
+				{
+					_song.notes[curSection].flixelHUDzoom = nums.value;
+					updateGrid();
+				}
+			else if (wname == 'currentgfspeed')
+				{
+					_song.notes[curSection].sectiongfspeed = Std.int(nums.value);
+					updateGrid();
+				}
+			else if (wname == 'steppernumanim')
+				{
+					_song.notes[curSection].steppernumanim = nums.value;
+					updateGrid();
+				}
 		}
-
+		
 		// FlxG.log.add(id + " WEED " + sender + " WEED " + data + " WEED " + params);
 	}
 
@@ -589,13 +985,15 @@ class ChartingState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
-
+		//steppercopyfloat = stepperCopydata.value;
 		curStep = recalculateSteps();
 
 		Conductor.songPosition = FlxG.sound.music.time;
 		_song.song = typingShit.text;
 		storyDifficultyString = typingShit2.text;
 		_song.composer = typingShit3.text;
+		_song.notes[curSection].animtoplay = typingShit4.text; 
+		_song.notes[curSection].charactertoplayon = typingShit5.text; 
 
 		strumLine.y = getYfromStrum((Conductor.songPosition - sectionStartTime()) % (Conductor.stepCrochet * _song.notes[curSection].lengthInSteps));
 
@@ -612,6 +1010,40 @@ class ChartingState extends MusicBeatState
 
 			changeSection(curSection + 1, false);
 		}
+
+	
+
+		if (strumLine.overlaps(curRenderedNotes) && check_playnoisemusthit.checked)
+			{
+				curRenderedNotes.forEach(function(note:Note)
+					{
+						//if (strumLine.overlaps(note))
+						if (strumLine.overlaps(note) && strumLine.y > note.y && !note.hasplayed)
+						{
+							if (check_mustHitSection.checked && FlxG.sound.music.playing)
+							{
+								FlxG.sound.play(Paths.sound('normal-hitnormal'));
+								note.hasplayed = true;
+							}
+						}
+					});
+			}
+
+			if (strumLine.overlaps(curRenderedNotes) && check_playnoisemusthitdad.checked)
+				{
+					curRenderedNotes.forEach(function(note:Note)
+						{
+							//if (strumLine.overlaps(note))
+							if (strumLine.overlaps(note) && strumLine.y > note.y && !note.hasplayed)
+							{
+								if (!check_mustHitSection.checked && FlxG.sound.music.playing)
+								{
+									FlxG.sound.play(Paths.sound('normal-hitnormal'));
+									note.hasplayed = true;
+								}
+							}
+						});
+				}
 
 		#if cpp
 		DiscordClient.changePresence("Editing " + PlayState.SONG.song + " in the Chart Editor" + " | " + "Position: " + Std.string(FlxMath.roundDecimal(Conductor.songPosition / 1000, 2)) + " / " + Std.string(FlxMath.roundDecimal(FlxG.sound.music.length / 1000, 2)) + " | Section " + curSection , null, null, true);
@@ -676,7 +1108,7 @@ class ChartingState extends MusicBeatState
 				LoadingState.loadAndSwitchState(new PlayState());
 			}
 
-		if (!typingShit.hasFocus || !typingShit2.hasFocus || !typingShit3.hasFocus)
+		if (!typingShit.hasFocus || !typingShit2.hasFocus || !typingShit3.hasFocus || !typingShit4.hasFocus || !typingShit5.hasFocus)
 		{
 			if (FlxG.keys.justPressed.SPACE)
 			{
@@ -692,7 +1124,7 @@ class ChartingState extends MusicBeatState
 				}
 			}
 
-			if (FlxG.keys.justPressed.R)
+			if (FlxG.keys.justPressed.ALT)
 			{
 				if (FlxG.keys.pressed.SHIFT)
 					resetSection(true);
@@ -730,14 +1162,14 @@ class ChartingState extends MusicBeatState
 			}
 			else
 			{
-				if (FlxG.keys.justPressed.W || FlxG.keys.justPressed.S)
+				if (FlxG.keys.justPressed.UP || FlxG.keys.justPressed.DOWN)
 				{
 					FlxG.sound.music.pause();
 					vocals.pause();
 
 					var daTime:Float = Conductor.stepCrochet * 2;
 
-					if (FlxG.keys.justPressed.W)
+					if (FlxG.keys.justPressed.UP)
 					{
 						FlxG.sound.music.time -= daTime;
 					}
@@ -772,6 +1204,14 @@ class ChartingState extends MusicBeatState
 							UI_box.selected_tab = 0;
 					}
 				}
+
+				var shiftThing:Int = 1;
+				if (FlxG.keys.pressed.SHIFT)
+					shiftThing = 4;
+				if (FlxG.keys.justPressed.RIGHT)
+					changeSection(curSection + shiftThing);
+				if (FlxG.keys.justPressed.LEFT)
+					changeSection(curSection - shiftThing);
 		}
 
 		_song.bpm = tempBpm;
@@ -781,14 +1221,6 @@ class ChartingState extends MusicBeatState
 			if (FlxG.keys.justPressed.DOWN)
 				Conductor.changeBPM(Conductor.bpm - 1); */
 
-		var shiftThing:Int = 1;
-		if (FlxG.keys.pressed.SHIFT)
-			shiftThing = 4;
-		if (FlxG.keys.justPressed.RIGHT || FlxG.keys.justPressed.D)
-			changeSection(curSection + shiftThing);
-		if (FlxG.keys.justPressed.LEFT || FlxG.keys.justPressed.A)
-			changeSection(curSection - shiftThing);
-
 		bpmTxt.text = bpmTxt.text = Std.string(FlxMath.roundDecimal(Conductor.songPosition / 1000, 2))
 			+ " / "
 			+ Std.string(FlxMath.roundDecimal(FlxG.sound.music.length / 1000, 2))
@@ -797,11 +1229,7 @@ class ChartingState extends MusicBeatState
 			+ "\nCur Step: "
 			+ curStep
 			+ "\nCur Beat: "
-			+ curBeat
-			+ "\nThe amount of \npiss in my pants: "
-			+ curSection / 2
-			+ "\nTimes i have came: "
-			+ curSection / 0.5;
+			+ curBeat;
 
 			if (!check_mute_inst.checked)
 				FlxG.sound.music.volume = instVol.value;
@@ -917,16 +1345,102 @@ class ChartingState extends MusicBeatState
 		updateGrid();
 	}
 
+	function copylastsectiondata(?sectionNum:Int = 1)
+		{
+			//sectionNum = stepperCopydata.value;
+			var daSec = _song.notes[sectionNum];
+			var sec = _song.notes[curSection];
+			typingShit4.text = daSec.animtoplay;
+			typingShit5.text = daSec.charactertoplayon;
+			check_camerashake.checked = daSec.camerashake;
+		    check_camzoomonp1.checked = daSec.camzoomonp1;
+		    check_disablecamzooming.checked = daSec.disablecamzooming;
+		    check_camzooming.checked = daSec.camzooming;
+		    check_curstepzooming.checked = daSec.curstepzooming;
+			steppernumanim.value = daSec.steppernumanim;
+		    check_curbeatzooming.checked = daSec.curbeatzooming;
+			check_curstepanim.checked = daSec.curstepanim;
+			check_curbeatanim.checked = daSec.curbeatanim;
+			camzoomtime.value = daSec.camzoomtime;
+			camzoomamountp1.value = daSec.camzoomamountp1;
+			camerashakeamount.value = daSec.camerashakeamount;
+			camerashakeduration.value = daSec.camerashakeduration;
+			camerashaketrigger.value = daSec.camerashaketrigger;
+			camerazoomtrigger.value = daSec.camerazoomtrigger;
+			camerazoomtrigger2.value = daSec.camerazoomtrigger2;
+			flixelcamerazoom.value = daSec.flixelcamerazoom;
+			flixelHUDzoom.value = daSec.flixelHUDzoom;
+			currentgfspeed.value = daSec.sectiongfspeed;
+			camerazoompercentinput.value = daSec.camerazoompercentinput;
+			check_playanim.checked = daSec.playanim;
+			check_isforced.checked = daSec.isforced;
+			check_islooped.checked = daSec.islooped;
+
+			sec.animtoplay = daSec.animtoplay;
+			sec.charactertoplayon = daSec.charactertoplayon;
+			sec.camerashake = daSec.camerashake;
+			sec.camzoomonp1 = daSec.camzoomonp1;
+		    sec.disablecamzooming = daSec.disablecamzooming;
+			sec.camzooming = daSec.camzooming;
+			sec.curstepzooming = daSec.curstepzooming;
+			sec.curstepanim = daSec.curstepanim;
+			sec.steppernumanim = daSec.steppernumanim;
+			sec.curbeatzooming = daSec.curbeatzooming;
+			sec.curbeatanim = daSec.curbeatanim;
+			sec.curbeatanim = daSec.curbeatanim;
+			sec.camzoomtime = daSec.camzoomtime;
+			sec.camzoomamountp1 = daSec.camzoomamountp1;
+			sec.camerashakeamount = daSec.camerashakeamount;
+			sec.camerashakeduration = daSec.camerashakeduration;
+			sec.camerashaketrigger = daSec.camerashaketrigger;
+			sec.camerazoomtrigger = daSec.camerazoomtrigger;
+			sec.camerazoomtrigger2 = daSec.camerazoomtrigger2;
+			sec.flixelcamerazoom = daSec.flixelcamerazoom;
+			sec.flixelHUDzoom = daSec.flixelHUDzoom;
+			sec.sectiongfspeed = daSec.sectiongfspeed;
+			sec.camerazoompercentinput = daSec.camerazoompercentinput;
+			sec.playanim = daSec.playanim;
+			sec.isforced = daSec.isforced;
+			sec.islooped = daSec.islooped;
+
+			updateGrid();
+		}
+
 	function updateSectionUI():Void
 	{
 		var sec = _song.notes[curSection];
-
 		stepperLength.value = sec.lengthInSteps;
 		check_mustHitSection.checked = sec.mustHitSection;
+		check_gfspeed.checked = sec.gfspeed;
+		check_playanim.checked = sec.playanim;
+		check_camerashake.checked = sec.camerashake;
+		check_camzoomonp1.checked = sec.camzoomonp1;
+		check_disablecamzooming.checked = sec.disablecamzooming;
+		check_camzooming.checked = sec.camzooming;
+		check_curstepzooming.checked = sec.curstepzooming;
+		check_curbeatanim.checked = sec.curbeatanim;
+		check_curstepanim.checked = sec.curstepanim;
+		check_curbeatzooming.checked = sec.curbeatzooming;
 		check_altAnim.checked = sec.altAnim;
+		check_altAnim2.checked = sec.altAnim2;
 		check_changeBPM.checked = sec.changeBPM;
 		stepperSectionBPM.value = sec.bpm;
-
+		camzoomtime.value = sec.camzoomtime;
+		camzoomamountp1.value = sec.camzoomamountp1;
+		camerashakeamount.value = sec.camerashakeamount;
+		camerashakeduration.value = sec.camerashakeduration;
+		camerashaketrigger.value = sec.camerashaketrigger;
+		camerazoomtrigger.value = sec.camerazoomtrigger;
+		camerazoomtrigger2.value = sec.camerazoomtrigger2;
+		flixelcamerazoom.value = sec.flixelcamerazoom;
+		flixelHUDzoom.value = sec.flixelHUDzoom;
+		currentgfspeed.value = sec.sectiongfspeed;
+		camerazoompercentinput.value = sec.camerazoompercentinput;
+		steppernumanim.value = sec.steppernumanim;
+		typingShit4.text = sec.animtoplay;
+		typingShit5.text = sec.charactertoplayon;
+		check_isforced.checked = sec.isforced;
+		check_islooped.checked = sec.islooped;
 		updateHeads();
 	}
 
@@ -1035,6 +1549,33 @@ class ChartingState extends MusicBeatState
 			sectionNotes: [],
 			typeOfSection: 0,
 			altAnim: false,
+			altAnim2: false,
+			camzoomonp1: false,
+			camzoomamountp1: 0,
+			camerashakeamount: 0,
+			camerashakeduration: 0,
+			camerashaketrigger: 0,
+			camerazoomtrigger: 0,
+			camerazoomtrigger2: 0,
+			flixelcamerazoom: 0,
+			flixelHUDzoom: 0,
+			sectiongfspeed: 0,
+			camerazoompercentinput: 0,
+			camerashake: false,
+			disablecamzooming: false,
+			camzooming: false,
+			camzoomtime: 0,
+			curbeatzooming: false,
+			curstepzooming: false,
+			steppernumanim: 0,
+			curbeatanim: false,
+			curstepanim: false,
+			gfspeed: false,
+			playanim:false,
+			animtoplay: "hey",
+			isforced: false,
+			charactertoplayon: "boyfriend",
+			islooped: false,
 			startTime: 0,
 	        endTime: 0
 		};
@@ -1221,6 +1762,54 @@ class ChartingState extends MusicBeatState
 		}
 	}
 
+
+		function _onClick():Void
+			{
+				loadoutsidejson();
+			}
+
+		function loadoutsidejson():Void
+			{
+				fr = new FileReference();
+				fr.addEventListener(Event.SELECT, _onSelect, false, 0, true);
+				fr.addEventListener(Event.CANCEL, _onCancel, false, 0, true);
+				//var filters:Array<FileFilter> = new Array<FileFilter>();
+				//filters.push(new FileFilter("JSON File", "*.json"));
+				fr.browse([new FileFilter('JSON', '*.json')]);
+			}
+
+			function _onCancel(_):Void
+				{
+					trace('FUCK!!!');
+				}
+
+			function _onLoad(E:Event):Void
+				{
+					var fr:FileReference = cast E.target;
+					fr.removeEventListener(Event.COMPLETE, _onLoad);
+					PlayState.triggeredalready = false;	
+					trace('Name: ' + fr.name);
+					#if debug
+					trace('Data ' + fr.data);
+					#end
+					trace('Type: ' + fr.type);
+					trace('Size: ' + fr.size);
+					trace('loading...');
+					PlayState.SONG = Song.loadFromFileSystem(fr.name);
+					
+					LoadingState.loadAndSwitchState(new ChartingState());
+					trace('loaded!!!');
+				}
+
+	function _onSelect(E:Event):Void
+	{
+		var fr:FileReference = cast(E.target, FileReference);
+		fr.addEventListener(Event.COMPLETE, _onLoad, false, 0, true);
+		fr.load();
+		trace('select');
+	}
+
+
 	function onSaveComplete(_):Void
 	{
 		_file.removeEventListener(Event.COMPLETE, onSaveComplete);
@@ -1229,6 +1818,8 @@ class ChartingState extends MusicBeatState
 		_file = null;
 		trace("Successfully saved LEVEL DATA.");
 	}
+
+	
 
 	/**
 	 * Called when the save file dialog is cancelled.
@@ -1242,7 +1833,7 @@ class ChartingState extends MusicBeatState
 	}
 
 	/**
-	 * Called if there is an error while saving the gameplay recording.
+	 * Called if there is an error while saving the Json.
 	 */
 	function onSaveError(_):Void
 	{

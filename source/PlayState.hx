@@ -141,6 +141,7 @@ class PlayState extends MusicBeatState
 	public static var resetlength:Bool = false;
 	public static var resetgamespeed:Bool = false;
 	public static var altAnim:String = "";
+	public static var altAnim2:String = "";
 
 	// no sex in this household
 	// fr fr
@@ -193,6 +194,7 @@ class PlayState extends MusicBeatState
 	public static var songInfo2:FlxText;
 	public static var blackBorder:FlxSprite;
 	var songwithoutdashes:String = '';
+	var SONGISVALID:Bool = true;
 
 	public static var campaignScore:Int = 0;
 	public static var debug:Bool = false;
@@ -224,6 +226,7 @@ class PlayState extends MusicBeatState
 	public static var swagWidth:Float = 160 * 0.7;
 	var doof:DialogueBox;
 	var conducttext:FlxText;
+	public static var triggeredcamera:Bool = false;
 
 
 	var defaultCamZoom:Float = 1.05;
@@ -251,6 +254,8 @@ class PlayState extends MusicBeatState
 
 	override public function create()
 	{
+		if (FlxG.save.data.botplay)
+			SONGISVALID = false;
 		#if web
 		isnotweb = false;
 		#end
@@ -275,6 +280,7 @@ class PlayState extends MusicBeatState
 		paused = false;
 		needstopitch = false;
 		notesHit = 0;
+		triggeredcamera = false;
 		//blueballed = 0;
 		if (!Settings.enablebotplay)
 			{
@@ -1103,7 +1109,7 @@ class PlayState extends MusicBeatState
 			case 'gf':
 				dad.setPosition(gf.x, gf.y);
 				gf.visible = false;
-				if (SONG.song.toLowerCase() == 'tutorial')
+				if (curSong.toLowerCase() == 'tutorial')
 				{
 					camPos.x += 600;
 					tweenCamIn();
@@ -1830,7 +1836,9 @@ class PlayState extends MusicBeatState
 					if (curStage.startsWith('school'))
 						ready.setGraphicSize(Std.int(ready.width * daPixelZoom));
 
-					ready.screenCenter();
+					///ready.screenCenter();
+					ready.screenCenter(X);
+					ready.screenCenter(Y);
 					add(ready);
 					FlxTween.tween(ready, {y: ready.y += 100, alpha: 0}, Conductor.crochet / 1000, {
 						ease: FlxEase.cubeInOut,
@@ -1848,7 +1856,9 @@ class PlayState extends MusicBeatState
 					if (curStage.startsWith('school'))
 						set.setGraphicSize(Std.int(set.width * daPixelZoom));
 
-					set.screenCenter();
+					///set.screenCenter();
+					set.screenCenter(X);
+					set.screenCenter(Y);
 					add(set);
 					FlxTween.tween(set, {y: set.y += 100, alpha: 0}, Conductor.crochet / 1000, {
 						ease: FlxEase.cubeInOut,
@@ -1868,7 +1878,9 @@ class PlayState extends MusicBeatState
 
 					go.updateHitbox();
 
-					go.screenCenter();
+					///go.screenCenter();
+					go.screenCenter(X);
+					go.screenCenter(Y);
 					add(go);
 					FlxTween.tween(go, {y: go.y += 100, alpha: 0}, Conductor.crochet / 1000, {
 						ease: FlxEase.cubeInOut,
@@ -3197,7 +3209,7 @@ class PlayState extends MusicBeatState
 
 		
 
-		///if (healthBar.percent < 20 && SONG.song.toLowerCase() == 'diva')
+		///if (healthBar.percent < 20)
 			///iconP2.animation.curAnim.curFrame = 3;
 			// winning icon code for referance
 
@@ -3882,7 +3894,7 @@ class PlayState extends MusicBeatState
 					FlxG.sound.music.stop();
 					vocals.stop();
 
-					if (!FlxG.save.data.botplay)
+					if (!FlxG.save.data.botplay && SONGISVALID)
 						{
 							if (SONG.validScore)
 								{
@@ -3915,7 +3927,7 @@ class PlayState extends MusicBeatState
 			
 							// if ()
 							StoryMenuState.weekUnlocked[Std.int(Math.min(storyWeek + 1, StoryMenuState.weekUnlocked.length - 1))] = true;
-							if (!FlxG.save.data.botplay)
+							if (!FlxG.save.data.botplay && SONGISVALID)
 								{
 									if (SONG.validScore)
 										{
@@ -4795,16 +4807,24 @@ class PlayState extends MusicBeatState
 			FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
 			misses +=1;
 
+			if (SONG.notes[Math.floor(curStep / 16)] != null)
+					{
+						if (SONG.notes[Math.floor(curStep / 16)].altAnim2)
+							altAnim2 = '-alt';
+						else
+							altAnim2 = '';
+					}
+
 			switch (direction)
 			{
 				case 0:
-					boyfriend.playAnim('singLEFTmiss', true);
+					boyfriend.playAnim('singLEFTmiss' + altAnim2, true);
 				case 1:
-					boyfriend.playAnim('singDOWNmiss', true);
+					boyfriend.playAnim('singDOWNmiss' + altAnim2, true);
 				case 2:
-					boyfriend.playAnim('singUPmiss', true);
+					boyfriend.playAnim('singUPmiss' + altAnim2, true);
 				case 3:
-					boyfriend.playAnim('singRIGHTmiss', true);
+					boyfriend.playAnim('singRIGHTmiss' + altAnim2, true);
 			}
 			updateAccuracy();
 			rating();
@@ -5064,6 +5084,14 @@ class PlayState extends MusicBeatState
 						
 			if (!note.isSustainNote)
 			notesHitArray.unshift(Date.now());
+
+			if (SONG.notes[Math.floor(curStep / 16)] != null)
+				{
+					if (SONG.notes[Math.floor(curStep / 16)].altAnim2)
+						altAnim2 = '-alt';
+					else
+						altAnim2 = '';
+				}
 						
 			updateAccuracy();
 			rating();
@@ -5089,7 +5117,7 @@ class PlayState extends MusicBeatState
 			switch (note.noteData)
 			{
 				case 0:
-					boyfriend.playAnim('singLEFT', true);
+					boyfriend.playAnim('singLEFT' + altAnim2, true);
 					if (!boyfriend.animation.curAnim.name.startsWith("sing") && !FlxG.save.data.playerstrumlights)
 						{
 							playerStrums.forEach(function(spr:FlxSprite)
@@ -5099,7 +5127,7 @@ class PlayState extends MusicBeatState
 								});
 						}
 				case 1:
-					boyfriend.playAnim('singDOWN', true);
+					boyfriend.playAnim('singDOWN' + altAnim2, true);
 					if (!boyfriend.animation.curAnim.name.startsWith("sing") && !FlxG.save.data.playerstrumlights)
 						{
 							playerStrums.forEach(function(spr:FlxSprite)
@@ -5109,7 +5137,7 @@ class PlayState extends MusicBeatState
 								});
 						}
 				case 2:
-					boyfriend.playAnim('singUP', true);
+					boyfriend.playAnim('singUP' + altAnim2, true);
 					if (!boyfriend.animation.curAnim.name.startsWith("sing") && !FlxG.save.data.playerstrumlights)
 						{
 							playerStrums.forEach(function(spr:FlxSprite)
@@ -5119,7 +5147,7 @@ class PlayState extends MusicBeatState
 								});
 						}
 				case 3:
-					boyfriend.playAnim('singRIGHT', true);
+					boyfriend.playAnim('singRIGHT' + altAnim2, true);
 					if (!boyfriend.animation.curAnim.name.startsWith("sing") && !FlxG.save.data.playerstrumlights)
 						{
 							playerStrums.forEach(function(spr:FlxSprite)
@@ -5338,6 +5366,11 @@ class PlayState extends MusicBeatState
 				}
 		#end		
 
+		if (SONG.notes[Math.floor(curStep / 16)].camerashake && curStep == SONG.notes[Math.floor(curStep / 16)].camerashaketrigger)
+			{
+				FlxG.camera.shake(SONG.notes[Math.floor(curStep / 16)].camerashakeamount, SONG.notes[Math.floor(curStep / 16)].camerashakeduration);
+			}
+
 		if (dad.curCharacter == 'spooky' && curStep % 4 == 2)
 		{
 			// dad.dance();
@@ -5369,7 +5402,7 @@ class PlayState extends MusicBeatState
 				songLength = FlxG.sound.music.length + FreeplayState.gamespeed + 8;
 
 
-			if (curSong.toLowerCase() == 'avidity' && curStep >= 737 && curStep < 768)
+			if (curSong.toLowerCase() == 'avidity' && curStep >= 737 && curStep < 768 && !SONG.notes[Math.floor(curStep / 16)].disablecamzooming)
 				{
 					if (FlxG.save.data.camzooming && FlxG.camera.zoom < 1.35 && curStep % 2 == 0)
 						{
@@ -5379,6 +5412,72 @@ class PlayState extends MusicBeatState
 							trace('zooming %1 == 0');
 						}
 				}
+
+				if (!endingSong && songStarted && SONG.notes.length != 0 && unspawnNotes.length != 0)
+					{
+						if (curStep >= SONG.notes[Math.floor(curStep / 16)].camerazoomtrigger && curStep < SONG.notes[Math.floor(curStep / 16)].camerazoomtrigger2 && SONG.notes[Math.floor(curStep / 16)].camzooming && SONG.notes[Math.floor(curStep / 16)].curstepzooming)
+							{
+								if (FlxG.save.data.camzooming && FlxG.camera.zoom < 1.35 && curStep % SONG.notes[Math.floor(curStep / 16)].camerazoompercentinput == 0)
+									{
+										FlxG.camera.zoom += SONG.notes[Math.floor(curStep / 16)].flixelcamerazoom;
+										camHUD.zoom += SONG.notes[Math.floor(curStep / 16)].flixelHUDzoom;
+										camHUD2.zoom += SONG.notes[Math.floor(curStep / 16)].flixelHUDzoom;
+									}
+							}
+					}
+				
+				if (!endingSong && songStarted && SONG.notes.length != 0 && unspawnNotes.length != 0)
+					{
+						if (SONG.notes[Math.floor(curStep / 16)].curstepanim && SONG.notes[Math.floor(curStep / 16)].playanim)
+							{
+								if (curStep == SONG.notes[Math.floor(curStep / 16)].steppernumanim)
+									{
+										if (SONG.notes[Math.floor(curStep / 16)].charactertoplayon == 'dad')
+											{
+												dad.playAnim(SONG.notes[Math.floor(curStep / 16)].animtoplay, SONG.notes[Math.floor(curStep / 16)].isforced);	
+											}
+											else if (SONG.notes[Math.floor(curStep / 16)].charactertoplayon == 'boyfriend')
+												{
+													boyfriend.playAnim(SONG.notes[Math.floor(curStep / 16)].animtoplay, SONG.notes[Math.floor(curStep / 16)].isforced);	
+												}
+												else if (SONG.notes[Math.floor(curStep / 16)].charactertoplayon == 'gf')
+													{
+														gf.playAnim(SONG.notes[Math.floor(curStep / 16)].animtoplay, SONG.notes[Math.floor(curStep / 16)].isforced);	
+													}
+									}
+							}
+					}
+
+					if (SONG.notes[Math.floor(curStep / 16)] != null)
+						{
+							if (!endingSong && songStarted && SONG.notes.length != 0 && unspawnNotes.length != 0 && SONG.notes[Math.floor(curStep / 16)].islooped && SONG.notes[Math.floor(curStep / 16)].charactertoplayon == 'dad' && SONG.notes[Math.floor(curStep / 16)].curstepanim)
+								{
+												{
+														{
+															dad.playAnim(SONG.notes[Math.floor(curStep / 16)].animtoplay, SONG.notes[Math.floor(curStep / 16)].isforced); // should play the anim for the entire section.
+														}
+												}				
+								}
+			
+								if (!endingSong && songStarted && SONG.notes.length != 0 && unspawnNotes.length != 0 && SONG.notes[Math.floor(curStep / 16)].islooped && SONG.notes[Math.floor(curStep / 16)].charactertoplayon == 'boyfriend' && SONG.notes[Math.floor(curStep / 16)].curstepanim)
+								{
+												{
+														{
+															boyfriend.playAnim(SONG.notes[Math.floor(curStep / 16)].animtoplay, SONG.notes[Math.floor(curStep / 16)].isforced); // should play the anim for the entire section.
+														}
+												}				
+								}
+			
+								if (!endingSong && songStarted && SONG.notes.length != 0 && unspawnNotes.length != 0 && SONG.notes[Math.floor(curStep / 16)].islooped && SONG.notes[Math.floor(curStep / 16)].charactertoplayon == 'gf' && SONG.notes[Math.floor(curStep / 16)].curstepanim)
+									{
+													{
+															{
+																gf.playAnim(SONG.notes[Math.floor(curStep / 16)].animtoplay, SONG.notes[Math.floor(curStep / 16)].isforced); // should play the anim for the entire section.
+															}
+													}			
+									}
+						}
+					
 	}
 
 	var lightningStrikeBeat:Int = 0;
@@ -5388,11 +5487,69 @@ class PlayState extends MusicBeatState
 	{
 		super.beatHit();
 
+		if (!endingSong && songStarted && SONG.notes.length != 0 && unspawnNotes.length != 0 && SONG.notes[Math.floor(curStep / 16)].gfspeed)
+			{
+             gfSpeed = SONG.notes[Math.floor(curStep / 16)].sectiongfspeed;
+			}
+
+		if (!endingSong && songStarted && SONG.notes.length != 0 && unspawnNotes.length != 0)
+			{
+				if (curBeat >= SONG.notes[Math.floor(curStep / 16)].camerazoomtrigger && curBeat < SONG.notes[Math.floor(curStep / 16)].camerazoomtrigger2 && SONG.notes[Math.floor(curStep / 16)].camzooming && SONG.notes[Math.floor(curStep / 16)].curbeatzooming)
+					{
+						if (FlxG.save.data.camzooming && FlxG.camera.zoom < 1.35 && curBeat % SONG.notes[Math.floor(curStep / 16)].camerazoompercentinput == 0)
+							{
+								FlxG.camera.zoom += SONG.notes[Math.floor(curStep / 16)].flixelcamerazoom;
+								camHUD.zoom += SONG.notes[Math.floor(curStep / 16)].flixelHUDzoom;
+								camHUD2.zoom += SONG.notes[Math.floor(curStep / 16)].flixelHUDzoom;
+							}
+					}
+			}
+
+				if (!endingSong && songStarted && SONG.notes.length != 0 && unspawnNotes.length != 0)
+					{
+						if (SONG.notes[Math.floor(curStep / 16)].curbeatanim && SONG.notes[Math.floor(curStep / 16)].playanim)
+							{
+								if (curBeat == SONG.notes[Math.floor(curStep / 16)].steppernumanim)
+									{
+										if (SONG.notes[Math.floor(curStep / 16)].charactertoplayon == 'dad')
+											{
+												dad.playAnim(SONG.notes[Math.floor(curStep / 16)].animtoplay, SONG.notes[Math.floor(curStep / 16)].isforced);
+											}
+											else if (SONG.notes[Math.floor(curStep / 16)].charactertoplayon == 'boyfriend')
+												{
+													boyfriend.playAnim(SONG.notes[Math.floor(curStep / 16)].animtoplay, SONG.notes[Math.floor(curStep / 16)].isforced);	
+												}
+												else if (SONG.notes[Math.floor(curStep / 16)].charactertoplayon == 'gf')
+													{
+														gf.playAnim(SONG.notes[Math.floor(curStep / 16)].animtoplay, SONG.notes[Math.floor(curStep / 16)].isforced);
+													}
+									}
+							}
+					}
+
+
 
 		if (generatedMusic)
 		{
 			notes.sort(FlxSort.byY, FlxSort.DESCENDING);
 		}
+
+		if (!endingSong && songStarted && SONG.notes.length != 0 && unspawnNotes.length != 0)
+			{
+				if (SONG.notes[Math.floor(curStep / 16)].camzoomonp1 && curBeat % 4 == 0) // depends on how long the section is?, temporary solution for now ig
+					{
+						triggeredcamera = true;
+						FlxTween.tween(FlxG.camera, {zoom: SONG.notes[Math.floor(curStep / 16)].camzoomamountp1}, (Conductor.stepCrochet * SONG.notes[Math.floor(curStep / 16)].camzoomtime / 1000), {ease: FlxEase.quadInOut, onComplete: fixzoom});
+						trace(SONG.notes[Math.floor(curStep / 16)].camzoomamountp1);
+					}
+					else if (curBeat % 4 == 0 && triggeredcamera)
+						{
+							defaultstagezoom();
+							triggeredcamera = false;
+						}
+			}
+
+			
 
 
 		if (SONG.notes[Math.floor(curStep / 16)] != null)
@@ -5421,7 +5578,7 @@ class PlayState extends MusicBeatState
 		wiggleShit.update(Conductor.crochet);
 
 		// HARDCODING FOR MILF ZOOMS!
-		if (curSong.toLowerCase() == 'milf' && curBeat >= 168 && curBeat < 200 && FlxG.save.data.camzooming && FlxG.camera.zoom < 1.35)
+		if (curSong.toLowerCase() == 'milf' && curBeat >= 168 && curBeat < 200 && FlxG.save.data.camzooming && FlxG.camera.zoom < 1.35 && !SONG.notes[Math.floor(curStep / 16)].disablecamzooming)
 		{
 			FlxG.camera.zoom += 0.015;
 			camHUD.zoom += 0.03;
@@ -5438,9 +5595,12 @@ class PlayState extends MusicBeatState
 
 			if (FlxG.save.data.camzooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0)
 				{
-					FlxG.camera.zoom += 0.015;
-					camHUD.zoom += 0.03;
-					camHUD2.zoom += 0.03;
+					if (!endingSong && songStarted && SONG.notes.length != 0 && unspawnNotes.length != 0 && !SONG.notes[Math.floor(curStep / 16)].disablecamzooming)
+						{
+							FlxG.camera.zoom += 0.015;
+							camHUD.zoom += 0.03;
+							camHUD2.zoom += 0.03;
+						}
 				}
 
 		if (!FlxG.save.data.hideHUD && addedhealthbarshit)
@@ -5630,6 +5790,15 @@ class PlayState extends MusicBeatState
 						FlxTween.tween(songInfo2, {alpha: 0, y: -20}, 0.8, {ease: FlxEase.quartInOut, startDelay: 0.3});
 					});		
 			}
+
+			function fixzoom(tween:FlxTween):Void
+				{
+					if (SONG.notes[Math.floor(curStep / 16)].camzoomonp1)
+						{
+							defaultCamZoom = SONG.notes[Math.floor(curStep / 16)].camzoomamountp1;
+							trace (defaultCamZoom + ' number should be not default');
+						}
+				}
 
 
 

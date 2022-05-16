@@ -44,8 +44,8 @@ class MainMenuState extends MusicBeatState
 	var playanims:Bool = false;
 	var defaultCamZoom:Float = 1.05;
 	var camZoom:FlxTween;
-	public static var sniperengineversion:String = " Swift Engine 1.5.8";
-	public static var sniperengineversionA:String = " SE 1.5.8";
+	public static var sniperengineversion:String = " Swift Engine 1.5.9";
+	public static var sniperengineversionA:String = " SE 1.5.9";
 	public static var KE142:String = " - KE 1.4.2";
 	public static var KE154:String = " - KE 1.5.4";
 	public static var gameVer:String = "v0.2.7.1";
@@ -156,7 +156,7 @@ class MainMenuState extends MusicBeatState
 				});
 				FlxG.camera.follow(camFollow, null, 0.06);	
 
-		var versionShit:FlxText = new FlxText(350, FlxG.height - 18, 0, gameVer + " FNF |" + sniperengineversion + " | Press C to view changelog", 12);
+		var versionShit:FlxText = new FlxText(2, FlxG.height - 18, 0, gameVer + " FNF |" + sniperengineversion + " | Press C to view changelog", 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);	

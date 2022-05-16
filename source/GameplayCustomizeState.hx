@@ -57,6 +57,11 @@ class GameplayCustomizeState extends MusicBeatState
     public static var reloadhealthbar:Bool = false;
     
     public override function create() {
+        if (!FlxG.sound.music.playing)
+            {	
+                FlxG.sound.playMusic(Paths.music('freakyMenu'));
+                Conductor.changeBPM(102);
+            }
         firstload = true;
         if (FlxG.save.data.ke142ratings)
             {

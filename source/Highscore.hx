@@ -55,6 +55,9 @@ class Highscore
 	static function setScore(song:String, score:Int):Void
 	{
 		// Reminder that I don't need to format this song, it should come formatted!
+		if (StoryMenuState.isStoryMode)
+		songScores.set(song, score);
+		else
 		songScores.set(song, score);
 		FlxG.save.data.songScores = songScores;
 		FlxG.save.flush();
