@@ -81,8 +81,9 @@ class Song
 		// FIX THE CASTING ON WINDOWS/NATIVE
 		// Windows???
 		// trace(songData);
-         if (FlxG.save.data.debug)
-		 trace('LOADED FROM JSON: ' + rawJson);
+		#if debug
+		trace('LOADED FROM JSON: ' + rawJson);
+		#end
 		/* 
 			for (i in 0...songData.notes.length)
 			{
@@ -110,8 +111,9 @@ class Song
 			// FIX THE CASTING ON WINDOWS/NATIVE
 			// Windows???
 			// trace(songData);
-			 if (FlxG.save.data.debug)
+			 #if debug
 			 trace('LOADED FROM JSON: ' + rawJson);
+			 #end
 			/* 
 				for (i in 0...songData.notes.length)
 				{

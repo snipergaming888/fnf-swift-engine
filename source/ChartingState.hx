@@ -1733,6 +1733,9 @@ class ChartingState extends MusicBeatState
 	{
 		PlayState.triggeredalready = false;	
 		PlayState.SONG = Song.parseJSONshit(FlxG.save.data.autosave);
+		#if debug
+		trace(FlxG.save.data.autosave);
+		#end
 		LoadingState.loadAndSwitchState(new ChartingState());
 	}
 
@@ -1780,22 +1783,23 @@ class ChartingState extends MusicBeatState
 
 			function _onCancel(_):Void
 				{
-					trace('FUCK!!!');
+					trace('cancel!');
 				}
 
 			function _onLoad(E:Event):Void
 				{
 					var fr:FileReference = cast E.target;
 					fr.removeEventListener(Event.COMPLETE, _onLoad);
-					PlayState.triggeredalready = false;	
+					PlayState.triggeredalready = false;
+					var data:String = fr.data.toString();
 					trace('Name: ' + fr.name);
 					#if debug
-					trace('Data ' + fr.data);
+					trace('Data: ' + fr.data);
 					#end
 					trace('Type: ' + fr.type);
 					trace('Size: ' + fr.size);
 					trace('loading...');
-					PlayState.SONG = Song.loadFromFileSystem(fr.name);
+					PlayState.SONG = Song.parseJSONshit(data);
 					
 					LoadingState.loadAndSwitchState(new ChartingState());
 					trace('loaded!!!');
