@@ -100,6 +100,7 @@ class PlayState extends MusicBeatState
 	public static var strumLineNotes:FlxTypedGroup<FlxSprite>;
 	public static var playerStrums:FlxTypedGroup<FlxSprite>;
 	public static var cpuStrums:FlxTypedGroup<FlxSprite> = null;
+	private var shouldSplash:Bool = false;
 	private var singAnimations:Array<String> = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'];
 	public static var generatedStaticArrows:Bool = false;
 	public static var startTime = 0.0;
@@ -4073,6 +4074,8 @@ class PlayState extends MusicBeatState
 			
 					if (daRating == 'sick')
 					{	
+						if (FlxG.save.data.notesplashes)
+						shouldSplash = true;
 						 notesHit += 1;
 						 sicks +=1;
 						totalNotesHit += 1;
@@ -4093,6 +4096,8 @@ class PlayState extends MusicBeatState
 									notesnotmissed += 1;
 									totalNotesHit -= 2;
 									shits +=1;
+									if (FlxG.save.data.notesplashes)
+									shouldSplash = false;
 								}
 								else if (noteDiff > Conductor.safeZoneOffset * 0.5)
 								{
@@ -4102,6 +4107,8 @@ class PlayState extends MusicBeatState
 									notesnotmissed += 1;
 									totalNotesHit += 0.2;
 									bads +=1;
+									if (FlxG.save.data.notesplashes)
+									shouldSplash = false;
 								}
 								else if (noteDiff > Conductor.safeZoneOffset * 0.3)
 								{
@@ -4111,10 +4118,14 @@ class PlayState extends MusicBeatState
 									notesnotmissed += 1;
 									totalNotesHit += 0.65;
 									goods +=1;
+									if (FlxG.save.data.notesplashes)
+									shouldSplash = false;
 								}
 							
 						if (daRating == 'sick')
 						{
+							if (FlxG.save.data.notesplashes)
+							shouldSplash = true;
 							sicks +=1;
 							notesHit += 1;
 							totalNotesHit += 1;
@@ -5071,6 +5082,7 @@ class PlayState extends MusicBeatState
 		var downP = controls.DOWN_P;
 		var leftP = controls.LEFT_P;
 		
+		
 		if (!note.wasGoodHit)
 		{
 					if (!FlxG.save.data.playerstrumlights)
@@ -5097,6 +5109,48 @@ class PlayState extends MusicBeatState
 			rating();
 			if (FlxG.save.data.pscyheenginescoretext)
 			ratingPsyche();
+
+			if (FlxG.save.data.notesplashes) // thanks neat engine! idk if this was stollen/ remoade from week7 source but thanks lol, i was to lazy to make notesplash code myself.
+				{
+					var sploosh:FlxSprite = new FlxSprite(note.x, playerStrums.members[note.noteData].y);
+					{
+						var tex:flixel.graphics.frames.FlxAtlasFrames = Paths.getSparrowAtlas('noteSplashes', 'shared');
+						sploosh.frames = tex;
+						sploosh.animation.addByPrefix('splash 0 0', 'note impact 1 purple', 24, false);
+						sploosh.animation.addByPrefix('splash 0 1', 'note impact 1  blue', 24, false);
+						sploosh.animation.addByPrefix('splash 0 2', 'note impact 1 green', 24, false);
+						sploosh.animation.addByPrefix('splash 0 3', 'note impact 1 red', 24, false);
+						sploosh.animation.addByPrefix('splash 1 0', 'note impact 2 purple', 24, false);
+						sploosh.animation.addByPrefix('splash 1 1', 'note impact 2 blue', 24, false);
+						sploosh.animation.addByPrefix('splash 1 2', 'note impact 2 green', 24, false);
+						sploosh.animation.addByPrefix('splash 1 3', 'note impact 2 red', 24, false);
+						add(sploosh);
+						sploosh.cameras = [camHUD];
+						sploosh.alpha = 0.6;
+						sploosh.offset.x += 90;
+						sploosh.offset.y += 80;
+						sploosh.animation.play('note impact 1 purple');
+						sploosh.animation.play('note impact 1  blue');
+						sploosh.animation.play('note impact 1 green');
+						sploosh.animation.play('note impact 1 red');
+						sploosh.animation.play('note impact 2 purple');
+						sploosh.animation.play('note impact 2 blue');
+						sploosh.animation.play('note impact 2 green');
+						sploosh.animation.play('note impact 2 red');
+
+						// load hidden so game no lag
+						if (shouldSplash == true && !note.isSustainNote)
+						{
+							sploosh.animation.play('splash ' + FlxG.random.int(0, 1) + " " + note.noteData);
+							sploosh.animation.finishCallback = function(name) sploosh.kill();
+						}
+						else
+							{
+								sploosh.alpha = 0.0;
+							}
+					}
+				}
+
 			if (!note.isSustainNote)
 			{
 				notesPassing += 1;

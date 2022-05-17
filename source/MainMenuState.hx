@@ -44,8 +44,8 @@ class MainMenuState extends MusicBeatState
 	var playanims:Bool = false;
 	var defaultCamZoom:Float = 1.05;
 	var camZoom:FlxTween;
-	public static var sniperengineversion:String = " Swift Engine 1.5.9";
-	public static var sniperengineversionA:String = " SE 1.5.9";
+	public static var sniperengineversion:String = " Swift Engine 1.6.1";
+	public static var sniperengineversionA:String = " SE 1.6.1";
 	public static var KE142:String = " - KE 1.4.2";
 	public static var KE154:String = " - KE 1.5.4";
 	public static var gameVer:String = "v0.2.7.1";

@@ -243,6 +243,9 @@ class Settings extends MusicBeatState
               if (FlxG.save.data.graphicpersist == null)
                  FlxG.save.data.graphicpersist = false;
 
+              if (FlxG.save.data.notesplashes == null)
+                FlxG.save.data.notesplashes = false;
+
               FlxGraphic.defaultPersist = FlxG.save.data.graphicpersist;
 
               FlxG.save.data.hasplayed = false;
@@ -395,6 +398,8 @@ class Settings extends MusicBeatState
                     FlxG.save.data.disguiseaske154 = false;
                     
                     FlxG.save.data.enablesickpositions = false;
+
+                    FlxG.save.data.notesplashes = false;
   
                 FlxG.save.data.hasplayed = false;
                 trace('anim played? ' + FlxG.save.data.hasplayed);
