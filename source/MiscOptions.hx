@@ -334,11 +334,7 @@ class MiscOptions extends MusicBeatState
 						}
 						    if (curBeat % 1 == 0)
 						    	{
-									if (TitleState.old)
-										{
-											trace('no');
-										}
-										else if (FlxG.save.data.camzooming)
+									   if (FlxG.save.data.camzooming)
 											{
 												FlxG.camera.zoom += 0.015;
 												camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);

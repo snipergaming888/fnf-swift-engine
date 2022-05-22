@@ -48,19 +48,20 @@ class Note extends FlxSprite
 
 		this.prevNote = prevNote;
 		isSustainNote = sustainNote;
+		if (FlxG.save.data.middlescroll)
+			x -= 228;
+		else
+			x += 85;
         //x += 50;
-		x += 85;
 		// MAKE SURE ITS DEFINITELY OFF SCREEN?
 		y -= 2000;
 		this.strumTime = strumTime;
 
 		this.noteData = noteData;
 
-		var daStage:String = PlayState.curStage;
-
-		switch (daStage)
+		switch (PlayState.SONG.noteskin)
 		{
-			case 'school' | 'schoolEvil':
+			case 'pixel':
 				loadGraphic(Paths.image('weeb/pixelUI/arrows-pixels'), true, 17, 17);
 
 				animation.add('greenScroll', [6]);
@@ -87,7 +88,37 @@ class Note extends FlxSprite
 
 				setGraphicSize(Std.int(width * PlayState.daPixelZoom));
 				updateHitbox();
+				
+	        case 'default':
+						{
+							frames = Paths.getSparrowAtlas('NOTE_assets');
 
+							animation.addByPrefix('greenScroll', 'green0');
+							animation.addByPrefix('redScroll', 'red0');
+							animation.addByPrefix('blueScroll', 'blue0');
+							animation.addByPrefix('purpleScroll', 'purple0');
+			
+							animation.addByPrefix('purpleholdend', 'pruple end hold');
+							animation.addByPrefix('greenholdend', 'green hold end');
+							animation.addByPrefix('redholdend', 'red hold end');
+							animation.addByPrefix('blueholdend', 'blue hold end');
+			
+							animation.addByPrefix('purplehold', 'purple hold piece');
+							animation.addByPrefix('greenhold', 'green hold piece');
+							animation.addByPrefix('redhold', 'red hold piece');
+							animation.addByPrefix('bluehold', 'blue hold piece');
+			
+							setGraphicSize(Std.int(width * 0.7));
+							updateHitbox();
+							if (FlxG.save.data.antialiasing)
+								{
+									antialiasing = true;	
+								}
+								else
+									{
+										antialiasing = false;	
+									}
+						}		
 			default:
 						{
 							frames = Paths.getSparrowAtlas('NOTE_assets');
@@ -117,7 +148,7 @@ class Note extends FlxSprite
 									{
 										antialiasing = false;	
 									}
-						}
+						}	
 		}
 
 		switch (noteData)
@@ -172,7 +203,7 @@ class Note extends FlxSprite
 
 			x -= width / 2;
 
-			if (PlayState.curStage.startsWith('school'))
+			if (PlayState.SONG.noteskin == 'pixel')
 				x += 30;
 
 			if (prevNote.isSustainNote)

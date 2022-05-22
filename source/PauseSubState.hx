@@ -422,7 +422,7 @@ class PauseSubState extends MusicBeatSubstate
 		if (curSelected == 0 && isingameplay)
 			versionShit.text = "If the notes will scroll down or not.";
 		if (curSelected == 1 && isingameplay)
-			versionShit.text = "If the notes should appear in the middle of the screen.";
+			versionShit.text = "If the notes should appear in the middle of the screen. Show middlescroll lane: " + FlxG.save.data.middlescrollBG + ' (L to toggle)' + ' lane transparency: ' + FlxG.save.data.middlescrollalpha + ' (Left, Right)';
 		if (curSelected == 2 && isingameplay)
 			versionShit.text = "Wether or not you should have a health penalty for pressing keys not on a note.";
 		if (curSelected == 3 && isingameplay)
@@ -501,7 +501,7 @@ class PauseSubState extends MusicBeatSubstate
 			versionShit.text = "enable old scoretext.";
 
 		if (curSelected == 24 && isinappearance)
-			versionShit.text = "enable notesplashes.";
+			versionShit.text = "enable notesplashes. CPU note splashes: " + FlxG.save.data.cpunotesplashes + " (toggle with N) " + "show notesplashes with holdnotes: " + FlxG.save.data.notesplashhold + " (toggle with H)";
 		if (isinkeybinds)
 			versionShit.text = "Press enter on the key you want to rebind then press the key you want to rebind it to.";
         if (FlxG.save.data.antialiasing && curSelected == 0 && isinperformance)
@@ -522,6 +522,33 @@ class PauseSubState extends MusicBeatSubstate
 			versionShit.text = "Play songs in freeplay when hovering over them.";
 		if (curSelected == 1 && isinmisc)
 			versionShit.text = "Disable or enable the games discord presence.";
+
+		if (FlxG.keys.justPressed.N && curSelected == 24 && isinappearance)
+			{
+			if (!FlxG.save.data.cpunotesplashes)
+				{
+					FlxG.save.data.cpunotesplashes = true;
+				}
+				else if (FlxG.save.data.cpunotesplashes)
+					{
+						FlxG.save.data.cpunotesplashes = false;
+					}
+				trace(FlxG.save.data.cpunotesplashes);
+			}
+
+			if (FlxG.keys.justPressed.H && curSelected == 24 && isinappearance)
+				{
+				if (!FlxG.save.data.notesplashhold)
+					{
+						FlxG.save.data.notesplashhold = true;
+					}
+					else if (FlxG.save.data.notesplashhold)
+						{
+							FlxG.save.data.notesplashhold = false;
+						}
+					trace(FlxG.save.data.notesplashhold);
+				}
+		    	
 
 
 			//keybinds shit
@@ -582,6 +609,29 @@ class PauseSubState extends MusicBeatSubstate
 					FlxG.save.data.offset = 0;
 					needstoreload = true;
 				}
+			}
+
+			if (controls.RIGHT_R && curSelected == 1 && isingameplay && FlxG.save.data.middlescrollalpha < 1)
+				{
+					FlxG.save.data.middlescrollalpha += 0.1;
+				}
+	
+				if (controls.LEFT_R && curSelected == 1 && isingameplay && FlxG.save.data.middlescrollalpha > 0)
+					{
+						FlxG.save.data.middlescrollalpha -= 0.1;
+					}
+							
+
+			if (FlxG.keys.justPressed.L && curSelected == 1 && isingameplay)
+			{
+			if (!FlxG.save.data.middlescrollBG)
+				{
+					FlxG.save.data.middlescrollBG = true;
+				}
+				else if (FlxG.save.data.middlescrollBG)
+					{
+						FlxG.save.data.middlescrollBG = false;
+					}
 			}
 
 			if (FlxG.keys.justPressed.G && curSelected == 8 && isingameplay)
@@ -823,7 +873,7 @@ class PauseSubState extends MusicBeatSubstate
 								var introAlts:Array<String> = introAssets.get('default');
 								var altSuffix:String = "";
 
-								if (PlayState.SONG.song.toLowerCase() == 'senpai' || PlayState.SONG.song.toLowerCase() == 'roses' || PlayState.SONG.song.toLowerCase() == 'thorns')
+								if (PlayState.SONG.noteskin == 'pixel')
 									{
 										for (value in introAssets.keys())
 											{
@@ -846,7 +896,7 @@ class PauseSubState extends MusicBeatSubstate
 										ready.scrollFactor.set();
 										ready.updateHitbox();
 
-										if (PlayState.SONG.song.toLowerCase() == 'senpai' || PlayState.SONG.song.toLowerCase() == 'roses' || PlayState.SONG.song.toLowerCase() == 'thorns')
+										if (PlayState.SONG.noteskin == 'pixel')
 											ready.setGraphicSize(Std.int(ready.width * daPixelZoom));
 					
 					
@@ -865,7 +915,7 @@ class PauseSubState extends MusicBeatSubstate
 										var set:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[1] + altSuffix));
 										set.scrollFactor.set();
 
-										if (PlayState.SONG.song.toLowerCase() == 'senpai' || PlayState.SONG.song.toLowerCase() == 'roses' || PlayState.SONG.song.toLowerCase() == 'thorns')
+										if (PlayState.SONG.noteskin == 'pixel')
 											set.setGraphicSize(Std.int(set.width * daPixelZoom));
 					
 					
@@ -885,7 +935,7 @@ class PauseSubState extends MusicBeatSubstate
 										var go:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[2] + altSuffix));
 										go.scrollFactor.set();
 
-										if (PlayState.SONG.song.toLowerCase() == 'senpai' || PlayState.SONG.song.toLowerCase() == 'roses' || PlayState.SONG.song.toLowerCase() == 'thorns')
+										if (PlayState.SONG.noteskin == 'pixel')
 											go.setGraphicSize(Std.int(go.width * daPixelZoom));
 					
 										go.updateHitbox();

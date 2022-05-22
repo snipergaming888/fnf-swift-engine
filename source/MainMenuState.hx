@@ -44,8 +44,8 @@ class MainMenuState extends MusicBeatState
 	var playanims:Bool = false;
 	var defaultCamZoom:Float = 1.05;
 	var camZoom:FlxTween;
-	public static var sniperengineversion:String = " Swift Engine 1.6.1";
-	public static var sniperengineversionA:String = " SE 1.6.1";
+	public static var sniperengineversion:String = " Swift Engine 1.6.2";
+	public static var sniperengineversionA:String = " SE 1.6.2";
 	public static var KE142:String = " - KE 1.4.2";
 	public static var KE154:String = " - KE 1.5.4";
 	public static var gameVer:String = "v0.2.7.1";
@@ -61,26 +61,14 @@ class MainMenuState extends MusicBeatState
 
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
-		if (TitleState.old)
-			{
-				if (!FlxG.sound.music.playing)
-				{
-					FlxG.sound.playMusic(Paths.music('title'), 0);
-					Conductor.changeBPM(92);
-				}
-				else
-					{
-					   ///nothing?
-					}
-			}
-			else
-				{
+
+				
 					if (!FlxG.sound.music.playing)
 						{	
 							FlxG.sound.playMusic(Paths.music('freakyMenu'));
 							Conductor.changeBPM(102);
 						}
-				}
+				
 
 		persistentUpdate = persistentDraw = true;
 
@@ -98,10 +86,8 @@ class MainMenuState extends MusicBeatState
 		magenta.color = 0xFFfd719b;
 		add(magenta);
 
-		if (TitleState.old)
-	{
-		trace ('old');
-		var bg:FlxSprite = new FlxSprite(-80).loadGraphic(Paths.image('menuBGBlue'));
+	
+		var bg:FlxSprite = new FlxSprite(-80).loadGraphic(Paths.image('menuBG'));
 		bg.scrollFactor.x = 0;
 		bg.scrollFactor.y = 0.18;
 		bg.setGraphicSize(Std.int(bg.width * 1.1));
@@ -109,18 +95,7 @@ class MainMenuState extends MusicBeatState
 		bg.screenCenter();
 		bg.antialiasing = true;
 		add(bg);
-	}
-	else
-		{
-			var bg:FlxSprite = new FlxSprite(-80).loadGraphic(Paths.image('menuBG'));
-			bg.scrollFactor.x = 0;
-			bg.scrollFactor.y = 0.18;
-			bg.setGraphicSize(Std.int(bg.width * 1.1));
-			bg.updateHitbox();
-			bg.screenCenter();
-			bg.antialiasing = true;
-			add(bg);
-		}
+		
 
 		menuItems = new FlxTypedGroup<FlxSprite>();
 		add(menuItems);
@@ -139,12 +114,10 @@ class MainMenuState extends MusicBeatState
 					menuItems.add(menuItem);
 					menuItem.scrollFactor.set();
 					menuItem.antialiasing = true;
-					menuItem.y -= 1000;
-					FlxTween.tween(menuItem, {y: menuItem.y + 1000, alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 0.3});
 				}
 			
 		
-			new FlxTimer().start(0.001, function(tmr:FlxTimer)
+			/*new FlxTimer().start(0.001, function(tmr:FlxTimer)
 				{
 					FlxG.camera.follow(magenta, null, 0.06);
 					new FlxTimer().start(1.0, function(tmr:FlxTimer)
@@ -153,7 +126,7 @@ class MainMenuState extends MusicBeatState
 							camFollow.setPosition(magenta.getGraphicMidpoint().x, magenta.getGraphicMidpoint().y);
 							FlxG.camera.follow(camFollow, null, 0.06);
 						});
-				});
+				});*/
 				FlxG.camera.follow(camFollow, null, 0.06);	
 
 		var versionShit:FlxText = new FlxText(2, FlxG.height - 18, 0, gameVer + " FNF |" + sniperengineversion + " | Press C to view changelog", 12);
@@ -216,10 +189,6 @@ class MainMenuState extends MusicBeatState
 
 			if (controls.BACK)
 			{
-				if (TitleState.old)
-					{
-						FlxG.switchState(new TitleStateOld());
-					}
 				FlxG.switchState(new TitleState());
 			}
 
@@ -255,7 +224,6 @@ class MainMenuState extends MusicBeatState
 						if (curSelected != spr.ID)
 						{
 							playanims = true;
-							FlxTween.tween(spr, {y: spr.y + 1700}, 1, {ease: FlxEase.circOut, startDelay: 0.2});
 							FlxTween.tween(spr, {alpha: 0}, 0.4, {
 								ease: FlxEase.quadOut, onComplete: function(twn:FlxTween)
 									{
@@ -380,11 +348,7 @@ class MainMenuState extends MusicBeatState
 						}
 						    if (curBeat % 1 == 0)
 						    	{
-									if (TitleState.old)
-										{
-											trace('no');
-										}
-										else if (FlxG.save.data.camzooming)
+							    if (FlxG.save.data.camzooming)
 											{
 												FlxG.camera.zoom += 0.015;
 												camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);

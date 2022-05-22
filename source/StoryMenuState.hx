@@ -103,15 +103,10 @@ class StoryMenuState extends MusicBeatState
 		PRESSED = false;
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
+		curWeek = 0;
 
 		if (FlxG.sound.music != null)
 		{
-			if (TitleState.old)
-				{
-					if (!FlxG.sound.music.playing)
-						FlxG.sound.playMusic(Paths.music('title'));
-				}
-				else
 					{
 						if (!FlxG.sound.music.playing)
 							FlxG.sound.playMusic(Paths.music('freakyMenu'));
@@ -675,11 +670,7 @@ class StoryMenuState extends MusicBeatState
 						}
 						    if (curBeat % 1 == 0)
 						    	{
-									if (TitleState.old)
-										{
-											trace('no');
-										}
-										else if (FlxG.save.data.camzooming)
+								 if (FlxG.save.data.camzooming)
 											{
 												FlxG.camera.zoom += 0.015;
 												camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);

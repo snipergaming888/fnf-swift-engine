@@ -34,6 +34,7 @@ typedef SwagSong =
 	var flixelHUDzoom:Float;
 	var sectiongfspeed:Int;
 	var steppernumanim:Float;
+	var noteskin:String;
 }
 
 class Song
@@ -60,6 +61,7 @@ class Song
 	public var player2:String = 'dad';
 	public var stage:String = '';
 	public var composer:String = '';
+	public static var noteskin:String = 'default';
 
 	public function new(song, notes, bpm)
 	{

@@ -38,6 +38,9 @@ typedef SwagSection =
 	var charactertoplayon:String;
 	var isforced:Bool;
 	var islooped:Bool;
+	var crossFade:Bool;
+	var shakegamecamera:Bool;
+    var shakeHUD:Bool;
 }
 
 class Section
@@ -63,6 +66,8 @@ class Section
 	public var charactertoplayon:String;
 	public var isforced:Bool;
 	public var islooped:Bool;
+	public var shakegamecamera:Bool;
+	public var shakeHUD:Bool;
 
 	/**
 	 *	Copies the first section into the second section!

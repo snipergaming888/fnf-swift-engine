@@ -226,6 +226,32 @@ class ApperanceOptions extends MusicBeatState
 					}
 				}
 
+				if (FlxG.keys.justPressed.N && curSelected == 24)
+					{
+					if (!FlxG.save.data.cpunotesplashes)
+						{
+							FlxG.save.data.cpunotesplashes = true;
+						}
+						else if (FlxG.save.data.cpunotesplashes)
+							{
+								FlxG.save.data.cpunotesplashes = false;
+							}
+					    trace(FlxG.save.data.cpunotesplashes);
+					}
+
+					if (FlxG.keys.justPressed.H && curSelected == 24)
+						{
+						if (!FlxG.save.data.notesplashhold)
+							{
+								FlxG.save.data.notesplashhold = true;
+							}
+							else if (FlxG.save.data.notesplashhold)
+								{
+									FlxG.save.data.notesplashhold = false;
+								}
+							trace(FlxG.save.data.notesplashhold);
+						}
+
 				if (curSelected == 18)
 					{
 						var multiply:Float = 1;
@@ -322,7 +348,10 @@ class ApperanceOptions extends MusicBeatState
 				versionShit.text = "Edit Your prefered scoretext Layout.";
 
 			if (curSelected == 23)
-				versionShit.text = "enable notesplashes.";
+				versionShit.text = "enable old scoring text.";
+
+			if (curSelected == 24)
+				versionShit.text = "enable notesplashes. CPU note splashes: " + FlxG.save.data.cpunotesplashes + " (toggle with N) " + "show notesplashes with holdnotes: " + FlxG.save.data.notesplashhold + " (toggle with H)";
 
 
 			if (controls.ACCEPT)
@@ -588,11 +617,7 @@ class ApperanceOptions extends MusicBeatState
 						}
 						    if (curBeat % 1 == 0)
 						    	{
-									if (TitleState.old)
-										{
-											trace('no');
-										}
-										else if (FlxG.save.data.camzooming)
+								 if (FlxG.save.data.camzooming)
 											{
 												FlxG.camera.zoom += 0.015;
 												camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);

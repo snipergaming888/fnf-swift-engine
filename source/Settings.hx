@@ -244,7 +244,19 @@ class Settings extends MusicBeatState
                  FlxG.save.data.graphicpersist = false;
 
               if (FlxG.save.data.notesplashes == null)
-                FlxG.save.data.notesplashes = false;
+                 FlxG.save.data.notesplashes = false;
+
+              if (FlxG.save.data.cpunotesplashes == null)
+                FlxG.save.data.cpunotesplashes = false;
+
+              if (FlxG.save.data.notesplashhold == null)
+              FlxG.save.data.notesplashhold = false;
+
+              if (FlxG.save.data.middlescrollalpha == null)
+                FlxG.save.data.middlescrollalpha = '0.5';
+
+              if (FlxG.save.data.middlescrollBG == null)
+                FlxG.save.data.middlescrollBG = false;
 
               FlxGraphic.defaultPersist = FlxG.save.data.graphicpersist;
 
@@ -400,6 +412,14 @@ class Settings extends MusicBeatState
                     FlxG.save.data.enablesickpositions = false;
 
                     FlxG.save.data.notesplashes = false;
+
+                    FlxG.save.data.cpunotesplashes = false;
+
+                    FlxG.save.data.notesplashhold = false;
+
+                    FlxG.save.data.middlescrollalpha = '0.5';
+
+                    FlxG.save.data.middlescrollBG = false;
   
                 FlxG.save.data.hasplayed = false;
                 trace('anim played? ' + FlxG.save.data.hasplayed);

@@ -159,11 +159,6 @@ class ChangelogSubState extends MusicBeatState
 					}
 						    if (curBeat % 2 == 0)
 						    	{
-									if (TitleState.old)
-										{
-											trace('no');
-										}
-										else
 											{
 
 													if (camZooming && FlxG.camera.zoom < 1.35)

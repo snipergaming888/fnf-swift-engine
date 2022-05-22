@@ -135,16 +135,10 @@ class TitleState extends MusicBeatState
 							{
 								FlxG.switchState(new Caching());
 							}
-							else if (FlxG.random.bool(5))
+							else
 								{
-									old = true;
-									trace('old intro');
-									FlxG.switchState(new TitleStateOld());
+								   startIntro();
 								}
-								else
-									{
-										startIntro();
-									}
 											
 										
 					});

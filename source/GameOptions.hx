@@ -221,7 +221,7 @@ class GameOptions extends MusicBeatState
 			if (curSelected == 0)
 				versionShit.text = "If the notes will scroll down or not.";
 			if (curSelected == 1)
-				versionShit.text = "If the notes should appear in the middle of the screen.";
+				versionShit.text = "If the notes should appear in the middle of the screen. Show middlescroll lane: " + FlxG.save.data.middlescrollBG + ' (L to toggle)' + ' lane transparency: ' + FlxG.save.data.middlescrollalpha + ' (Left, Right)';
 			if (curSelected == 2)
 				versionShit.text = "Wether or not you should have a health penalty for pressing keys not on a note.";
 			if (curSelected == 3)
@@ -275,6 +275,28 @@ class GameOptions extends MusicBeatState
 						}
 				}
 
+				if (controls.RIGHT_R && curSelected == 1 && FlxG.save.data.middlescrollalpha < 1)
+					{
+						FlxG.save.data.middlescrollalpha += 0.1;
+					}
+		
+					if (controls.LEFT_R && curSelected == 1 && FlxG.save.data.middlescrollalpha > 0)
+						{
+							FlxG.save.data.middlescrollalpha -= 0.1;
+						}
+								
+
+				if (FlxG.keys.justPressed.L && curSelected == 1)
+				{
+				if (!FlxG.save.data.middlescrollBG)
+					{
+						FlxG.save.data.middlescrollBG = true;
+					}
+					else if (FlxG.save.data.middlescrollBG)
+						{
+							FlxG.save.data.middlescrollBG = false;
+						}
+				}
 
 			if (controls.RIGHT_R && curSelected == 8)
 				{
@@ -511,11 +533,7 @@ class GameOptions extends MusicBeatState
 						}
 						    if (curBeat % 1 == 0)
 						    	{
-									if (TitleState.old)
-										{
-											trace('no');
-										}
-										else if (FlxG.save.data.camzooming)
+									if (FlxG.save.data.camzooming)
 											{
 												FlxG.camera.zoom += 0.015;
 												camZoom = FlxTween.tween(FlxG.camera, {zoom: 1}, 0.1);

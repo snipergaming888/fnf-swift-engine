@@ -3,6 +3,7 @@ package;
 #if cpp
 import Discord.DiscordClient;
 #end
+import flixel.addons.ui.FlxUIText;
 import Conductor.BPMChangeEvent;
 import Section.SwagSection;
 import Song.SwagSong;
@@ -60,6 +61,7 @@ class ChartingState extends MusicBeatState
 	var strumLine:FlxSprite;
 	var curSong:String = 'Dadbattle';
 	var amountSteps:Int = 0;
+	var writingNotesText:FlxText;
 	var bullshitUI:FlxGroup;
 	var diff:Int = PlayState.storyDifficulty;
 	public static var storyDifficultyString:String = "";
@@ -207,6 +209,7 @@ class ChartingState extends MusicBeatState
 				curstepzooming: false,
 				steppernumanim: 0,
 				camzoomtime: 0,
+				noteskin: 'default',
 				
 				speed: 1,
 				validScore: false
@@ -363,6 +366,7 @@ class ChartingState extends MusicBeatState
 
 		var characters:Array<String> = CoolUtil.coolTextFile(Paths.txt('characterList'));
 		var stages:Array<String> = CoolUtil.coolTextFile(Paths.txt('stageList'));
+		var noteskins:Array<String> = CoolUtil.coolTextFile(Paths.txt('noteskinList'));
 
 		var player1DropDown = new FlxUIDropDownMenu(10, 235, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
@@ -386,6 +390,16 @@ class ChartingState extends MusicBeatState
 		stageDropDown.selectedLabel = _song.stage;
 		
 		var stageLabel = new FlxText(140,260,64,'Stage');
+
+		var noteskinDropDown = new FlxUIDropDownMenu(10, 280, FlxUIDropDownMenu.makeStrIdLabelArray(noteskins, true), function(noteskin:String)
+			{
+				_song.noteskin = noteskins[Std.parseInt(noteskin)];
+				updateGrid();
+			    updateSectionUI();
+			});
+		noteskinDropDown.selectedLabel = _song.noteskin;
+		
+		var noteskinLabel = new FlxText(10,260,64,'Noteskin');
 
 		player2DropDown.selectedLabel = _song.player2;
 
@@ -418,6 +432,8 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(player1Label);
 		tab_group_song.add(player2Label);
 		tab_group_song.add(loadjsonButton);
+		tab_group_song.add(noteskinDropDown);
+		tab_group_song.add(noteskinLabel);
 
 		UI_box.addGroup(tab_group_song);
 		UI_box.scrollFactor.set();
@@ -427,6 +443,8 @@ class ChartingState extends MusicBeatState
 
 	var stepperLength:FlxUINumericStepper;
 	var check_mustHitSection:FlxUICheckBox;
+	var check_shakegamecamera:FlxUICheckBox;
+	var check_shakeHUD:FlxUICheckBox;
 	var check_playnoisemusthit:FlxUICheckBox;
 	var check_playnoisemusthitdad:FlxUICheckBox;
 	var check_changeBPM:FlxUICheckBox;
@@ -447,6 +465,7 @@ class ChartingState extends MusicBeatState
 	var check_curstepanim:FlxUICheckBox;
 	var check_altAnim2:FlxUICheckBox;
 	var check_islooped:FlxUICheckBox;
+	var check_crossfade:FlxUICheckBox;
 	var camerazoompercentinput:FlxUINumericStepper;
 	var flixelcamerazoom:FlxUINumericStepper;
 	var flixelHUDzoom:FlxUINumericStepper;
@@ -561,6 +580,14 @@ class ChartingState extends MusicBeatState
 			check_camerashake = new FlxUICheckBox(10, 40, null, null, 'Camera Shake', 100);
 			check_camerashake.name = 'check_camerashake';
 			check_camerashake.checked = false;
+
+			check_shakegamecamera = new FlxUICheckBox(120, 40, null, null, 'Shake game cam', 100);
+			check_shakegamecamera.name = 'check_shakegamecamera';
+			check_shakegamecamera.checked = false;
+
+			check_shakeHUD = new FlxUICheckBox(225, 70, null, null, 'Shake HUD', 100);
+			check_shakeHUD.name = 'check_shakeHUD';
+			check_shakeHUD.checked = false;
 
 			camerashaketrigger = new FlxUINumericStepper(10, 60, 1, 8, 0, 999, 0);
 			camerashaketrigger.value = _song.notes[curSection].camerashaketrigger;
@@ -701,6 +728,10 @@ class ChartingState extends MusicBeatState
 			check_islooped = new FlxUICheckBox(10, 530, null, null, 'Looped', 100);
 			check_islooped.name = 'check_isforced';
 			check_islooped.checked = _song.notes[curSection].islooped;
+
+			check_crossfade = new FlxUICheckBox(10, 560, null, null, 'CrossFade', 100);
+			check_crossfade.name = 'check_crossfade';
+			check_crossfade.checked = _song.notes[curSection].crossFade;
 			
 	
 	
@@ -749,6 +780,9 @@ class ChartingState extends MusicBeatState
 			tab_group_effects.add(playanimtext2);
 			tab_group_effects.add(check_isforced);
 			tab_group_effects.add(check_islooped);
+			tab_group_effects.add(check_crossfade);
+			tab_group_effects.add(check_shakegamecamera);
+			tab_group_effects.add(check_shakeHUD);
 	
 			UI_box.addGroup(tab_group_effects);
 		}
@@ -760,12 +794,16 @@ class ChartingState extends MusicBeatState
 		var tab_group_note = new FlxUI(null, UI_box);
 		tab_group_note.name = 'Note';
 
+		writingNotesText = new FlxUIText(20,100, 0, "");
+		writingNotesText.setFormat("Arial",20,FlxColor.WHITE,FlxTextAlign.LEFT,FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
+
 		stepperSusLength = new FlxUINumericStepper(10, 10, Conductor.stepCrochet / 2, 0, 0, Conductor.stepCrochet * 16);
 		stepperSusLength.value = 0;
 		stepperSusLength.name = 'note_susLength';
 
 		var applyLength:FlxButton = new FlxButton(100, 10, 'Apply');
 
+		tab_group_note.add(writingNotesText);
 		tab_group_note.add(stepperSusLength);
 		tab_group_note.add(applyLength);
 
@@ -860,7 +898,13 @@ class ChartingState extends MusicBeatState
 				case "Forced":
 					_song.notes[curSection].isforced = check.checked;
 				case "Looped":
-					_song.notes[curSection].islooped = check.checked;					
+					_song.notes[curSection].islooped = check.checked;
+				case "CrossFade":
+					_song.notes[curSection].crossFade = check.checked;		
+				case "Shake game camera":	
+				    _song.notes[curSection].shakegamecamera = check.checked;
+				case "Shake HUD":	
+				    _song.notes[curSection].shakeHUD = check.checked;					
 			}
 		}
 		else if (id == FlxUINumericStepper.CHANGE_EVENT && (sender is FlxUINumericStepper))
@@ -984,6 +1028,8 @@ class ChartingState extends MusicBeatState
 		return daPos;
 	}
 
+	var writingNotes:Bool = false;
+
 	override function update(elapsed:Float)
 	{
 		//steppercopyfloat = stepperCopydata.value;
@@ -1012,9 +1058,51 @@ class ChartingState extends MusicBeatState
 			changeSection(curSection + 1, false);
 		}
 
+		if (FlxG.keys.justPressed.Z && UI_box.selected_tab == 1)
+			{
+				writingNotes = !writingNotes;
+			}
+
+			if (writingNotes)
+				writingNotesText.text = "WRITING NOTES";
+			else if (!writingNotes)
+				writingNotesText.text = "";
+
+		var upP = controls.UP_P;
+		var rightP = controls.RIGHT_P;
+		var downP = controls.DOWN_P;
+		var leftP = controls.LEFT_P;
+
+		var controlArray:Array<Bool> = [leftP, downP, upP, rightP];
+
+		if ((upP || rightP || downP || leftP) && writingNotes)
+			{
+				for(i in 0...controlArray.length)
+				{
+					if (controlArray[i])
+					{
+						for (n in 0..._song.notes[curSection].sectionNotes.length)
+							{
+								var note = _song.notes[curSection].sectionNotes[n];
+								if (note == null)
+									continue;
+								if (note[0] == Conductor.songPosition && note[1] % 4 == i)
+								{
+									trace('GAMING');
+									_song.notes[curSection].sectionNotes.remove(note);
+								}
+							}
+						trace('adding note');
+						_song.notes[curSection].sectionNotes.push([Conductor.songPosition, i, 0]);
+						updateGrid();
+					}
+				}
+	
+			}
+
 	
 
-		if (strumLine.overlaps(curRenderedNotes) && check_playnoisemusthit.checked)
+		/*if (strumLine.overlaps(curRenderedNotes) && check_playnoisemusthit.checked)
 			{
 				curRenderedNotes.forEach(function(note:Note)
 					{
@@ -1028,9 +1116,9 @@ class ChartingState extends MusicBeatState
 							}
 						}
 					});
-			}
+			}*/
 
-			if (strumLine.overlaps(curRenderedNotes) && check_playnoisemusthitdad.checked)
+			/*if (strumLine.overlaps(curRenderedNotes) && check_playnoisemusthitdad.checked)
 				{
 					curRenderedNotes.forEach(function(note:Note)
 						{
@@ -1044,7 +1132,135 @@ class ChartingState extends MusicBeatState
 								}
 							}
 						});
-				}
+				}*/
+
+				if (strumLine.overlaps(curRenderedNotes) && check_playnoisemusthitdad.checked)
+					{
+						curRenderedNotes.forEach(function(note:Note)
+							{
+								//if (strumLine.overlaps(note))
+								if (strumLine.overlaps(note) && strumLine.y > note.y && !note.hasplayed)
+								{
+									if (FlxG.sound.music.playing)
+									{
+										{
+												{
+													if (note.noteData < 4 && !_song.notes[curSection].mustHitSection)
+														{
+															trace('hit ' + Math.abs(note.noteData));
+															FlxG.sound.play(Paths.sound('normal-hitnormal'));
+															note.hasplayed = true;
+														}
+														else if (note.noteData >= 4 && _song.notes[curSection].mustHitSection)
+															{
+																trace('hit ' + Math.abs(note.noteData));
+																FlxG.sound.play(Paths.sound('normal-hitnormal'));
+																note.hasplayed = true;
+															}
+												}
+										}
+									}
+								}
+							});
+					}
+
+					if (strumLine.overlaps(curRenderedNotes) && check_playnoisemusthit.checked)
+						{
+							curRenderedNotes.forEach(function(note:Note)
+								{
+									//if (strumLine.overlaps(note))
+									if (strumLine.overlaps(note) && strumLine.y > note.y && !note.hasplayed)
+									{
+										if (FlxG.sound.music.playing)
+										{ 
+												{
+													if (note.noteData < 4 && _song.notes[curSection].mustHitSection)
+													{
+														trace('must hit ' + Math.abs(note.noteData));
+														FlxG.sound.play(Paths.sound('normal-hitnormal'));
+														note.hasplayed = true;
+													}
+													if (note.noteData >= 4 && !_song.notes[curSection].mustHitSection)
+													{
+														trace('must hit ' + Math.abs(note.noteData));
+														FlxG.sound.play(Paths.sound('normal-hitnormal'));
+														note.hasplayed = true;
+													}
+												}
+										}
+									}
+								});
+						}
+
+				/*curRenderedNotes.forEach(function(note:Note) {
+			if (strumLine.overlaps(note) && strumLine.y == note.y) // yandere dev type shit
+			{
+				if (_song.notes[curSection].mustHitSection)
+					{
+						trace('must hit ' + Math.abs(note.noteData));
+						if (note.noteData < 4)
+						{
+							switch (Math.abs(note.noteData))
+							{
+								case 2:
+									player1.playAnim('singUP', true);
+								case 3:
+									player1.playAnim('singRIGHT', true);
+								case 1:
+									player1.playAnim('singDOWN', true);
+								case 0:
+									player1.playAnim('singLEFT', true);
+							}
+						}
+						if (note.noteData >= 4)
+						{
+							switch (note.noteData)
+							{
+								case 6:
+									player2.playAnim('singUP', true);
+								case 7:
+									player2.playAnim('singRIGHT', true);
+								case 5:
+									player2.playAnim('singDOWN', true);
+								case 4:
+									player2.playAnim('singLEFT', true);
+							}
+						}
+					}
+					else
+					{
+						trace('hit ' + Math.abs(note.noteData));
+						if (note.noteData < 4)
+						{
+							switch (Math.abs(note.noteData))
+							{
+								case 2:
+									player2.playAnim('singUP', true);
+								case 3:
+									player2.playAnim('singRIGHT', true);
+								case 1:
+									player2.playAnim('singDOWN', true);
+								case 0:
+									player2.playAnim('singLEFT', true);
+							}
+						}
+						if (note.noteData >= 4)
+						{
+							switch (note.noteData)
+							{
+								case 6:
+									player1.playAnim('singUP', true);
+								case 7:
+									player1.playAnim('singRIGHT', true);
+								case 5:
+									player1.playAnim('singDOWN', true);
+								case 4:
+									player1.playAnim('singLEFT', true);
+							}
+						}
+					}
+			}
+		});*/
 
 		#if cpp
 		DiscordClient.changePresence("Editing " + PlayState.SONG.song + " in the Chart Editor" + " | " + "Position: " + Std.string(FlxMath.roundDecimal(Conductor.songPosition / 1000, 2)) + " / " + Std.string(FlxMath.roundDecimal(FlxG.sound.music.length / 1000, 2)) + " | Section " + curSection , null, null, true);
@@ -1209,10 +1425,13 @@ class ChartingState extends MusicBeatState
 				var shiftThing:Int = 1;
 				if (FlxG.keys.pressed.SHIFT)
 					shiftThing = 4;
-				if (FlxG.keys.justPressed.RIGHT)
-					changeSection(curSection + shiftThing);
-				if (FlxG.keys.justPressed.LEFT)
-					changeSection(curSection - shiftThing);
+				if (!writingNotes)
+					{
+						if (FlxG.keys.justPressed.RIGHT)
+							changeSection(curSection + shiftThing);
+						if (FlxG.keys.justPressed.LEFT)
+							changeSection(curSection - shiftThing);
+					}
 		}
 
 		_song.bpm = tempBpm;
@@ -1354,6 +1573,8 @@ class ChartingState extends MusicBeatState
 			typingShit4.text = daSec.animtoplay;
 			typingShit5.text = daSec.charactertoplayon;
 			check_camerashake.checked = daSec.camerashake;
+			check_shakegamecamera.checked = daSec.shakegamecamera;
+			check_shakeHUD.checked = daSec.shakeHUD;
 		    check_camzoomonp1.checked = daSec.camzoomonp1;
 		    check_disablecamzooming.checked = daSec.disablecamzooming;
 		    check_camzooming.checked = daSec.camzooming;
@@ -1376,8 +1597,11 @@ class ChartingState extends MusicBeatState
 			check_playanim.checked = daSec.playanim;
 			check_isforced.checked = daSec.isforced;
 			check_islooped.checked = daSec.islooped;
+			check_crossfade.checked = daSec.crossFade;
 
 			sec.animtoplay = daSec.animtoplay;
+			sec.shakegamecamera = daSec.shakegamecamera;
+			sec.shakeHUD = daSec.shakeHUD;
 			sec.charactertoplayon = daSec.charactertoplayon;
 			sec.camerashake = daSec.camerashake;
 			sec.camzoomonp1 = daSec.camzoomonp1;
@@ -1403,6 +1627,7 @@ class ChartingState extends MusicBeatState
 			sec.playanim = daSec.playanim;
 			sec.isforced = daSec.isforced;
 			sec.islooped = daSec.islooped;
+			sec.crossFade = daSec.crossFade;
 
 			updateGrid();
 		}
@@ -1412,6 +1637,8 @@ class ChartingState extends MusicBeatState
 		var sec = _song.notes[curSection];
 		stepperLength.value = sec.lengthInSteps;
 		check_mustHitSection.checked = sec.mustHitSection;
+		check_shakegamecamera.checked = sec.shakegamecamera;
+		check_shakeHUD.checked = sec.shakeHUD;
 		check_gfspeed.checked = sec.gfspeed;
 		check_playanim.checked = sec.playanim;
 		check_camerashake.checked = sec.camerashake;
@@ -1438,7 +1665,8 @@ class ChartingState extends MusicBeatState
 		currentgfspeed.value = sec.sectiongfspeed;
 		camerazoompercentinput.value = sec.camerazoompercentinput;
 		steppernumanim.value = sec.steppernumanim;
-		#if desktop
+		check_crossfade.checked = sec.crossFade;
+		#if cpp
 		typingShit4.text = sec.animtoplay;
 		typingShit5.text = sec.charactertoplayon;
 		#else
@@ -1586,6 +1814,9 @@ class ChartingState extends MusicBeatState
 			isforced: false,
 			charactertoplayon: "boyfriend",
 			islooped: false,
+			crossFade: false,
+			shakegamecamera: false,
+			shakeHUD: false,
 			startTime: 0,
 	        endTime: 0
 		};

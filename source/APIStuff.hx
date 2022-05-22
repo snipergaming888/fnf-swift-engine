@@ -1,6 +1,6 @@
 package;
 class APIStuff
 {
-        public static var API:String = "";
-        public static var EncKey:String = "";
+        public static var API:String = "test";
+        public static var EncKey:String = "test";
 }
