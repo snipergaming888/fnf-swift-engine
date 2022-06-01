@@ -25,7 +25,7 @@ using StringTools;
 class FreeplayState extends MusicBeatState
 {
 	var songs:Array<SongMetadata> = []; ///all bpms up to thorns, add your song BPM in order of them in freeplay.
-	var beatArray:Array<Int> = [100,100,120,180,150,165,95,150,175,165,110,125,180,100,150,159,144,120,190];
+	var beatArray:Array<Int> = [100,100,120,180,150,165,95,150,175,165,110,125,180,100,150,159,144,120,190,150];
 
 	var selector:FlxText;
 	var curSelected:Int = FlxG.save.data.curselected;
@@ -92,14 +92,9 @@ class FreeplayState extends MusicBeatState
 		addWeek(['Pico', 'Philly', 'Blammed'], 3, ['pico']);
 
 		addWeek(['Satin-Panties', 'High', 'Milf'], 4, ['mom']);
-		//addWeek(['Avidity'], 4, ['mom']);
 		addWeek(['Cocoa', 'Eggnog', 'Winter-Horrorland'], 5, ['parents-christmas', 'parents-christmas', 'monster-christmas']);
 		
 		addWeek(['Senpai', 'Roses', 'Thorns'], 6, ['senpai', 'senpai', 'spirit']);
-		//addWeek(['Collapsing'], 6, ['senpai']);
-		//addWeek(['bits'], 6, ['senpai']);
-		//addWeek(['tearing'], 6, ['senpai']);
-		//addWeek(['tulips'], 6, ['senpai']);
 		// LOAD MUSIC
 
 		// LOAD CHARACTERS

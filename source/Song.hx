@@ -18,6 +18,7 @@ typedef SwagSong =
 	var player1:String;
 	var player2:String;
 	var validScore:Bool;
+	var hasshader:Bool;
 	var stage:String;
 	var composer:String;
 	var camzoomamountp1:Float;
@@ -35,6 +36,8 @@ typedef SwagSong =
 	var sectiongfspeed:Int;
 	var steppernumanim:Float;
 	var noteskin:String;
+	var fragcode:String;
+	var vertexcode:String;
 }
 
 class Song
@@ -62,6 +65,8 @@ class Song
 	public var stage:String = '';
 	public var composer:String = '';
 	public static var noteskin:String = 'default';
+	public static var fragcode:String = '';
+	public static var vertexcode:String = '';
 
 	public function new(song, notes, bpm)
 	{

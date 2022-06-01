@@ -349,7 +349,6 @@ class Character extends FlxSprite
 
 				flipX = true;
 
-
 				case 'bf-opt':
 					var tex = Paths.getSparrowAtlas('BOYFRIEND');
 					frames = tex;

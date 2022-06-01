@@ -38,6 +38,10 @@ import openfl.utils.ByteArray;
 import openfl.net.FileReference;
 import openfl.net.FileFilter;
 import flixel.util.FlxTimer;
+import openfl.text.TextField;
+import openfl.text.TextFormat;
+import openfl.text.TextFieldType;
+import flash.display.BitmapData;
 
 using StringTools;
 
@@ -70,8 +74,10 @@ class ChartingState extends MusicBeatState
 
 	var highlight:FlxSprite;
 	var hasplayed:Bool = false;
+	public static var startfrompos:Bool = false;
 
 	var GRID_SIZE:Int = 40;
+	public static var startpos:Float;
 
 	var dummyArrow:FlxSprite;
 
@@ -88,6 +94,8 @@ class ChartingState extends MusicBeatState
 	var typingShit3:FlxInputText;
 	var typingShit4:FlxInputText;
 	var typingShit5:FlxInputText;
+	var tf:TextField;
+	var tf2:TextField; //#saveTF2
 	/*
 	 * WILL BE THE CURRENT / LAST PLACED NOTE
 	**/
@@ -131,6 +139,8 @@ class ChartingState extends MusicBeatState
 	var playanimtext2:FlxText;
 	var menuBG:FlxSprite;
 	var steppercopyfloat:Float = 0;
+	var isAltNoteCheck:FlxUICheckBox;
+	var stepperAltNote:FlxUINumericStepper;
 
 	override function create()
 	{
@@ -210,6 +220,9 @@ class ChartingState extends MusicBeatState
 				steppernumanim: 0,
 				camzoomtime: 0,
 				noteskin: 'default',
+				hasshader: false,
+				fragcode: '',
+				vertexcode: '',
 				
 				speed: 1,
 				validScore: false
@@ -471,6 +484,7 @@ class ChartingState extends MusicBeatState
 	var flixelHUDzoom:FlxUINumericStepper;
 	var currentgfspeed:FlxUINumericStepper;
 	var steppernumanim:FlxUINumericStepper;
+	var check_shader:FlxUICheckBox;
 
 	function addSectionUI():Void
 	{
@@ -523,6 +537,8 @@ class ChartingState extends MusicBeatState
 		check_mustHitSection.checked = true;
 		// _song.needsVoices = check_mustHit.checked;
 
+		var startfromposbutton:FlxButton = new FlxButton(150, 30, "Play here", startfromsection);
+
 		check_changeBPM = new FlxUICheckBox(10, 90, null, null, 'Change BPM', 100);
 		check_changeBPM.name = 'check_changeBPM';
 
@@ -537,6 +553,7 @@ class ChartingState extends MusicBeatState
 		tab_group_section.add(swapSection);
 		tab_group_section.add(check_playnoisemusthit);
 		tab_group_section.add(check_playnoisemusthitdad);
+		tab_group_section.add(startfromposbutton);
 
 		UI_box.addGroup(tab_group_section);
 	}
@@ -732,6 +749,43 @@ class ChartingState extends MusicBeatState
 			check_crossfade = new FlxUICheckBox(10, 560, null, null, 'CrossFade', 100);
 			check_crossfade.name = 'check_crossfade';
 			check_crossfade.checked = _song.notes[curSection].crossFade;
+
+			check_shader = new FlxUICheckBox(10, 580, null, null, 'Shader', 100);
+			check_shader.name = 'check_shader';
+			check_shader.checked = _song.hasshader;
+			check_shader.callback = function()
+				{
+					_song.hasshader = check_shader.checked;
+					trace('shader? ' + check_shader.checked);
+				};
+
+				tf = new TextField();
+				tf.x = 645;
+				tf.y = 640;
+				tf.text = "frag code here";
+				tf.backgroundColor = FlxColor.TRANSPARENT;
+				var textFormat:TextFormat = new TextFormat();
+				textFormat.font = "VCR OSD Mono";
+				textFormat.color = 0xFFFFFF;
+				tf.setTextFormat(textFormat);
+				tf.type = TextFieldType.INPUT;
+				FlxG.addChildBelowMouse(tf);
+				tf2 = new TextField();
+				tf2.x = 645;
+				tf2.y = 660;
+				tf2.text = "vert code here";
+				tf2.backgroundColor = FlxColor.TRANSPARENT;
+				var textFormat2:TextFormat = new TextFormat();
+				textFormat2.font = "VCR OSD Mono";
+				textFormat2.color = 0xFFFFFF;
+				tf2.setTextFormat(textFormat2);
+				tf2.type = TextFieldType.INPUT;
+				FlxG.addChildBelowMouse(tf2);
+				//var bd:BitmapData = new BitmapData(200, 100);
+		       // bd.draw(tf);
+		       // var canvas:FlxSprite = new FlxSprite(10, 600);
+		        //canvas.pixels = bd;
+		        //add(canvas);	
 			
 	
 	
@@ -783,6 +837,7 @@ class ChartingState extends MusicBeatState
 			tab_group_effects.add(check_crossfade);
 			tab_group_effects.add(check_shakegamecamera);
 			tab_group_effects.add(check_shakeHUD);
+			tab_group_effects.add(check_shader);
 	
 			UI_box.addGroup(tab_group_effects);
 		}
@@ -794,6 +849,8 @@ class ChartingState extends MusicBeatState
 		var tab_group_note = new FlxUI(null, UI_box);
 		tab_group_note.name = 'Note';
 
+		
+
 		writingNotesText = new FlxUIText(20,100, 0, "");
 		writingNotesText.setFormat("Arial",20,FlxColor.WHITE,FlxTextAlign.LEFT,FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
 
@@ -802,7 +859,13 @@ class ChartingState extends MusicBeatState
 		stepperSusLength.name = 'note_susLength';
 
 		var applyLength:FlxButton = new FlxButton(100, 10, 'Apply');
-
+		isAltNoteCheck = new FlxUICheckBox(10, 100, null, null, "Alt Anim Note", 100);
+		isAltNoteCheck.name = "isAltNote";
+		stepperAltNote = new FlxUINumericStepper(10, 200, 1, 0, 0, 999, 0);
+		stepperAltNote.value = 0;
+		stepperAltNote.name = 'alt_anim_note';
+		tab_group_note.add(isAltNoteCheck);
+		tab_group_note.add(stepperAltNote);
 		tab_group_note.add(writingNotesText);
 		tab_group_note.add(stepperSusLength);
 		tab_group_note.add(applyLength);
@@ -904,7 +967,12 @@ class ChartingState extends MusicBeatState
 				case "Shake game camera":	
 				    _song.notes[curSection].shakegamecamera = check.checked;
 				case "Shake HUD":	
-				    _song.notes[curSection].shakeHUD = check.checked;					
+				    _song.notes[curSection].shakeHUD = check.checked;
+				case 'Alt Anim Note':
+					if (curSelectedNote != null)
+					{
+						curSelectedNote[3] = check.checked ? 1 : 0;
+					}					
 			}
 		}
 		else if (id == FlxUINumericStepper.CHANGE_EVENT && (sender is FlxUINumericStepper))
@@ -998,6 +1066,12 @@ class ChartingState extends MusicBeatState
 					_song.notes[curSection].steppernumanim = nums.value;
 					updateGrid();
 				}
+			else if (wname == 'alt_anim_note')
+			    {
+				    if (curSelectedNote != null)
+					curSelectedNote[3] = nums.value;
+				    updateNoteUI();
+			    }	
 		}
 		
 		// FlxG.log.add(id + " WEED " + sender + " WEED " + data + " WEED " + params);
@@ -1039,7 +1113,7 @@ class ChartingState extends MusicBeatState
 		_song.song = typingShit.text;
 		storyDifficultyString = typingShit2.text;
 		_song.composer = typingShit3.text;
-		_song.notes[curSection].animtoplay = typingShit4.text; 
+		_song.notes[curSection].animtoplay = typingShit4.text;
 		_song.notes[curSection].charactertoplayon = typingShit5.text; 
 
 		strumLine.y = getYfromStrum((Conductor.songPosition - sectionStartTime()) % (Conductor.stepCrochet * _song.notes[curSection].lengthInSteps));
@@ -1062,6 +1136,25 @@ class ChartingState extends MusicBeatState
 			{
 				writingNotes = !writingNotes;
 			}
+
+			if (UI_box.selected_tab == 0)
+				{
+					tf.visible = true;
+					_song.fragcode = tf.text;
+				}
+				else
+					{
+						tf.visible = false;
+					}
+			if (UI_box.selected_tab == 0)
+				{
+					tf2.visible = true;
+					_song.vertexcode = tf2.text;
+				}
+				else
+					{
+						tf2.visible = false;
+					}		
 
 			if (writingNotes)
 				writingNotesText.text = "WRITING NOTES";
@@ -1550,6 +1643,20 @@ class ChartingState extends MusicBeatState
 		}
 	}
 
+	function startfromsection():Void
+		{
+			startfrompos = true;
+			Conductor.songPosition = FlxG.sound.music.time;
+			startpos = Conductor.songPosition;
+			lastSection = curSection;
+	
+			PlayState.SONG = _song;
+			FlxG.sound.music.stop();
+			vocals.stop();
+			PlayState.triggeredalready = false;	
+			LoadingState.loadAndSwitchState(new PlayState());
+		}
+
 	function copySection(?sectionNum:Int = 1)
 	{
 		var daSec = FlxMath.maxInt(curSection, sectionNum);
@@ -1667,7 +1774,9 @@ class ChartingState extends MusicBeatState
 		steppernumanim.value = sec.steppernumanim;
 		check_crossfade.checked = sec.crossFade;
 		#if cpp
+		if (_song.notes[curSection].animtoplay != null)
 		typingShit4.text = sec.animtoplay;
+		if (_song.notes[curSection].charactertoplayon != null)
 		typingShit5.text = sec.charactertoplayon;
 		#else
 		new FlxTimer().start(0.1, function(tmr:FlxTimer)
@@ -1686,20 +1795,24 @@ class ChartingState extends MusicBeatState
 	{
 		if (check_mustHitSection.checked)
 		{
-			leftIcon.animation.play(PlayState.SONG.player1);
-			rightIcon.animation.play(PlayState.SONG.player2);
+			leftIcon.changeIcon(_song.player1);
+			rightIcon.changeIcon(_song.player2);
 		}
 		else
 		{
-			leftIcon.animation.play(PlayState.SONG.player2);
-			rightIcon.animation.play(PlayState.SONG.player1);
+			leftIcon.changeIcon(_song.player2);
+			rightIcon.changeIcon(_song.player1);
 		}
 	}
 
 	function updateNoteUI():Void
 	{
 		if (curSelectedNote != null)
-			stepperSusLength.value = curSelectedNote[2];
+			{
+				isAltNoteCheck.checked = cast curSelectedNote[3];
+				stepperSusLength.value = curSelectedNote[2];
+				stepperAltNote.value = curSelectedNote[3] != null ? curSelectedNote[3] : 0;
+			}
 	}
 
 	function updateGrid():Void

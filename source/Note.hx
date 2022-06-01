@@ -20,8 +20,10 @@ class Note extends FlxSprite
 	public var noteData:Int = 0;
 	public var canBeHit:Bool = false;
 	public var tooLate:Bool = false;
+	public var ispixel:Bool = false;
 	public var wasGoodHit:Bool = false;
 	public var prevNote:Note;
+	public var altNote:Bool = false;
 	public var distance:Float = 2000;
 	public var hasplayed:Bool = false;
 
@@ -59,6 +61,7 @@ class Note extends FlxSprite
 
 		this.noteData = noteData;
 
+		
 		switch (PlayState.SONG.noteskin)
 		{
 			case 'pixel':
@@ -150,6 +153,7 @@ class Note extends FlxSprite
 									}
 						}	
 		}
+
 
 		switch (noteData)
 		{

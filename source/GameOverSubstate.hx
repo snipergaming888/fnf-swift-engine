@@ -91,16 +91,19 @@ class GameOverSubstate extends MusicBeatSubstate
 					FlxG.switchState(new StoryMenuState());
 					FlxG.timeScale = 1;
 					PlayState.blueballed = 0;
+					ChartingState.startfrompos = false;
 				}
 			else
 				#if web
 			FlxG.switchState(new FreeplayStateHTML5());
 			FlxG.timeScale = 1;
 			PlayState.blueballed = 0;
+			ChartingState.startfrompos = false;
 			#else
 			FlxG.switchState(new FreeplayState());
 			FlxG.timeScale = 1;
 			PlayState.blueballed = 0;
+			ChartingState.startfrompos = false;
 			#end	
 		}
 

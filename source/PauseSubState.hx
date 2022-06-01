@@ -1027,6 +1027,7 @@ class PauseSubState extends MusicBeatSubstate
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
 					Conductor.changeBPM(102);
 					PlayState.triggeredalready = false;
+					ChartingState.startfrompos = false;
 					case "Exit to freeplay menu":
 						#if web
 						trace("Freeplay HTML5");
@@ -1034,12 +1035,14 @@ class PauseSubState extends MusicBeatSubstate
 						FlxG.switchState(new FreeplayStateHTML5());
 						FlxG.timeScale = 1;
 						PlayState.triggeredalready = false;
+						ChartingState.startfrompos = false;
 						#else
 						PlayState.blueballed = 0;
 						FlxG.switchState(new FreeplayState());
 						trace("Freeplay Menu");
 						FlxG.timeScale = 1;
 						PlayState.triggeredalready = false;
+						ChartingState.startfrompos = false;
 						#end
 						#if desktop 
 				case "Change Speed":
@@ -1053,6 +1056,7 @@ class PauseSubState extends MusicBeatSubstate
 					FlxG.switchState(new MainMenuState());
 					FlxG.timeScale = 1;
 					PlayState.triggeredalready = false;
+					ChartingState.startfrompos = false;
 				case "Change Difficulty":
 					menuItems = difficultyChoices;
 					regenMenu();

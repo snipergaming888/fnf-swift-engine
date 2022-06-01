@@ -258,6 +258,13 @@ class Settings extends MusicBeatState
               if (FlxG.save.data.middlescrollBG == null)
                 FlxG.save.data.middlescrollBG = false;
 
+              if ( FlxG.save.data.smoothanims == null)
+                FlxG.save.data.smoothanims = false;
+
+              if ( FlxG.save.data.sqishyanims == null)
+                FlxG.save.data.sqishyanims = false;
+
+
               FlxGraphic.defaultPersist = FlxG.save.data.graphicpersist;
 
               FlxG.save.data.hasplayed = false;
@@ -420,6 +427,9 @@ class Settings extends MusicBeatState
                     FlxG.save.data.middlescrollalpha = '0.5';
 
                     FlxG.save.data.middlescrollBG = false;
+
+                    FlxG.save.data.smoothanims = false;
+                    FlxG.save.data.sqishyanims = false;
   
                 FlxG.save.data.hasplayed = false;
                 trace('anim played? ' + FlxG.save.data.hasplayed);

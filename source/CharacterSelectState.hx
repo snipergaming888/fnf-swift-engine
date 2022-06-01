@@ -25,11 +25,12 @@ class CharacterSelectState extends MusicBeatState
 	var versionShit:FlxText;
 	var CYAN:FlxColor = 0xFF00FFFF;
 	var character1:FlxSprite;
+	var animationstylenumber:Int = 0;
+	var animationstyle:String = '';
+	var animationstyletext:String = '';
 	var c1added:Bool = true;
-	var curDifficulty:Int = 1;
-	var curWeek:Int = 0;
 	private var boyfriend:Boyfriend;
-	var sniperenginemark:FlxText;
+	public var sniperenginemark:FlxText;
 	var wip:FlxText;
 	var ENTER:FlxText;
 	override function create()
@@ -46,7 +47,7 @@ class CharacterSelectState extends MusicBeatState
 		menuBG.antialiasing = true;
 	    add(menuBG);
 
-		var sniperenginemark = new FlxText(4,695, "Current Character: BOYFRIEND", 20);
+	    sniperenginemark = new FlxText(4,695, "Current Animation Style: ", 20);
 		sniperenginemark.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
 		sniperenginemark.scrollFactor.set();
 		if (FlxG.save.data.antialiasing)
@@ -58,6 +59,24 @@ class CharacterSelectState extends MusicBeatState
 					sniperenginemark.antialiasing = true;
 				}
 		add(sniperenginemark);
+
+		if (animationstylenumber == 0)
+			{
+				animationstyle = 'bf';
+				sniperenginemark.text = 'Current Animation Style: Default animations.';
+			}
+
+		if (animationstylenumber == 1)
+			{
+				animationstyle = 'bf-smooth';
+				sniperenginemark.text = 'Current Animation Style: Smooth animations.';
+			}
+
+		if (animationstylenumber == 2)
+			{
+				animationstyle = 'bf-sqishy';
+				sniperenginemark.text = 'Current Animation Style: Sqishy animations.';
+			}
 
 
 		var wip = new FlxText(100,4, "The character select menu is currently a work in progress, so only boyfriend is avilible.", 20);
@@ -98,6 +117,10 @@ class CharacterSelectState extends MusicBeatState
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 		}
 
+		boyfriend = new Boyfriend(400, 100, animationstyle);
+		boyfriend.scrollFactor.set();
+		add(boyfriend);
+
 		super.create();
 
 	}
@@ -105,6 +128,9 @@ class CharacterSelectState extends MusicBeatState
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		if (FlxG.sound.music != null)
+            Conductor.songPosition = FlxG.sound.music.time;
 
 		if (FlxG.keys.justPressed.D)
 			{
@@ -126,146 +152,83 @@ class CharacterSelectState extends MusicBeatState
 							boyfriend.playAnim('singRIGHT');
 						}
 
-			if (curSelected != 1)
-				{
-					if (c1added)
-						{
-							#if windows
-							boyfriend = new Boyfriend(400, 100, 'bf');
-							add(boyfriend);
-							new FlxTimer().start(0.65, function(tmr:FlxTimer)///boyfriend.animation.curAnim.namestartswith DOESN'T WORK!?!?!?!??!
+						if (FlxG.keys.justPressed.R)
+							{
+								animationstylenumber = 0;
+							}
+			
+						if (FlxG.keys.justPressed.RIGHT && animationstylenumber >= 0 && animationstylenumber < 2)
+							{
+								animationstylenumber += 1;
+							}
+			
+						if (FlxG.keys.justPressed.LEFT && animationstylenumber > 0 && animationstylenumber <= 2)
+							{
+								animationstylenumber -= 1;
+							}
+
+							if (animationstylenumber == 0)
 								{
-									if (boyfriend.animation.curAnim.name == ("singLEFT"))
-										{
-											tmr.reset();
-											trace('do not idle bitch');
-										}
-										else if (boyfriend.animation.curAnim.name == ("singRIGHT"))
-											{
-												tmr.reset();
-												trace('do not idle bitch');
-											}
-										else if (boyfriend.animation.curAnim.name == ("singUP"))
-											{
-											    tmr.reset();
-											    trace('do not idle bitch');
-									     	}
-										else if (boyfriend.animation.curAnim.name == ("singDOWN"))
-											{
-												tmr.reset();
-												trace('do not idle bitch');
-											}
-											else
-											{
-												boyfriend.playAnim('idle');
-												trace(boyfriend.animation.curAnim.name);
-												tmr.reset();
-											}
-								});
-								new FlxTimer().start(1.3, function(tmr:FlxTimer)
-									{
-												{
-													boyfriend.playAnim('idle');
-													trace(boyfriend.animation.curAnim.name);
-													tmr.reset();
-												}
-									});
-								#end
-							c1added = false;
-						}	
-				}
-			if (curSelected != 4)
+									animationstyle = 'bf';
+									sniperenginemark.text = 'Current Animation Style: Default animations.';
+									FlxG.save.data.smoothanims = false;
+									FlxG.save.data.sqishyanims = false;
+									updatebf();
+								}
+
+							if (animationstylenumber == 1)
+								{
+									animationstyle = 'bf-smooth';
+									sniperenginemark.text = 'Current Animation Style: Smooth animations.';
+									FlxG.save.data.smoothanims = true;
+									FlxG.save.data.sqishyanims = false;
+									updatebf();
+								}
+
+							if (animationstylenumber == 2)
+								{
+									animationstyle = 'bf-sqishy';
+									sniperenginemark.text = 'Current Animation Style: Sqishy animations.';
+									FlxG.save.data.smoothanims = false;
+									FlxG.save.data.sqishyanims = true;
+									updatebf();
+								}
+				
+
+			if (controls.BACK)
+			FlxG.switchState(new StoryMenuState());
+			if (controls.BACK)
 				{
-					///remove(boyfriend);
+					FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
 				}
-
-				if (curSelected != 2)
-					{
-						///remove(boyfriend);
-					}
-
-					if (curSelected != 3)
-						{
-							///remove(boyfriend);
-						}
-
-			if (controls.BACK)
-				FlxG.switchState(new StoryMenuState());
-			if (controls.LEFT_P)
-				changeSelection(-1);
-			if (controls.RIGHT_P)
-				changeSelection(1);
-			if (controls.BACK)
-			FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
 			
 
 			if (controls.ACCEPT)
 			{
-					if (curSelected != 4)
-					grpControls.remove(grpControls.members[curSelected]);
-				switch(curSelected)
-				{
-					case 0:
 
-					case 1:
-						FlxG.switchState(new OptionsMenu());
-					case 2:
-						FlxG.switchState(new PerformanceOptions());
-					case 3:
-						FlxG.switchState(new MiscOptions());
-				}
 			}
 	}
+
+	function updatebf():Void
+		{
+			remove(boyfriend);
+			boyfriend = new Boyfriend (400, 100, animationstyle);
+			boyfriend.scrollFactor.set();
+			add(boyfriend);
+		}
 
 	var isSettingControl:Bool = false;
 
-	function changeSelection(change:Int = 0)
-	{
-		#if !switch
-		// NGio.logEvent('Fresh');
-		#end
-		
-		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-
-		curSelected += change;
-
-		if (curSelected < 0)
-			curSelected = grpControls.length - 1;
-		if (curSelected >= grpControls.length)
-			curSelected = 0;
-
-		// selector.y = (70 * curSelected) + 30;
-
-		var bullShit:Int = 0;
-
-		for (item in grpControls.members)
+	override function beatHit()
 		{
-			item.targetY = bullShit - curSelected;
-			bullShit++;
+			super.beatHit();
 
-			item.alpha = 0.6;
-
-			#if windows
-			item.color = FlxColor.WHITE;
-            #end
-			// item.setGraphicSize(Std.int(item.width * 0.8));
-
-			if (item.targetY == 0)
-			{
-				item.alpha = 1;
-				#if windows
-				item.color = FlxColor.CYAN;
-				#end
-				// item.setGraphicSize(Std.int(item.width));
-			}
+			if (curBeat % 2 == 0)
+				{
+					boyfriend.playAnim('idle');
+					trace('dance');
+				}
+				
 		}
-	}
 
-
-
-
-	function resetall()
-		{
-			c1added = true;
-		}
 }
