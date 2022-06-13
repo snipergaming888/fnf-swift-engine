@@ -22,6 +22,7 @@ import openfl.Lib;
 import flixel.FlxObject;
 import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
 import flixel.addons.transition.FlxTransitionableState;
+import flixel.effects.FlxFlicker;
 #if sys
 import lime.system.DisplayMode;
 import flash.system.System;
@@ -40,6 +41,8 @@ class ApperanceOptions extends MusicBeatState
 	var camFollow:FlxObject;
 	var sex:Alphabet;
 	var menuBG:FlxSprite;
+	var flashing:Bool = false;
+	var canselectoptions:Bool = false;
 	override function create()
 	{
 		menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
@@ -47,7 +50,7 @@ class ApperanceOptions extends MusicBeatState
 		menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat-opt'));
 		menuBG.scrollFactor.set();
 		menuBG.x -= 30;	
-		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD") + "\n" + (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF") + "\n" + (FlxG.save.data.hittimings ? "MS Timing info ON" : "MS Timing info OFF") + "\n" + (FlxG.save.data.showratings ? "ratings info ON" : "ratings info OFF") + "\n" + (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION off")+ "\n" + (FlxG.save.data.transparency ? "hold note transparency ON" : "hold note transparency off")+ "\n" + (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF") + "\n" + (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF") + "\n" + (FlxG.save.data.nps ? "NPS ON" : "NPS OFF") + "\n" + (FlxG.save.data.healthcolor ? 'new healthbar on' : 'new healthbar off') + "\n" + (FlxG.save.data.newhealthheadbump ? 'new healthhead bump on' : 'new healthhead bump off') + "\n" + (FlxG.save.data.fps ? "FPS COUNTER ON" : "FPS COUNTER OFF") + "\n" + (FlxG.save.data.togglecap ? "FPS CAP ON" : "FPS CAP OFF") + "\n" + (FlxG.save.data.memoryMonitor ? "memoryMonitor ON" : "memoryMonitor OFF") + "\n" + (FlxG.save.data.middlecam ? "Camera focusing ON" : "Camera focusing OFF") + "\n" + (FlxG.save.data.camfollowspeedon ? "Camera speed modif on" : "Camera speed modif off") + "\n" + (FlxG.save.data.enablesickpositions ? 'custom rating position on' : 'custom rating position off') + "\n" + (FlxG.save.data.songinfo ? 'song info popup on' : 'song info popup off') + "\n" + (FlxG.save.data.combotext ? 'combo text on' : 'combo text off') + "\n" + "Customize in-game appearance" + "\n" + "EDIT Scoretext preference" + "\n" + (FlxG.save.data.minscore ? 'old scoretext on' : 'old scoretext off') + "\n" + (FlxG.save.data.notesplashes ? 'notesplashes on' : 'notesplashes off') + "\n" + "Custom BF Animations");
+		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD") + "\n" + (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF") + "\n" + (FlxG.save.data.hittimings ? "MS Timing info ON" : "MS Timing info OFF") + "\n" + (FlxG.save.data.showratings ? "ratings info ON" : "ratings info OFF") + "\n" + (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION off")+ "\n" + (FlxG.save.data.transparency ? "hold note transparency ON" : "hold note transparency off")+ "\n" + (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF") + "\n" + (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF") + "\n" + (FlxG.save.data.nps ? "NPS ON" : "NPS OFF") + "\n" + (FlxG.save.data.healthcolor ? 'new healthbar on' : 'new healthbar off') + "\n" + (FlxG.save.data.newhealthheadbump ? 'new healthhead bump on' : 'new healthhead bump off') + "\n" + (FlxG.save.data.fps ? "FPS COUNTER ON" : "FPS COUNTER OFF") + "\n" + (FlxG.save.data.togglecap ? "FPS CAP ON" : "FPS CAP OFF") + "\n" + (FlxG.save.data.memoryMonitor ? "memoryMonitor ON" : "memoryMonitor OFF") + "\n" + (FlxG.save.data.middlecam ? "Camera focusing ON" : "Camera focusing OFF") + "\n" + (FlxG.save.data.camfollowspeedon ? "Camera speed modif on" : "Camera speed modif off") + "\n" + (FlxG.save.data.enablesickpositions ? 'custom rating position on' : 'custom rating position off') + "\n" + (FlxG.save.data.songinfo ? 'song info popup on' : 'song info popup off') + "\n" + (FlxG.save.data.combotext ? 'combo text on' : 'combo text off') + "\n" + "Edit in-game appearance" + "\n" + "EDIT Scoretext preference" + "\n" + (FlxG.save.data.minscore ? 'old scoretext on' : 'old scoretext off') + "\n" + (FlxG.save.data.notesplashes ? 'notesplashes on' : 'notesplashes off') + "\n" + "Custom BF Animations" + "\n" + "HUD transparency");
 		
 		trace(controlsStrings);
 
@@ -103,8 +106,6 @@ class ApperanceOptions extends MusicBeatState
 
 			if (controls.BACK)
 				{
-					FlxTransitionableState.skipNextTransIn = true;
-					FlxTransitionableState.skipNextTransOut = true;
 					FlxG.switchState(new MenuState());
 				}
 			if (controls.BACK)
@@ -112,7 +113,7 @@ class ApperanceOptions extends MusicBeatState
 
 			
 				
-					if (controls.UP_P)
+					if (controls.UP_P && !flashing)
 						{
 							FlxG.sound.play(Paths.sound('scrollMenu'));
 							curSelected -= 1;
@@ -129,7 +130,7 @@ class ApperanceOptions extends MusicBeatState
 								}
 						}
 			
-					if (controls.DOWN_P)
+					if (controls.DOWN_P && !flashing)
 						{
 							FlxG.sound.play(Paths.sound('scrollMenu'));
 							curSelected += 1;
@@ -151,8 +152,8 @@ class ApperanceOptions extends MusicBeatState
 				if (curSelected < 0)
 					curSelected = 0;
 		
-				if (curSelected > 25)
-					curSelected = 25;
+				if (curSelected > 26)
+					curSelected = 26;
 	
 				grpControls.forEach(function(sex:Alphabet)
 					{
@@ -252,7 +253,7 @@ class ApperanceOptions extends MusicBeatState
 							trace(FlxG.save.data.notesplashhold);
 						}
 
-				if (curSelected == 18)
+				if (curSelected == 17)
 					{
 						var multiply:Float = 1;
 	
@@ -277,6 +278,19 @@ class ApperanceOptions extends MusicBeatState
 							FlxG.save.data.camfollowspeed = 60;
 						}
 					}
+					if (curSelected == 26)
+						{
+							if (FlxG.keys.justPressed.RIGHT && FlxG.save.data.camHUDALPHA < 1)
+								FlxG.save.data.camHUDALPHA += 0.1;
+							if (FlxG.keys.justPressed.LEFT && FlxG.save.data.camHUDALPHA > 0.2)
+								FlxG.save.data.camHUDALPHA -= 0.1;
+					
+							if (FlxG.keys.justPressed.R)
+								{
+								FlxG.save.data.camHUDALPHA = 1;
+								}
+						}
+
 
 			if (curSelected == 0)
 				versionShit.text = "Hide all text and the healthbar.";
@@ -355,244 +369,264 @@ class ApperanceOptions extends MusicBeatState
 
 			if (curSelected == 25)
 				versionShit.text = "Select a custom BF to use.";
+
+			if (curSelected == 26)
+				versionShit.text = "Edit HUD transparency. " + '(' + FlxG.save.data.camHUDALPHA + ')' + " - Left and Right to change, R to reset." ;
 			if (controls.ACCEPT)
-			{
-				switch(curSelected)
-				{
-					case 0:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.hideHUD = !FlxG.save.data.hideHUD;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD"), true, false);
-						ctrl.y += 102;
-			        	ctrl.x += 50;
-						ctrl.targetY = curSelected - 0;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-				    case 1:
-						grpControls.remove(grpControls.members[curSelected]);
-					    FlxG.save.data.cinematic = !FlxG.save.data.cinematic;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF"), true, false);
-						ctrl.y += 102;
-			        	ctrl.x += 50;
-						ctrl.targetY = curSelected - 1;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					 case 2:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.hittimings = !FlxG.save.data.hittimings;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.hittimings ? "MS Timing info ON" : "MS Timing info OFF"), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 2;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 3:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.showratings = !FlxG.save.data.showratings;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.showratings ? "Ratings info on" : "Ratings info off"), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 3;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					 case 4:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.songPosition = !FlxG.save.data.songPosition;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION OFF"), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 4;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-                     case 5:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.transparency = !FlxG.save.data.transparency;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.transparency ? "hold note transparency ON" : "hold note transparency off"), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 5;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 6:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.strumlights = !FlxG.save.data.strumlights;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF"), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 6;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 7:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.playerstrumlights = !FlxG.save.data.playerstrumlights;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF"), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 7;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 8:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.camzooming = !FlxG.save.data.camzooming;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF"), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 8;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 9:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.watermarks = !FlxG.save.data.watermarks;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF"), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 9;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 10:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.nps = !FlxG.save.data.nps;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.nps ? "NPS ON" : "NPS OFF"), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 10;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 11:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.healthcolor = !FlxG.save.data.healthcolor;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.healthcolor ? 'new healthbar on' : 'new healthbar off'), true, false);
-						ctrl.x += 50;
-						ctrl.y += 102;
-						ctrl.targetY = curSelected - 11;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 12:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.newhealthheadbump = !FlxG.save.data.newhealthheadbump;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.newhealthheadbump ? 'new healthhead bump on' : 'new healthhead bump off'), true, false);
-						ctrl.x += 50;
-						ctrl.y += 102;
-						ctrl.targetY = curSelected - 12;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 13:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.fps = !FlxG.save.data.fps;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.fps ? "FPS COUNTER ON" : "FPS COUNTER OFF"), true, false);
-						ctrl.x += 50;
-						ctrl.y += 102;
-						ctrl.targetY = curSelected - 13;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-						(cast (Lib.current.getChildAt(0), Main)).toggleFPS(FlxG.save.data.fps);
-					case 14:
-						FlxG.save.data.togglecap = !FlxG.save.data.togglecap;
-						if (!FlxG.save.data.togglecap)
-							{
-							    (cast (Lib.current.getChildAt(0), Main)).setFPSCap(138);
-								FlxG.updateFramerate = 138;
-				                FlxG.drawFramerate = 138;
-							}
-						else if (FlxG.save.data.togglecap)
-							{
-								(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
-								FlxG.updateFramerate = FlxG.save.data.fpsCap;
-				                FlxG.drawFramerate = FlxG.save.data.fpsCap;
-							}
-						grpControls.remove(grpControls.members[curSelected]);
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.togglecap ? "FPS CAP ON" : "FPS CAP OFF"), true, false);
-						ctrl.x += 50;
-						ctrl.y += 102;
-						ctrl.targetY = curSelected - 14;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-						trace("pressed");
-					case 15:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.memoryMonitor = !FlxG.save.data.memoryMonitor;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.memoryMonitor ? "memoryMonitor ON" : "memoryMonitor OFF"), true, false);
-						ctrl.x += 50;
-						ctrl.y += 102;
-						ctrl.targetY = curSelected - 15;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-						(cast (Lib.current.getChildAt(0), Main)).togglememoryMonitor(FlxG.save.data.memoryMonitor);
-					case 16:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.middlecam = !FlxG.save.data.middlecam;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.middlecam ? "camera focusing ON" : "camera focusing Off"), true, false);
-						ctrl.x += 50;
-						ctrl.y += 102;
-						ctrl.targetY = curSelected - 16;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 17:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.camfollowspeedon = !FlxG.save.data.camfollowspeedon;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.camfollowspeedon ? "Camera speed modif on" : "Camera speed modif off"), true, false);
-						ctrl.x += 50;
-						ctrl.y += 102;
-						ctrl.targetY = curSelected - 17;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 18:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.enablesickpositions = !FlxG.save.data.enablesickpositions;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.enablesickpositions ? 'custom rating position on' : 'custom rating position off'), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 18;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 19:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.songinfo = !FlxG.save.data.songinfo;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.songinfo ? 'song info popup on' : 'song info popup off'), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 19;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 20:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.combotext = !FlxG.save.data.combotext;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.combotext ? 'combo text on' : 'combo text off'), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 20;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 21:
-						LoadingStateRemovedSongs.loadAndSwitchState(new GameplayCustomizeState());
-					case 22:
-						FlxG.switchState(new ScoretextselectState());	
-					case 23:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.minscore = !FlxG.save.data.minscore;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.minscore ? 'old scoretext on' : 'old scoretext off'), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 23;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 24:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.notesplashes = !FlxG.save.data.notesplashes;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.notesplashes ? 'notesplashes on' : 'notesplashes off'), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 24;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));	
-					case 25:
-						#if debug
-						FlxG.switchState(new CharacterSelectState());
-						#else
-						FlxG.sound.play(Paths.sound('denied'));	
-						#end									   	
-				}
+			{		
+								flashing = true;
+								FlxG.sound.play(Paths.sound('confirmMenu'));
+								FlxFlicker.flicker(grpControls.members[curSelected], 1, 0.06, true, false, function(flick:FlxFlicker)
+									{
+										//FlxTransitionableState.skipNextTransIn = true;
+										//FlxTransitionableState.skipNextTransOut = true;
+										//flick.destroy();
+										flashing = false;
+
+										switch(curSelected)
+										{
+											case 0:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.hideHUD = !FlxG.save.data.hideHUD;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD"), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 0;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 1:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.cinematic = !FlxG.save.data.cinematic;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF"), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 1;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											 case 2:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.hittimings = !FlxG.save.data.hittimings;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.hittimings ? "MS Timing info ON" : "MS Timing info OFF"), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 2;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 3:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.showratings = !FlxG.save.data.showratings;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.showratings ? "Ratings info on" : "Ratings info off"), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 3;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											 case 4:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.songPosition = !FlxG.save.data.songPosition;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION OFF"), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 4;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											 case 5:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.transparency = !FlxG.save.data.transparency;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.transparency ? "hold note transparency ON" : "hold note transparency off"), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 5;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 6:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.strumlights = !FlxG.save.data.strumlights;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF"), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 6;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 7:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.playerstrumlights = !FlxG.save.data.playerstrumlights;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF"), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 7;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 8:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.camzooming = !FlxG.save.data.camzooming;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF"), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 8;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 9:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.watermarks = !FlxG.save.data.watermarks;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF"), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 9;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 10:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.nps = !FlxG.save.data.nps;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.nps ? "NPS ON" : "NPS OFF"), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 10;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 11:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.healthcolor = !FlxG.save.data.healthcolor;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.healthcolor ? 'new healthbar on' : 'new healthbar off'), true, false);
+												ctrl.x += 50;
+												ctrl.y += 102;
+												ctrl.targetY = curSelected - 11;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 12:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.newhealthheadbump = !FlxG.save.data.newhealthheadbump;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.newhealthheadbump ? 'new healthhead bump on' : 'new healthhead bump off'), true, false);
+												ctrl.x += 50;
+												ctrl.y += 102;
+												ctrl.targetY = curSelected - 12;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 13:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.fps = !FlxG.save.data.fps;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.fps ? "FPS COUNTER ON" : "FPS COUNTER OFF"), true, false);
+												ctrl.x += 50;
+												ctrl.y += 102;
+												ctrl.targetY = curSelected - 13;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+												(cast (Lib.current.getChildAt(0), Main)).toggleFPS(FlxG.save.data.fps);
+											case 14:
+												FlxG.save.data.togglecap = !FlxG.save.data.togglecap;
+												if (!FlxG.save.data.togglecap)
+													{
+														(cast (Lib.current.getChildAt(0), Main)).setFPSCap(138);
+														FlxG.updateFramerate = 138;
+														FlxG.drawFramerate = 138;
+													}
+												else if (FlxG.save.data.togglecap)
+													{
+														(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
+														FlxG.updateFramerate = FlxG.save.data.fpsCap;
+														FlxG.drawFramerate = FlxG.save.data.fpsCap;
+													}
+												grpControls.remove(grpControls.members[curSelected]);
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.togglecap ? "FPS CAP ON" : "FPS CAP OFF"), true, false);
+												ctrl.x += 50;
+												ctrl.y += 102;
+												ctrl.targetY = curSelected - 14;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+												trace("pressed");
+											case 15:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.memoryMonitor = !FlxG.save.data.memoryMonitor;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.memoryMonitor ? "memoryMonitor ON" : "memoryMonitor OFF"), true, false);
+												ctrl.x += 50;
+												ctrl.y += 102;
+												ctrl.targetY = curSelected - 15;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+												(cast (Lib.current.getChildAt(0), Main)).togglememoryMonitor(FlxG.save.data.memoryMonitor);
+											case 16:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.middlecam = !FlxG.save.data.middlecam;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.middlecam ? "camera focusing ON" : "camera focusing Off"), true, false);
+												ctrl.x += 50;
+												ctrl.y += 102;
+												ctrl.targetY = curSelected - 16;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 17:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.camfollowspeedon = !FlxG.save.data.camfollowspeedon;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.camfollowspeedon ? "Camera speed modif on" : "Camera speed modif off"), true, false);
+												ctrl.x += 50;
+												ctrl.y += 102;
+												ctrl.targetY = curSelected - 17;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 18:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.enablesickpositions = !FlxG.save.data.enablesickpositions;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.enablesickpositions ? 'custom rating position on' : 'custom rating position off'), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 18;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 19:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.songinfo = !FlxG.save.data.songinfo;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.songinfo ? 'song info popup on' : 'song info popup off'), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 19;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 20:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.combotext = !FlxG.save.data.combotext;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.combotext ? 'combo text on' : 'combo text off'), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 20;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 21:
+												LoadingStateRemovedSongs.loadAndSwitchState(new GameplayCustomizeState());
+											case 22:
+												FlxG.switchState(new ScoretextselectState());	
+											case 23:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.minscore = !FlxG.save.data.minscore;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.minscore ? 'old scoretext on' : 'old scoretext off'), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 23;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 24:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.notesplashes = !FlxG.save.data.notesplashes;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.notesplashes ? 'notesplashes on' : 'notesplashes off'), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 24;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));	
+											case 25:
+												#if debug
+												FlxG.switchState(new CharacterSelectState());
+												#else
+												FlxG.sound.play(Paths.sound('denied'));	
+												#end
+											case 26:
+											FlxG.sound.play(Paths.sound('scrollMenu'));										   	
+										}
+									});	
+							
+					
 			}
+
+		
+				
 	}
 
 	var isSettingControl:Bool = false;
@@ -610,6 +644,7 @@ class ApperanceOptions extends MusicBeatState
 					trace(curBeat);
 				}
 		}
+
 
 		function bopOnBeat()
 			{

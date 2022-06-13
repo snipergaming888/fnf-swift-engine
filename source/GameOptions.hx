@@ -24,6 +24,7 @@ import lime.utils.Assets;
 import flixel.util.FlxTimer;
 import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
 import flixel.addons.transition.FlxTransitionableState;
+import flixel.effects.FlxFlicker;
 
 class GameOptions extends MusicBeatState
 {
@@ -41,6 +42,7 @@ class GameOptions extends MusicBeatState
 	public static var ghosttappinghitsoundsenabled:Bool = false;
 	var menuBG:FlxSprite;
 	var sex:Alphabet;
+	var flashing:Bool = false;
 
 	var controlsStrings:Array<String> = [];
 
@@ -124,8 +126,6 @@ class GameOptions extends MusicBeatState
 
 			if (controls.BACK)
 				{
-					FlxTransitionableState.skipNextTransIn = true;
-					FlxTransitionableState.skipNextTransOut = true;
 					FlxG.switchState(new MenuState());
 				}
 			if (controls.BACK)
@@ -138,7 +138,7 @@ class GameOptions extends MusicBeatState
 
 				if (!ischeating)
 					{
-						if (controls.UP_P)
+						if (controls.UP_P && !flashing)
 							{
 								FlxG.sound.play(Paths.sound('scrollMenu'));
 								curSelected -= 1;
@@ -155,7 +155,7 @@ class GameOptions extends MusicBeatState
 									}
 							}
 				
-						if (controls.DOWN_P)
+						if (controls.DOWN_P && !flashing)
 							{
 								FlxG.sound.play(Paths.sound('scrollMenu'));
 								curSelected += 1;
@@ -334,158 +334,167 @@ class GameOptions extends MusicBeatState
 
 			if (controls.ACCEPT)
 			{
-				switch(curSelected)
-				{
-					case 0:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.downscroll = !FlxG.save.data.downscroll;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll'), true, false);
-						ctrl.y += 102;
-			        	ctrl.x += 50;
-						ctrl.targetY = curSelected - 0;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 1:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.middlescroll = !FlxG.save.data.middlescroll;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.middlescroll ? 'middlescroll on' : 'middlescroll off'), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 1;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 2:
-						grpControls.remove(grpControls.members[curSelected]);
-						/// ok but fr why it default to no ghost tappin bruh
-						FlxG.save.data.ghosttapping = !FlxG.save.data.ghosttapping;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.ghosttapping ? "Ghost Tapping" : "No Ghost Tapping"), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 2;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 3:
-						grpControls.remove(grpControls.members[curSelected]);
-						/// ok but fr why it default to no ghost tappin bruh
-						FlxG.save.data.oldinput = !FlxG.save.data.oldinput;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.oldinput ? "old input on" : "old input off"), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 3;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 4:
-						grpControls.remove(grpControls.members[curSelected]);
-						/// ok but fr why it default to no ghost tappin bruh
-						FlxG.save.data.antimash = !FlxG.save.data.antimash;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.antimash ? "anti mash ON" : "anti mash OFF"), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 4;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					 case 5:
-					   grpControls.remove(grpControls.members[curSelected]);
-					   FlxG.save.data.reset = !FlxG.save.data.reset;
-					   var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.reset ? "RESET BUTTON ON" : "RESET BUTTON OFF"), true, false);
-					   ctrl.y += 102;
-					   ctrl.x += 50;
-					   ctrl.targetY = curSelected - 5;
-					   grpControls.add(ctrl);
-					   FlxG.sound.play(Paths.sound('scrollMenu'));
-					 case 6:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.pausecount = !FlxG.save.data.pausecount;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.pausecount ? "pause counter on" : "pause counter off"), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 6;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					 case 7:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.repeat = !FlxG.save.data.repeat;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.repeat ? "loop current song on" : "loop current song off"), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 7;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 8:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.hitsounds = !FlxG.save.data.hitsounds;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.hitsounds ? "hitsounds on" : "hitsounds off"), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 8;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 9:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.songspeed = !FlxG.save.data.songspeed;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.songspeed ? "SET SCROLL SPEED ON" : "SET SCROLL SPEED OFF"), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 9;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 10:
-						if (Settings.enablebotplay && !ischeating)
-							{
-								grpControls.remove(grpControls.members[curSelected]);
-								FlxG.save.data.botplay = !FlxG.save.data.botplay;
-								var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.botplay ? 'BOTPLAY ON' : 'BOTPLAY OFF'), true, false);
-						        ctrl.y += 102;
-								ctrl.x += 50;
-								ctrl.targetY = curSelected - 10;
-						        grpControls.add(ctrl);
-						        FlxG.sound.play(Paths.sound('scrollMenu'));
-							}
-							else
-								{
-									FlxG.save.data.botplay = false;
-									/*bg = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-									bg.alpha = 0.4;
-									bg.scrollFactor.set();
-									add(bg);
-							
-									text = new FlxText(5, FlxG.height - 18, 0, "No cheating!", 12);
-									text.scrollFactor.set();
-									text.setFormat("VCR OSD Mono", 100, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-									text.screenCenter();
-									add(text);
-									ischeating = true;
-									new FlxTimer().start(2.5, function(tmr:FlxTimer)
+				                flashing = true;
+								FlxG.sound.play(Paths.sound('confirmMenu'));
+								FlxFlicker.flicker(grpControls.members[curSelected], 1, 0.06, true, false, function(flick:FlxFlicker)
+									{
+										flashing = false;
+										//FlxTransitionableState.skipNextTransIn = true;
+										//FlxTransitionableState.skipNextTransOut = true;
+										switch(curSelected)
 										{
-											ischeating = false;
-											remove(bg);
-											remove(text);
-											trace('reset');	
-										});*/
-										FlxG.sound.play(Paths.sound('denied'));
-								}
-					case 11:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.missnotes = !FlxG.save.data.missnotes;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.missnotes ? 'miss sounds on' : 'miss sounds off'), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 11;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 12:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.instantRespawn = !FlxG.save.data.instantRespawn;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.instantRespawn ? 'instant respawn on' : 'instant respawn off'), true, false);
-						ctrl.y += 102;
-						ctrl.x += 50;
-						ctrl.targetY = curSelected - 12;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-						case 13:
-						LoadingStateLatency.loadAndSwitchState(new LatencyState());
-						Conductor.changeBPM(120);			   	
-				}
+											case 0:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.downscroll = !FlxG.save.data.downscroll;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll'), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 0;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 1:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.middlescroll = !FlxG.save.data.middlescroll;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.middlescroll ? 'middlescroll on' : 'middlescroll off'), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 1;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 2:
+												grpControls.remove(grpControls.members[curSelected]);
+												/// ok but fr why it default to no ghost tappin bruh
+												FlxG.save.data.ghosttapping = !FlxG.save.data.ghosttapping;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.ghosttapping ? "Ghost Tapping" : "No Ghost Tapping"), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 2;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 3:
+												grpControls.remove(grpControls.members[curSelected]);
+												/// ok but fr why it default to no ghost tappin bruh
+												FlxG.save.data.oldinput = !FlxG.save.data.oldinput;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.oldinput ? "old input on" : "old input off"), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 3;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 4:
+												grpControls.remove(grpControls.members[curSelected]);
+												/// ok but fr why it default to no ghost tappin bruh
+												FlxG.save.data.antimash = !FlxG.save.data.antimash;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.antimash ? "anti mash ON" : "anti mash OFF"), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 4;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											 case 5:
+											   grpControls.remove(grpControls.members[curSelected]);
+											   FlxG.save.data.reset = !FlxG.save.data.reset;
+											   var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.reset ? "RESET BUTTON ON" : "RESET BUTTON OFF"), true, false);
+											   ctrl.y += 102;
+											   ctrl.x += 50;
+											   ctrl.targetY = curSelected - 5;
+											   grpControls.add(ctrl);
+											   FlxG.sound.play(Paths.sound('scrollMenu'));
+											 case 6:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.pausecount = !FlxG.save.data.pausecount;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.pausecount ? "pause counter on" : "pause counter off"), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 6;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											 case 7:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.repeat = !FlxG.save.data.repeat;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.repeat ? "loop current song on" : "loop current song off"), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 7;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 8:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.hitsounds = !FlxG.save.data.hitsounds;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.hitsounds ? "hitsounds on" : "hitsounds off"), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 8;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 9:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.songspeed = !FlxG.save.data.songspeed;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.songspeed ? "SET SCROLL SPEED ON" : "SET SCROLL SPEED OFF"), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 9;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 10:
+												if (Settings.enablebotplay && !ischeating)
+													{
+														grpControls.remove(grpControls.members[curSelected]);
+														FlxG.save.data.botplay = !FlxG.save.data.botplay;
+														var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.botplay ? 'BOTPLAY ON' : 'BOTPLAY OFF'), true, false);
+														ctrl.y += 102;
+														ctrl.x += 50;
+														ctrl.targetY = curSelected - 10;
+														grpControls.add(ctrl);
+														FlxG.sound.play(Paths.sound('scrollMenu'));
+													}
+													else
+														{
+															FlxG.save.data.botplay = false;
+															/*bg = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+															bg.alpha = 0.4;
+															bg.scrollFactor.set();
+															add(bg);
+													
+															text = new FlxText(5, FlxG.height - 18, 0, "No cheating!", 12);
+															text.scrollFactor.set();
+															text.setFormat("VCR OSD Mono", 100, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+															text.screenCenter();
+															add(text);
+															ischeating = true;
+															new FlxTimer().start(2.5, function(tmr:FlxTimer)
+																{
+																	ischeating = false;
+																	remove(bg);
+																	remove(text);
+																	trace('reset');	
+																});*/
+																FlxG.sound.play(Paths.sound('denied'));
+														}
+											case 11:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.missnotes = !FlxG.save.data.missnotes;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.missnotes ? 'miss sounds on' : 'miss sounds off'), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 11;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 12:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.instantRespawn = !FlxG.save.data.instantRespawn;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.instantRespawn ? 'instant respawn on' : 'instant respawn off'), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 12;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+												case 13:
+												LoadingStateLatency.loadAndSwitchState(new LatencyState());
+												Conductor.changeBPM(120);			   	
+										}
+										//flick.destroy();
+									});	
 			}
 	}
 

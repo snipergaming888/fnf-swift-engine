@@ -18,7 +18,7 @@ import flixel.FlxObject;
 import flixel.tweens.FlxEase;
 import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
 import flixel.addons.transition.FlxTransitionableState;
-
+import flixel.effects.FlxFlicker;
 class CacheState extends MusicBeatState
 {
 	var selector:FlxText;
@@ -30,6 +30,7 @@ class CacheState extends MusicBeatState
 	var controlsStrings:Array<String> = [];
 	var descBG:FlxSprite;
 	var menuBG:FlxSprite;
+	var flashing:Bool = false;
 
 	private var grpControls:FlxTypedGroup<Alphabet>;
 	var versionShit:FlxText;
@@ -93,11 +94,9 @@ class CacheState extends MusicBeatState
 
 			if (controls.BACK)
 				{
-					FlxTransitionableState.skipNextTransIn = true;
-					FlxTransitionableState.skipNextTransOut = true;
 					FlxG.switchState(new PerformanceOptions());
 				}
-				if (controls.UP_P)
+				if (controls.UP_P && !flashing)
 					{
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 						curSelected -= 1;
@@ -114,7 +113,7 @@ class CacheState extends MusicBeatState
 							}
 					}
 		
-				if (controls.DOWN_P)
+				if (controls.DOWN_P && !flashing)
 					{
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 						curSelected += 1;
@@ -180,45 +179,54 @@ class CacheState extends MusicBeatState
 
 			if (controls.ACCEPT)
 			{
-				switch(curSelected)
-				{
-					case 0:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.imagecache = !FlxG.save.data.imagecache;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.imagecache ? 'IMAGE CACHING ON' : 'IMAGE CACHING OFF'), true, false);
-						ctrl.y += 102;
-			        	ctrl.x += 50;
-						ctrl.targetY = curSelected - 0;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 1:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.songcache = !FlxG.save.data.songcache;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.songcache ? 'SONG CACHING ON' : 'SONG CACHING OFF'), true, false);
-						ctrl.y += 102;
-			        	ctrl.x += 50;
-						ctrl.targetY = curSelected - 1;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 2:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.soundcache = !FlxG.save.data.soundcache;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.soundcache ? 'SOUND CACHING ON' : 'SOUND CACHING OFF'), true, false);
-						ctrl.y += 102;
-			        	ctrl.x += 50;
-						ctrl.targetY = curSelected - 1;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 3:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.musiccache = !FlxG.save.data.musiccache;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.musiccache ? 'MUSIC CACHING ON' : 'MUSIC CACHING OFF'), true, false);
-						ctrl.y += 102;
-			        	ctrl.x += 50;
-						ctrl.targetY = curSelected - 1;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));	   	
-				}
+				                flashing = true;
+								FlxG.sound.play(Paths.sound('confirmMenu'));
+								FlxFlicker.flicker(grpControls.members[curSelected], 1, 0.06, true, false, function(flick:FlxFlicker)
+									{
+										flashing = false;
+										//FlxTransitionableState.skipNextTransIn = true;
+										//FlxTransitionableState.skipNextTransOut = true;
+										switch(curSelected)
+										{
+											case 0:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.imagecache = !FlxG.save.data.imagecache;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.imagecache ? 'IMAGE CACHING ON' : 'IMAGE CACHING OFF'), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 0;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 1:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.songcache = !FlxG.save.data.songcache;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.songcache ? 'SONG CACHING ON' : 'SONG CACHING OFF'), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 1;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 2:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.soundcache = !FlxG.save.data.soundcache;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.soundcache ? 'SOUND CACHING ON' : 'SOUND CACHING OFF'), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 1;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 3:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.musiccache = !FlxG.save.data.musiccache;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.musiccache ? 'MUSIC CACHING ON' : 'MUSIC CACHING OFF'), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 1;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));	   	
+										}
+										//flick.destroy();
+									});	
 			}
 	}
 

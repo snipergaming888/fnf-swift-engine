@@ -13,9 +13,7 @@ class HealthIcon extends FlxSprite
 	public function new(char:String = 'bf', isPlayer:Bool = false)
 	{
 		super();
-		if (FlxG.save.data.optimizations)
-		loadGraphic(Paths.image('iconGrid-opt'), true, 150, 150);
-			else
+		trace(Paths.image('iconGrid','data'));
 		loadGraphic(Paths.image('iconGrid'), true, 150, 150);
 
 		antialiasing = true;
@@ -47,6 +45,7 @@ class HealthIcon extends FlxSprite
 		animation.add('monster', [19, 20], 0, false, isPlayer);
 		animation.add('monster-christmas', [19, 20], 0, false, isPlayer);
 		animation.play(char);
+		trace(char);
 		scrollFactor.set();
 	
 	}

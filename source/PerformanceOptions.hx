@@ -31,6 +31,7 @@ import flixel.system.scaleModes.RelativeScaleMode;
 import openfl.display.Stage;
 import lime.ui.Window;
 import openfl.Lib;
+import flixel.effects.FlxFlicker;
 import flixel.graphics.FlxGraphic;
 
 using StringTools;
@@ -47,6 +48,7 @@ class PerformanceOptions extends MusicBeatState
 	var menuBG:FlxSprite;
 	var camFollow:FlxObject;
 	var scaleMode:ScaleMode;
+	var flashing:Bool = false;
 
 	var controlsStrings:Array<String> = [];
 
@@ -183,11 +185,9 @@ class PerformanceOptions extends MusicBeatState
 
 			if (controls.BACK)
 				{
-					FlxTransitionableState.skipNextTransIn = true;
-					FlxTransitionableState.skipNextTransOut = true;
 					FlxG.switchState(new MenuState());
 				}
-				if (controls.UP_P)
+				if (controls.UP_P && !flashing)
 					{
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 						curSelected -= 1;
@@ -209,7 +209,7 @@ class PerformanceOptions extends MusicBeatState
 								desc.text = "Set the Scaling mode. Mode: " + scaleMode;
 					}
 		
-				if (controls.DOWN_P)
+				if (controls.DOWN_P && !flashing)
 					{
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 						curSelected += 1;
@@ -448,138 +448,144 @@ class PerformanceOptions extends MusicBeatState
                   remove(boyfriend);
 				  add(boyfriend);
 			    }
-
-				if (ISDESKTOP)
-					{
-						switch(curSelected)
-						{			
-									case 0:
-										grpControls.remove(grpControls.members[curSelected]);
-										FlxG.save.data.antialiasing = !FlxG.save.data.antialiasing;
-										var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Antialiasing " + (FlxG.save.data.antialiasing ? "on" : "off"), true, false);
-										ctrl.y += 102;
-										ctrl.x += 50;
-										ctrl.targetY = curSelected - 0;
-										grpControls.add(ctrl);
-										FlxG.sound.play(Paths.sound('scrollMenu'));
-										
-									case 1:
-										grpControls.remove(grpControls.members[curSelected]);
-										FlxG.save.data.optimizations = !FlxG.save.data.optimizations;
-										var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "optimizations " + (FlxG.save.data.optimizations ? "on" : "off"), true, false);
-										ctrl.y += 102;
-										ctrl.x += 50;
-										ctrl.targetY = curSelected - 1;
-										grpControls.add(ctrl);
-										FlxG.sound.play(Paths.sound('scrollMenu'));
-									case 2:
-										grpControls.remove(grpControls.members[curSelected]);
-										FlxG.save.data.usedeprecatedloading = !FlxG.save.data.usedeprecatedloading;
-										var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "deprecated loading " + (FlxG.save.data.usedeprecatedloading ? "on" : "off"), true, false);
-										ctrl.y += 102;
-										ctrl.x += 50;
-										ctrl.targetY = curSelected - 2;
-										grpControls.add(ctrl);
-										FlxG.sound.play(Paths.sound('scrollMenu'));
-									case 3:
-										FlxTransitionableState.skipNextTransIn = true;
-										FlxTransitionableState.skipNextTransOut = true;
-										FlxG.switchState(new CacheState());
-									case 4:
-										grpControls.remove(grpControls.members[curSelected]);
-										var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Set ScaleMode", true, false);
-										ctrl.y += 102;
-										ctrl.x += 50;
-										ctrl.targetY = curSelected - 4;
-										grpControls.add(ctrl);
-										FlxG.sound.play(Paths.sound('scrollMenu'));
-										scaleModeIndex = FlxMath.wrap(scaleModeIndex + 1, 0, scaleModes.length - 1);
-										setScaleMode(scaleModes[scaleModeIndex]);
-									case 5:
-										grpControls.remove(grpControls.members[curSelected]);
-										var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Set Windowed Resolution", true, false);
-										ctrl.y += 102;
-										ctrl.x += 50;
-										ctrl.targetY = curSelected - 5;
-										grpControls.add(ctrl);
-										FlxG.sound.play(Paths.sound('scrollMenu'));
-										Lib.application.window.resize(width, height);
-									case 6:
-										grpControls.remove(grpControls.members[curSelected]);
-										FlxG.save.data.graphicpersist = !FlxG.save.data.graphicpersist;
-										var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "persistent caching " + (FlxG.save.data.graphicpersist ? "on" : "off"), true, false);
-										ctrl.y += 102;
-										ctrl.x += 50;
-										ctrl.targetY = curSelected - 6;
-										grpControls.add(ctrl);
-										FlxG.sound.play(Paths.sound('scrollMenu'));	
-										FlxGraphic.defaultPersist = FlxG.save.data.graphicpersist;						
-					}
-				}
-				else
-					{
-						switch(curSelected)
-						{
-							case 0:
-								grpControls.remove(grpControls.members[curSelected]);
-								FlxG.save.data.antialiasing = !FlxG.save.data.antialiasing;
-								var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Antialiasing " + (FlxG.save.data.antialiasing ? "on" : "off"), true, false);
-								ctrl.y += 102;
-								ctrl.x += 50;
-								ctrl.targetY = curSelected - 0;
-								grpControls.add(ctrl);
-								FlxG.sound.play(Paths.sound('scrollMenu'));
-								
-							case 1:
-								grpControls.remove(grpControls.members[curSelected]);
-								FlxG.save.data.optimizations = !FlxG.save.data.optimizations;
-								var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "optimizations " + (FlxG.save.data.optimizations ? "on" : "off"), true, false);
-								ctrl.y += 102;
-								ctrl.x += 50;
-								ctrl.targetY = curSelected - 1;
-								grpControls.add(ctrl);
-								FlxG.sound.play(Paths.sound('scrollMenu'));
-							case 2:
-								grpControls.remove(grpControls.members[curSelected]);
-								FlxG.save.data.usedeprecatedloading = !FlxG.save.data.usedeprecatedloading;
-								var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "deprecated loading " + (FlxG.save.data.usedeprecatedloading ? "on" : "off"), true, false);
-								ctrl.y += 102;
-								ctrl.x += 50;
-								ctrl.targetY = curSelected - 2;
-								grpControls.add(ctrl);
-								FlxG.sound.play(Paths.sound('scrollMenu'));
-							case 3:
-								grpControls.remove(grpControls.members[curSelected]);
-								var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Set ScaleMode", true, false);
-								ctrl.y += 102;
-								ctrl.x += 50;
-								ctrl.targetY = curSelected - 3;
-								grpControls.add(ctrl);
-								FlxG.sound.play(Paths.sound('scrollMenu'));
-								scaleModeIndex = FlxMath.wrap(scaleModeIndex + 1, 0, scaleModes.length - 1);
-								setScaleMode(scaleModes[scaleModeIndex]);
-							case 4:
-								grpControls.remove(grpControls.members[curSelected]);
-								var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Set Windowed Resolution", true, false);
-								ctrl.y += 102;
-								ctrl.x += 50;
-								ctrl.targetY = curSelected - 4;
-								grpControls.add(ctrl);
-								FlxG.sound.play(Paths.sound('scrollMenu'));
-								Lib.application.window.resize(width, height);
-							case 5:
-								grpControls.remove(grpControls.members[curSelected]);
-								FlxG.save.data.graphicpersist = !FlxG.save.data.graphicpersist;
-								var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "persistent caching " + (FlxG.save.data.graphicpersist ? "on" : "off"), true, false);
-								ctrl.y += 102;
-								ctrl.x += 50;
-								ctrl.targetY = curSelected - 5;
-								grpControls.add(ctrl);
-								FlxG.sound.play(Paths.sound('scrollMenu'));
-								FlxGraphic.defaultPersist = FlxG.save.data.graphicpersist;								
-						}
-
-					}
+				                flashing = true;
+								FlxG.sound.play(Paths.sound('confirmMenu'));
+								FlxFlicker.flicker(grpControls.members[curSelected], 1, 0.06, false, true, function(flick:FlxFlicker)
+									{
+										flashing = false;
+										//FlxTransitionableState.skipNextTransIn = true;
+										//FlxTransitionableState.skipNextTransOut = true;
+										if (ISDESKTOP)
+											{
+												switch(curSelected)
+												{			
+															case 0:
+																grpControls.remove(grpControls.members[curSelected]);
+																FlxG.save.data.antialiasing = !FlxG.save.data.antialiasing;
+																var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Antialiasing " + (FlxG.save.data.antialiasing ? "on" : "off"), true, false);
+																ctrl.y += 102;
+																ctrl.x += 50;
+																ctrl.targetY = curSelected - 0;
+																grpControls.add(ctrl);
+																FlxG.sound.play(Paths.sound('scrollMenu'));
+																
+															case 1:
+																grpControls.remove(grpControls.members[curSelected]);
+																FlxG.save.data.optimizations = !FlxG.save.data.optimizations;
+																var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "optimizations " + (FlxG.save.data.optimizations ? "on" : "off"), true, false);
+																ctrl.y += 102;
+																ctrl.x += 50;
+																ctrl.targetY = curSelected - 1;
+																grpControls.add(ctrl);
+																FlxG.sound.play(Paths.sound('scrollMenu'));
+															case 2:
+																grpControls.remove(grpControls.members[curSelected]);
+																FlxG.save.data.usedeprecatedloading = !FlxG.save.data.usedeprecatedloading;
+																var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "deprecated loading " + (FlxG.save.data.usedeprecatedloading ? "on" : "off"), true, false);
+																ctrl.y += 102;
+																ctrl.x += 50;
+																ctrl.targetY = curSelected - 2;
+																grpControls.add(ctrl);
+																FlxG.sound.play(Paths.sound('scrollMenu'));
+															case 3:
+																FlxG.switchState(new CacheState());
+															case 4:
+																grpControls.remove(grpControls.members[curSelected]);
+																var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Set ScaleMode", true, false);
+																ctrl.y += 102;
+																ctrl.x += 50;
+																ctrl.targetY = curSelected - 4;
+																grpControls.add(ctrl);
+																FlxG.sound.play(Paths.sound('scrollMenu'));
+																scaleModeIndex = FlxMath.wrap(scaleModeIndex + 1, 0, scaleModes.length - 1);
+																setScaleMode(scaleModes[scaleModeIndex]);
+															case 5:
+																grpControls.remove(grpControls.members[curSelected]);
+																var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Set Windowed Resolution", true, false);
+																ctrl.y += 102;
+																ctrl.x += 50;
+																ctrl.targetY = curSelected - 5;
+																grpControls.add(ctrl);
+																FlxG.sound.play(Paths.sound('scrollMenu'));
+																Lib.application.window.resize(width, height);
+															case 6:
+																grpControls.remove(grpControls.members[curSelected]);
+																FlxG.save.data.graphicpersist = !FlxG.save.data.graphicpersist;
+																var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "persistent caching " + (FlxG.save.data.graphicpersist ? "on" : "off"), true, false);
+																ctrl.y += 102;
+																ctrl.x += 50;
+																ctrl.targetY = curSelected - 6;
+																grpControls.add(ctrl);
+																FlxG.sound.play(Paths.sound('scrollMenu'));	
+																FlxGraphic.defaultPersist = FlxG.save.data.graphicpersist;						
+											}
+										}
+										else
+											{
+												switch(curSelected)
+												{
+													case 0:
+														grpControls.remove(grpControls.members[curSelected]);
+														FlxG.save.data.antialiasing = !FlxG.save.data.antialiasing;
+														var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Antialiasing " + (FlxG.save.data.antialiasing ? "on" : "off"), true, false);
+														ctrl.y += 102;
+														ctrl.x += 50;
+														ctrl.targetY = curSelected - 0;
+														grpControls.add(ctrl);
+														FlxG.sound.play(Paths.sound('scrollMenu'));
+														
+													case 1:
+														grpControls.remove(grpControls.members[curSelected]);
+														FlxG.save.data.optimizations = !FlxG.save.data.optimizations;
+														var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "optimizations " + (FlxG.save.data.optimizations ? "on" : "off"), true, false);
+														ctrl.y += 102;
+														ctrl.x += 50;
+														ctrl.targetY = curSelected - 1;
+														grpControls.add(ctrl);
+														FlxG.sound.play(Paths.sound('scrollMenu'));
+													case 2:
+														grpControls.remove(grpControls.members[curSelected]);
+														FlxG.save.data.usedeprecatedloading = !FlxG.save.data.usedeprecatedloading;
+														var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "deprecated loading " + (FlxG.save.data.usedeprecatedloading ? "on" : "off"), true, false);
+														ctrl.y += 102;
+														ctrl.x += 50;
+														ctrl.targetY = curSelected - 2;
+														grpControls.add(ctrl);
+														FlxG.sound.play(Paths.sound('scrollMenu'));
+													case 3:
+														grpControls.remove(grpControls.members[curSelected]);
+														var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Set ScaleMode", true, false);
+														ctrl.y += 102;
+														ctrl.x += 50;
+														ctrl.targetY = curSelected - 3;
+														grpControls.add(ctrl);
+														FlxG.sound.play(Paths.sound('scrollMenu'));
+														scaleModeIndex = FlxMath.wrap(scaleModeIndex + 1, 0, scaleModes.length - 1);
+														setScaleMode(scaleModes[scaleModeIndex]);
+													case 4:
+														grpControls.remove(grpControls.members[curSelected]);
+														var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "Set Windowed Resolution", true, false);
+														ctrl.y += 102;
+														ctrl.x += 50;
+														ctrl.targetY = curSelected - 4;
+														grpControls.add(ctrl);
+														FlxG.sound.play(Paths.sound('scrollMenu'));
+														Lib.application.window.resize(width, height);
+													case 5:
+														grpControls.remove(grpControls.members[curSelected]);
+														FlxG.save.data.graphicpersist = !FlxG.save.data.graphicpersist;
+														var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, "persistent caching " + (FlxG.save.data.graphicpersist ? "on" : "off"), true, false);
+														ctrl.y += 102;
+														ctrl.x += 50;
+														ctrl.targetY = curSelected - 5;
+														grpControls.add(ctrl);
+														FlxG.sound.play(Paths.sound('scrollMenu'));
+														FlxGraphic.defaultPersist = FlxG.save.data.graphicpersist;								
+												}
+						
+											}
+											//flick.destroy();
+									});	
 			}
 	}
 

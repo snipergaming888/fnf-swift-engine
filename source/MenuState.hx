@@ -22,6 +22,7 @@ import lime.utils.Assets;
 import flixel.util.FlxTimer;
 import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
 import flixel.addons.transition.FlxTransitionableState;
+import flixel.effects.FlxFlicker;
 
 class MenuState extends MusicBeatState
 {
@@ -37,6 +38,7 @@ class MenuState extends MusicBeatState
 	public static var desc:FlxText;
 	var voices:FlxSound;
 	public static var descBG:FlxSprite;
+	var flashing:Bool = false;
 	var sex:Array<String> = ['GAMEPLAY', 'APPEARANCE', 'KEYBINDS', 'PERFORMANCE', 'SAVES', 'MISC'];
 	override function create()
 	{
@@ -152,13 +154,13 @@ class MenuState extends MusicBeatState
 			if (curSelected == 5)
 				desc.text = "Miscellaneous options menu.";
 
-			if (controls.UP_P)
+			if (controls.UP_P && !flashing)
 				{
 					FlxG.sound.play(Paths.sound('scrollMenu'));
 					curSelected -= 1;
 				}
 	
-			if (controls.DOWN_P)
+			if (controls.DOWN_P && !flashing)
 				{
 					FlxG.sound.play(Paths.sound('scrollMenu'));
 					curSelected += 1;
@@ -182,27 +184,41 @@ class MenuState extends MusicBeatState
 					else
 						sex.alpha = 0.7;
 				});
+
 			
 
 			if (controls.ACCEPT)
 			{
-				FlxTransitionableState.skipNextTransIn = true;
-				FlxTransitionableState.skipNextTransOut = true;
-				switch(curSelected)
-				{
-					case 0:
-						FlxG.switchState(new GameOptions());
-					case 1:
-						FlxG.switchState(new ApperanceOptions());
-					case 2:
-						FlxG.switchState(new OptionsMenu());
-					case 3:
-						FlxG.switchState(new PerformanceOptions());
-					case 4:
-						FlxG.switchState(new SaveOptions());
-					case 5:
-						FlxG.switchState(new MiscOptions());
-				}
+				flashing = true;
+				grpControls.forEach(function(sex:Alphabet)
+					{	
+						if (sex.ID == curSelected)
+							{
+								FlxG.sound.play(Paths.sound('confirmMenu'));
+								FlxFlicker.flicker(sex, 1, 0.06, false, false, function(flick:FlxFlicker)
+									{
+										flashing = false;
+										//FlxTransitionableState.skipNextTransIn = true;
+										//FlxTransitionableState.skipNextTransOut = true;
+										
+										switch(curSelected)
+										{
+											case 0:
+												FlxG.switchState(new GameOptions());
+											case 1:
+												FlxG.switchState(new ApperanceOptions());
+											case 2:
+												FlxG.switchState(new OptionsMenu());
+											case 3:
+												FlxG.switchState(new PerformanceOptions());
+											case 4:
+												FlxG.switchState(new SaveOptions());
+											case 5:
+												FlxG.switchState(new MiscOptions());
+										}
+									});	
+							}
+					});
 			}
 	}
 

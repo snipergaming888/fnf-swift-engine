@@ -231,10 +231,10 @@ class Settings extends MusicBeatState
               if (FlxG.save.data.songinfo == null)
                 FlxG.save.data.songinfo = false;
 
-              if ( FlxG.save.data.changedHitX == null)
+              if (FlxG.save.data.changedHitX == null)
                 FlxG.save.data.changedHitX = GameplayCustomizeState.defaultX;
 
-            if ( FlxG.save.data.changedHitY == null)
+            if (FlxG.save.data.changedHitY == null)
                 FlxG.save.data.changedHitY = GameplayCustomizeState.defaultY;
 
               if (FlxG.save.data.changedHit == null)
@@ -253,16 +253,22 @@ class Settings extends MusicBeatState
               FlxG.save.data.notesplashhold = false;
 
               if (FlxG.save.data.middlescrollalpha == null)
-                FlxG.save.data.middlescrollalpha = '0.5';
+                FlxG.save.data.middlescrollalpha = 0.5;
 
               if (FlxG.save.data.middlescrollBG == null)
                 FlxG.save.data.middlescrollBG = false;
 
-              if ( FlxG.save.data.smoothanims == null)
+              if (FlxG.save.data.smoothanims == null)
                 FlxG.save.data.smoothanims = false;
 
-              if ( FlxG.save.data.sqishyanims == null)
+              if (FlxG.save.data.sqishyanims == null)
                 FlxG.save.data.sqishyanims = false;
+
+              if (FlxG.save.data.camHUDTRAN == null)
+                FlxG.save.data.camHUDTRAN = false;
+
+              if (FlxG.save.data.camHUDALPHA == null)
+                FlxG.save.data.camHUDALPHA = 1;
 
 
               FlxGraphic.defaultPersist = FlxG.save.data.graphicpersist;

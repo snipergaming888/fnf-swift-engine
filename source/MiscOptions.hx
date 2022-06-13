@@ -23,6 +23,7 @@ import flixel.FlxObject;
 import flixel.tweens.FlxEase;
 import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
 import flixel.addons.transition.FlxTransitionableState;
+import flixel.effects.FlxFlicker;
 
 class MiscOptions extends MusicBeatState
 {
@@ -36,6 +37,7 @@ class MiscOptions extends MusicBeatState
 	var curframefloat:Float = 1;
 	var menuBG:FlxSprite;
 	var camFollow:FlxObject;
+	var flashing:Bool = false;
 
 	var controlsStrings:Array<String> = [];
 
@@ -119,11 +121,9 @@ class MiscOptions extends MusicBeatState
 
 			if (controls.BACK)
 				{
-					FlxTransitionableState.skipNextTransIn = true;
-					FlxTransitionableState.skipNextTransOut = true;
 					FlxG.switchState(new MenuState());
 				}
-				if (controls.UP_P)
+				if (controls.UP_P && !flashing)
 					{
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 						curSelected -= 1;
@@ -140,7 +140,7 @@ class MiscOptions extends MusicBeatState
 							}
 					}
 		
-				if (controls.DOWN_P)
+				if (controls.DOWN_P && !flashing)
 					{
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 						curSelected += 1;
@@ -215,56 +215,66 @@ class MiscOptions extends MusicBeatState
 				versionShit.text = "Enable Kade Engine 1.5.4 version text.";
 
 			if (controls.ACCEPT)
-			{
-				switch(curSelected)
-				{
-					case 0:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.freeplaysongs = !FlxG.save.data.freeplaysongs;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.freeplaysongs ? 'freeplay song previews on' : 'freeplay song previews off'), true, false);
-						ctrl.y += 102;
-			        	ctrl.x += 50;
-						ctrl.targetY = curSelected - 0;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-					case 1:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.discordrpc = !FlxG.save.data.discordrpc;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.discordrpc ? 'discord presence on' : 'discord presence off'), true, false);
-						ctrl.y += 102;
-			        	ctrl.x += 50;
-						ctrl.targetY = curSelected - 1;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-						#if cpp
-						if (!FlxG.save.data.discordrpc)
-							{
-								DiscordClient.shutdown();
-							}
-							else
-								{
-									DiscordClient.initialize();
-								}
-						#end
-					case 2:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.disguiseaske142 = !FlxG.save.data.disguiseaske142;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.disguiseaske142 ? 'KE four version txt on' : 'KE four version txt off'), true, false);
-						ctrl.y += 102;
-			        	ctrl.x += 50;
-						ctrl.isMenuItem = true;
-						ctrl.targetY = curSelected - 3;
-						grpControls.add(ctrl);
-					case 3:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.disguiseaske154 = !FlxG.save.data.disguiseaske154;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.disguiseaske154 ? 'KE five version txt on' : 'KE five version txt off'), true, false);
-						ctrl.y += 102;
-			        	ctrl.x += 50;
-						ctrl.isMenuItem = true;
-						ctrl.targetY = curSelected - 4;
-						grpControls.add(ctrl);						
-				}
+			{ 
+                                flashing = true;				
+								FlxG.sound.play(Paths.sound('confirmMenu'));
+								FlxFlicker.flicker(grpControls.members[curSelected], 1, 0.06, true, false, function(flick:FlxFlicker)
+									{
+										flashing = false;
+										//FlxTransitionableState.skipNextTransIn = true;
+										//FlxTransitionableState.skipNextTransOut = true;
+										
+										switch(curSelected)
+										{
+											case 0:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.freeplaysongs = !FlxG.save.data.freeplaysongs;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.freeplaysongs ? 'freeplay song previews on' : 'freeplay song previews off'), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 0;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 1:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.discordrpc = !FlxG.save.data.discordrpc;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.discordrpc ? 'discord presence on' : 'discord presence off'), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 1;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+												#if cpp
+												if (!FlxG.save.data.discordrpc)
+													{
+														DiscordClient.shutdown();
+													}
+													else
+														{
+															DiscordClient.initialize();
+														}
+												#end
+											case 2:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.disguiseaske142 = !FlxG.save.data.disguiseaske142;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.disguiseaske142 ? 'KE four version txt on' : 'KE four version txt off'), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.isMenuItem = true;
+												ctrl.targetY = curSelected - 3;
+												grpControls.add(ctrl);
+											case 3:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.disguiseaske154 = !FlxG.save.data.disguiseaske154;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.disguiseaske154 ? 'KE five version txt on' : 'KE five version txt off'), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.isMenuItem = true;
+												ctrl.targetY = curSelected - 4;
+												grpControls.add(ctrl);						
+										}
+										//flick.destroy();
+									});				
 			}
 	}
 

@@ -23,6 +23,7 @@ import flixel.FlxObject;
 import flixel.tweens.FlxEase;
 import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
 import flixel.addons.transition.FlxTransitionableState;
+import flixel.effects.FlxFlicker;
 
 class SaveOptions extends MusicBeatState
 {
@@ -36,6 +37,7 @@ class SaveOptions extends MusicBeatState
 	var curframefloat:Float = 1;
 	var menuBG:FlxSprite;
 	var camFollow:FlxObject;
+	var flashing:Bool = false;
 
 	var controlsStrings:Array<String> = [];
 
@@ -119,11 +121,9 @@ class SaveOptions extends MusicBeatState
 
 			if (controls.BACK)
 				{
-					FlxTransitionableState.skipNextTransIn = true;
-					FlxTransitionableState.skipNextTransOut = true;
 					FlxG.switchState(new MenuState());
 				}
-				if (controls.UP_P)
+				if (controls.UP_P && !flashing)
 					{
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 						curSelected -= 1;
@@ -140,7 +140,7 @@ class SaveOptions extends MusicBeatState
 							}
 					}
 		
-				if (controls.DOWN_P)
+				if (controls.DOWN_P && !flashing)
 					{
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 						curSelected += 1;
@@ -211,29 +211,38 @@ class SaveOptions extends MusicBeatState
 
 			if (controls.ACCEPT)
 			{
-				switch(curSelected)
-				{
-					case 0:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.freeplaysongs = !FlxG.save.data.freeplaysongs;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, ('Reset All Option Saves'), true, false);
-						ctrl.y += 102;
-			        	ctrl.x += 50;
-						ctrl.targetY = curSelected - 0;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));
-						Settings.resettodefaultsettings();
-						TitleState.resetBinds();
-					/*case 1:
-						grpControls.remove(grpControls.members[curSelected]);
-						FlxG.save.data.discordrpc = !FlxG.save.data.discordrpc;
-						var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, ('Reset All Song Score Saves'), true, false);
-						ctrl.y += 102;
-			        	ctrl.x += 50;
-						ctrl.targetY = curSelected - 1;
-						grpControls.add(ctrl);
-						FlxG.sound.play(Paths.sound('scrollMenu'));*/	
-				}
+                                flashing = true;				
+								FlxG.sound.play(Paths.sound('confirmMenu'));
+								FlxFlicker.flicker(grpControls.members[curSelected], 1, 0.06, true, false, function(flick:FlxFlicker)
+									{
+										flashing = false;
+										//FlxTransitionableState.skipNextTransIn = true;
+										//FlxTransitionableState.skipNextTransOut = true;	
+										switch(curSelected)
+										{
+											case 0:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.freeplaysongs = !FlxG.save.data.freeplaysongs;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, ('Reset All Option Saves'), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 0;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+												Settings.resettodefaultsettings();
+												TitleState.resetBinds();
+											/*case 1:
+												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.discordrpc = !FlxG.save.data.discordrpc;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, ('Reset All Song Score Saves'), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 1;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));*/	
+										}
+										//flick.destroy();
+									});	
 			}
 	}
 

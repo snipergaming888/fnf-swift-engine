@@ -202,8 +202,6 @@ class TitleState extends MusicBeatState
 
 			logoBl = new FlxSprite(-150, 0);
 			logoBl.frames = Paths.getSparrowAtlas('logoBumpin');
-			if (FlxG.save.data.optimizations)
-			logoBl.frames = Paths.getSparrowAtlas('logoBumpin-opt');
 			if (FlxG.save.data.antialiasing)
 			logoBl.antialiasing = true;
 			logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
@@ -215,8 +213,6 @@ class TitleState extends MusicBeatState
 	
 			gfDance = new FlxSprite(FlxG.width * 0.4, FlxG.height * 0.07);
 			gfDance.frames = Paths.getSparrowAtlas('gfDanceTitle');
-			if (FlxG.save.data.optimizations)
-			gfDance.frames = Paths.getSparrowAtlas('gfDanceTitle-opt');	
 			gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
 			gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
 			if (FlxG.save.data.antialiasing)
@@ -225,9 +221,7 @@ class TitleState extends MusicBeatState
 			add(logoBl);
 	
 			titleText = new FlxSprite(100, FlxG.height * 0.8);
-			titleText.frames = Paths.getSparrowAtlas('titleEnter');
-			if (FlxG.save.data.optimizations)
-			titleText.frames = Paths.getSparrowAtlas('titleEnter-opt');		
+			titleText.frames = Paths.getSparrowAtlas('titleEnter');	
 			titleText.animation.addByPrefix('idle', "Press Enter to Begin", 24);
 			titleText.animation.addByPrefix('press', "ENTER PRESSED", 24);
 			titleText.antialiasing = true;
@@ -237,8 +231,6 @@ class TitleState extends MusicBeatState
 			add(titleText);
 		
 		var logo:FlxSprite = new FlxSprite().loadGraphic(Paths.image('logo'));
-		if (FlxG.save.data.optimizations)
-		logo = new FlxSprite().loadGraphic(Paths.image('logo-opt'));
 		logo.screenCenter();
 		if (FlxG.save.data.antialiasing)
 		logo.antialiasing = true;
@@ -260,9 +252,6 @@ class TitleState extends MusicBeatState
 		// credTextShit.alignment = CENTER;
 
 		credTextShit.visible = false;
-		if (FlxG.save.data.optimizations)
-		ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('newgrounds_logo-opt'));
-		else
 		ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('newgrounds_logo'));
 		add(ngSpr);
 		ngSpr.visible = false;
@@ -490,7 +479,7 @@ class TitleState extends MusicBeatState
 		var pressedEnter:Bool = FlxG.keys.justPressed.ENTER;
 		if (FlxG.save.data.camzooming)
 			{
-				FlxTween.tween(FlxG.camera, {zoom: 1.05}, 0.3, {ease: FlxEase.quadOut, type: BACKWARD});	
+				//FlxTween.tween(FlxG.camera, {zoom: 1.05}, 0.3, {ease: FlxEase.quadOut, type: BACKWARD});	
 			}
 			else
 				{

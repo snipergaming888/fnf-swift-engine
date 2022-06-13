@@ -110,7 +110,8 @@ class LatencyState extends MusicBeatState
 		if (FlxG.keys.justPressed.R)
 			{
 			  FlxG.sound.music.stop();
-
+            FlxTransitionableState.skipNextTransIn = true;
+			FlxTransitionableState.skipNextTransOut = true;
 			  FlxG.resetState();
 			}
 
@@ -126,6 +127,8 @@ class LatencyState extends MusicBeatState
 			FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
 		if (FlxG.keys.justPressed.ESCAPE)
 			{
+				FlxTransitionableState.skipNextTransIn = false;
+				FlxTransitionableState.skipNextTransOut = false;
 				FlxG.sound.music.stop();
 				FlxG.sound.playMusic(Paths.music('freakyMenu'));
 			}

@@ -45,12 +45,14 @@ class HealthIcon extends FlxSprite
 	public function changeIcon(char:String)
 	{
 		if (!char.endsWith('-pixel'))
-			char = char.split("-")[0];
+		char = char.split("-")[0];
+			
 
 
 		loadGraphic(Paths.image('icons/icon-' + char), true, 150, 150);
 		animation.add(char, [0, 1], 0, false, isPlayer);
 		animation.play(char);
+		trace(char);
 	}
 
 	override function update(elapsed:Float)

@@ -33,6 +33,7 @@ import flixel.util.FlxTimer;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
 import flixel.addons.transition.FlxTransitionableState;
+import flixel.effects.FlxFlicker;
 
 class OptionsMenu extends MusicBeatState
 
@@ -62,6 +63,7 @@ class OptionsMenu extends MusicBeatState
 	public static var gameVer:String = "0.2.7.1";
 	public static var sniperengineversion:String = "0.1";
 	var descBG:FlxSprite;
+	var flashing:Bool = false;
 	/// be prepared for some horrable code
 	/// i had no idea how to remove alpabets from groups so uhhhh
 	override function create()
@@ -183,8 +185,6 @@ class OptionsMenu extends MusicBeatState
 			{
 				if (controls.BACK)
 					{
-						FlxTransitionableState.skipNextTransIn = true;
-						FlxTransitionableState.skipNextTransOut = true;
 						FlxG.switchState(new MenuState());
 					}
 				if(FlxG.save.data.upBind == "enter"){
@@ -207,7 +207,7 @@ class OptionsMenu extends MusicBeatState
 
 				if (abletochange)
 					{
-						if (controls.UP_P)
+						if (controls.UP_P && !flashing)
 							{
 								FlxG.sound.play(Paths.sound('scrollMenu'));
 								curSelected -= 1;
@@ -224,7 +224,7 @@ class OptionsMenu extends MusicBeatState
 									}
 							}
 				
-						if (controls.DOWN_P)
+						if (controls.DOWN_P && !flashing)
 							{
 								FlxG.sound.play(Paths.sound('scrollMenu'));
 								curSelected += 1;
@@ -296,32 +296,45 @@ class OptionsMenu extends MusicBeatState
 			}
 			if (controls.ACCEPT)
 				{
-					switch(curSelected)
-					{
-						case 0:
-							isSettingControlleft = true;
-							abletochange = false;
-							FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-						case 1:
-							isSettingControldown = true;
-							abletochange = false;
-							FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-						case 2:
-							isSettingControlup = true;
-							abletochange = false;
-							FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-						case 3:
-							isSettingControlright = true;
-							abletochange = false;
-							FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-						case 4:
-							///controls.setKeyboardScheme(Solo);
-							TitleState.resetBinds();
-							FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-							FlxTransitionableState.skipNextTransIn = true;
-							FlxTransitionableState.skipNextTransOut = true;
-							FlxG.resetState();
-					}
+					grpControls.forEach(function(sex:Alphabet)
+						{	
+							if (sex.ID == curSelected)
+								{
+									flashing = true;
+									FlxG.sound.play(Paths.sound('confirmMenu'));
+									FlxFlicker.flicker(sex, 1, 0.06, true, false, function(flick:FlxFlicker)
+										{
+											//FlxTransitionableState.skipNextTransIn = true;
+											//FlxTransitionableState.skipNextTransOut = true;
+											switch(curSelected)
+											{
+												case 0:
+													isSettingControlleft = true;
+													abletochange = false;
+													FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+												case 1:
+													isSettingControldown = true;
+													abletochange = false;
+													FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+												case 2:
+													isSettingControlup = true;
+													abletochange = false;
+													FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+												case 3:
+													isSettingControlright = true;
+													abletochange = false;
+													FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+												case 4:
+													///controls.setKeyboardScheme(Solo);
+													TitleState.resetBinds();
+													FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+													FlxG.resetState();
+											}
+											flashing = false;
+											//flick.destroy();
+										});
+								}
+						});
 				}
 			
 	}

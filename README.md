@@ -1,12 +1,10 @@
-## Friday Night Funkin Swift Engine
+-# Friday Night Funkin Swift Engine
 
 ///////////////////////////
 
 i made this cuz i was bored if i am being fr, but its pretty good imo for being made by a dumb
 
 the main reason this exists is for people who have chromebooks, web compat is really good
-
-read the GB desc for more info: https://gamebanana.com/tools/8831
 
 ///////////////////////////
 

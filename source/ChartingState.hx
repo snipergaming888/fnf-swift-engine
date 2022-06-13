@@ -203,6 +203,7 @@ class ChartingState extends MusicBeatState
 				needsVoices: true,
 				player1: 'bf',
 				player2: 'dad',
+				gfVersion: 'gf',
 				stage: 'stage',
 				composer: 'Kawai Sprite',
 				camzoomamountp1: 0,
@@ -240,6 +241,8 @@ class ChartingState extends MusicBeatState
 
 		updateGrid();
 
+		curSong = _song.song;
+
 		loadSong(_song.song);
 		Conductor.changeBPM(_song.bpm);
 		Conductor.mapBPMChanges(_song);
@@ -276,6 +279,9 @@ class ChartingState extends MusicBeatState
 		add(curRenderedNotes);
 		add(curRenderedSustains);
 		updateHeads();
+
+		if (curSong.toLowerCase() == 'interlope')
+			trace('hi');
 
 		super.create();
 	}
@@ -380,10 +386,12 @@ class ChartingState extends MusicBeatState
 		var characters:Array<String> = CoolUtil.coolTextFile(Paths.txt('characterList'));
 		var stages:Array<String> = CoolUtil.coolTextFile(Paths.txt('stageList'));
 		var noteskins:Array<String> = CoolUtil.coolTextFile(Paths.txt('noteskinList'));
+		var gfVersions:Array<String> = CoolUtil.coolTextFile(Paths.txt('gfVersionList'));
 
 		var player1DropDown = new FlxUIDropDownMenu(10, 235, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
 			_song.player1 = characters[Std.parseInt(character)];
+			updateHeads();
 		});
 		player1DropDown.selectedLabel = _song.player1;
 
@@ -392,6 +400,7 @@ class ChartingState extends MusicBeatState
 		var player2DropDown = new FlxUIDropDownMenu(155, 235, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
 			_song.player2 = characters[Std.parseInt(character)];
+			updateHeads();
 		});
 
 		var player2Label = new FlxText(140,215,64,'Player 2');
@@ -415,6 +424,14 @@ class ChartingState extends MusicBeatState
 		var noteskinLabel = new FlxText(10,260,64,'Noteskin');
 
 		player2DropDown.selectedLabel = _song.player2;
+
+		var gfVersionDropDownText = new FlxText(10,310,64,'gf Version');
+
+		var gfVersionDropDown = new FlxUIDropDownMenu(10, 330, FlxUIDropDownMenu.makeStrIdLabelArray(gfVersions, true), function(gfVersion:String)
+		{
+			_song.gfVersion = gfVersions[Std.parseInt(gfVersion)];
+		});
+		gfVersionDropDown.selectedLabel = _song.gfVersion;
 
 		var tab_group_song = new FlxUI(null, UI_box);
 		tab_group_song.name = "Song";
@@ -447,6 +464,8 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(loadjsonButton);
 		tab_group_song.add(noteskinDropDown);
 		tab_group_song.add(noteskinLabel);
+		tab_group_song.add(gfVersionDropDownText);
+		tab_group_song.add(gfVersionDropDown);
 
 		UI_box.addGroup(tab_group_song);
 		UI_box.scrollFactor.set();
@@ -881,8 +900,10 @@ class ChartingState extends MusicBeatState
 		}
 
 		FlxG.sound.playMusic(Paths.inst(daSong), 0.6);
+		var voices = Paths.voices(daSong);
 
 		// WONT WORK FOR TUTORIAL OR TEST SONG!!! REDO LATER
+		if (Paths.doesSoundAssetExist(voices))
 		vocals = new FlxSound().loadEmbedded(Paths.voices(daSong));
 		FlxG.sound.list.add(vocals);
 
@@ -1104,17 +1125,88 @@ class ChartingState extends MusicBeatState
 
 	var writingNotes:Bool = false;
 
+	override function stepHit()
+		{
+			super.stepHit();
+		}
+
 	override function update(elapsed:Float)
 	{
 		//steppercopyfloat = stepperCopydata.value;
 		curStep = recalculateSteps();
+	
+
+		if (curSong.toLowerCase() == 'interlope')
+			{
+				/*curRenderedNotes.forEach(function(note:Note)
+					{
+						while (curRenderedNotes.members.length > 0)
+							{
+								curRenderedNotes.remove(curRenderedNotes.members[0], true);
+							}
+					
+							while (curRenderedSustains.members.length > 0)
+							{
+								curRenderedSustains.remove(curRenderedSustains.members[0], true);
+							}
+					
+							var sectionInfo:Array<Dynamic> = _song.notes[curSection].sectionNotes;
+					
+							if (_song.notes[curSection].changeBPM && _song.notes[curSection].bpm > 0)
+							{
+								Conductor.changeBPM(_song.notes[curSection].bpm);
+								trace('CHANGED BPM!');
+							}
+							else
+							{
+								// get last bpm
+								var daBPM:Int = _song.bpm;
+								for (i in 0...curSection)
+									if (_song.notes[i].changeBPM)
+										daBPM = _song.notes[i].bpm;
+								Conductor.changeBPM(daBPM);
+							}
+					
+							for (i in sectionInfo)
+							{
+								var daNoteInfo = i[1];
+								var daStrumTime = i[0];
+								var daSus = i[2];
+					
+								var note:Note = new Note(daStrumTime, daNoteInfo % 4);
+								note.sustainLength = daSus;
+								note.setGraphicSize(GRID_SIZE, GRID_SIZE);
+								note.updateHitbox();
+								note.x = Math.floor(daNoteInfo * GRID_SIZE);
+								note.y = Math.floor(getYfromStrum((daStrumTime - sectionStartTime()) % (Conductor.stepCrochet * _song.notes[curSection].lengthInSteps)));
+					
+								curRenderedNotes.add(note);
+
+								if (daSus > 0)
+									{
+										var sustainVis:FlxSprite = new FlxSprite(note.x + (GRID_SIZE / 2),
+											note.y + GRID_SIZE).makeGraphic(8, Math.floor(FlxMath.remapToRange(daSus, 0, Conductor.stepCrochet * 16, 0, gridBG.height)));
+										curRenderedSustains.add(sustainVis);
+									}
+							}
+						*///}); // i figured out that you DO NOT have to remove and replace them to update them
+			}
+
+				{
+					if (curSong.toLowerCase() == 'interlope')
+						{
+							PlayState.noteangle += 1.2;
+							trace(PlayState.noteangle);
+						}
+				}
 
 		Conductor.songPosition = FlxG.sound.music.time;
 		_song.song = typingShit.text;
 		storyDifficultyString = typingShit2.text;
 		_song.composer = typingShit3.text;
 		_song.notes[curSection].animtoplay = typingShit4.text;
-		_song.notes[curSection].charactertoplayon = typingShit5.text; 
+		_song.notes[curSection].charactertoplayon = typingShit5.text;
+		curSong = typingShit.text.toLowerCase(); 
 
 		strumLine.y = getYfromStrum((Conductor.songPosition - sectionStartTime()) % (Conductor.stepCrochet * _song.notes[curSection].lengthInSteps));
 
@@ -1415,6 +1507,7 @@ class ChartingState extends MusicBeatState
 				FlxG.sound.music.stop();
 				vocals.stop();
 				PlayState.triggeredalready = false;	
+				PlayState.noteangle = 0;
 				LoadingState.loadAndSwitchState(new PlayState());
 			}
 
@@ -1653,7 +1746,8 @@ class ChartingState extends MusicBeatState
 			PlayState.SONG = _song;
 			FlxG.sound.music.stop();
 			vocals.stop();
-			PlayState.triggeredalready = false;	
+			PlayState.triggeredalready = false;
+			PlayState.noteangle = 0;	
 			LoadingState.loadAndSwitchState(new PlayState());
 		}
 
@@ -1885,6 +1979,17 @@ class ChartingState extends MusicBeatState
 			{
 				var sustainVis:FlxSprite = new FlxSprite(note.x + (GRID_SIZE / 2),
 					note.y + GRID_SIZE).makeGraphic(8, Math.floor(FlxMath.remapToRange(daSus, 0, Conductor.stepCrochet * 16, 0, gridBG.height)));
+					switch (note.noteData)
+					{
+						case 0:
+                        sustainVis.color = 0xC24B99;
+						case 1:	
+						sustainVis.color = 0x15FFFF;
+						case 2:
+						sustainVis.color = 0x22FA04;
+						case 3:
+						sustainVis.color = 0xF93F45;
+					}
 				curRenderedSustains.add(sustainVis);
 			}
 		}
@@ -2115,7 +2220,11 @@ class ChartingState extends MusicBeatState
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);
 			_file.addEventListener(Event.CANCEL, onSaveCancel);
 			_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
+			if (storyDifficultyString == 'normal' || storyDifficultyString == 'Normal') // save difficulty too! //fix it saving as -normal later
 			_file.save(data.trim(), _song.song.toLowerCase() + ".json");
+			else
+			_file.save(data.trim(), _song.song.toLowerCase() + "-" + typingShit2.text + ".json");	
+
 		}
 	}
 

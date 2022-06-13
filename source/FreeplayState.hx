@@ -352,16 +352,20 @@ class FreeplayState extends MusicBeatState
 		#if cpp
 		if(FlxG.keys.justPressed.V && FlxG.sound.music.playing && FlxG.save.data.freeplaysongs)
 			{
-				if (!voicesplaying)
+				var voice = Paths.voices(songs[curSelected].songName);
+				if (!voicesplaying && Paths.doesSoundAssetExist(voice))
 					{
+						trace('voices exist!');	
 							{
-								voices = new FlxSound().loadEmbedded(Paths.voices(songs[curSelected].songName));
-						        voices.onComplete = stopPlaying;
-						        voicesplaying = true;
-						        trace('IS PLAYING ' + voicesplaying);
-						        voices.play();
-								Conductor.changeBPM(beatArray[curSelected]);
-								trace(Conductor.bpm);
+									{
+										voices = new FlxSound().loadEmbedded(Paths.voices(songs[curSelected].songName));
+										voices.onComplete = stopPlaying;
+										voicesplaying = true;
+										trace('IS PLAYING ' + voicesplaying);
+										voices.play();
+										Conductor.changeBPM(beatArray[curSelected]);
+										trace(Conductor.bpm);
+									}
 							}
 					}
 					else if (voices.playing)
@@ -370,6 +374,8 @@ class FreeplayState extends MusicBeatState
 							voicesplaying = false;
 							trace('stop i hate you');
 						}
+						else
+						trace('NO VOICES');			
 			}
 			#end
 
@@ -581,7 +587,8 @@ class FreeplayState extends MusicBeatState
 
 		#if PRELOAD_ALL
 				{
-						if (FlxG.save.data.freeplaysongs)
+					var inst = Paths.inst(songs[curSelected].songName);
+						if (FlxG.save.data.freeplaysongs && Paths.doesSoundAssetExist(inst))
 							{
 								FlxG.sound.music.stop();
 								songWait.cancel();

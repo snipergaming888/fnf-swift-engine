@@ -72,9 +72,12 @@ class PlayState extends MusicBeatState
 	public var startTimer:FlxTimer;
 	var onbeat:Bool = false; // set to true for bf to idle on beats only
 	var shouldidleafterrelease:Bool = true; /// set this to false if you don't want boyfriend instantly going to idle after releasing a keypress from a sustain note. by default its true cuz of how default FNF does it. if its set to false, boyfriend will act more like how player 2 does. it really just depends on the chart.
-	var oldidlecode:Bool = false; // set to true if you want the characters to run the old idling code.
+	var oldidlecode:Bool = false; // set to true if you want the characters (player2) to run the old idling code.
+	var donotidleinbetweenclosenotes:Bool = false; // set to true if you want boyfriend to not play the idle animation for a spit second inbetween notes.
 	var CYAN:FlxColor = 0xFF00FFFF;
+	public static var noteangle:Float;
 	/// please add lua dude
+	// shut the fuck up
 	
 
 	var halloweenLevel:Bool = false;
@@ -342,11 +345,13 @@ class PlayState extends MusicBeatState
 		camHUD2 = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
 
+		if (FlxG.save.data.camHUDTRAN)
+		camHUD.alpha = FlxG.save.data.camHUDALPHA;
+
 		FlxG.cameras.reset(camGame);
 		FlxG.cameras.add(camHUD);
-				{
-					camHUD.visible = true;	
-				}
+		camHUD.visible = true;	
+				
 
 				if (FlxG.save.data.cinematic)
 					{
@@ -371,12 +376,12 @@ class PlayState extends MusicBeatState
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
 
-		#if windows
+		/*#if windows
 			sys.thread.Thread.create(() ->
 			{
 				antiCheat();
 			});
-			#end
+			#end*/
 
 		switch (SONG.song.toLowerCase())
 		{
@@ -1106,24 +1111,8 @@ class PlayState extends MusicBeatState
 		          }	   
               }
 
-		var gfVersion:String = 'gf';
 
-		switch (curStage)
-		{
-			case 'limo':
-				gfVersion = 'gf-car';
-			case 'mall' | 'mallEvil':
-				gfVersion = 'gf-christmas';
-			case 'school':
-				gfVersion = 'gf-pixel';
-			case 'schoolEvil':
-				gfVersion = 'gf-pixel';
-		}
-
-		if (curStage == 'limo')
-			gfVersion = 'gf-car';
-
-		gf = new Character(400, 130, gfVersion);
+		gf = new Character(400, 130, SONG.gfVersion);
 		gf.scrollFactor.set(0.95, 0.95);
 
 				
@@ -1444,7 +1433,7 @@ class PlayState extends MusicBeatState
 						add(scoreTxt);
 				}
 				#if debug
-				conducttext = new FlxText(500, 500, Conductor.songPosition, 20);
+				conducttext = new FlxText(500, 500, 'Pos: ' + Conductor.songPosition + "\n" + "Step: " + curStep + "\n" + 'Beat: ' + curBeat, 20);
 				add(conducttext);
 				#end
 		scoreTxt.cameras = [camHUD];
@@ -1550,13 +1539,16 @@ class PlayState extends MusicBeatState
 						}
 				}
 		}
-		else if (!ischeating)
+		else
 			{
-				switch (curSong.toLowerCase())
-				{	
-					default:
-					startCountdown();	
-				}
+				if (!ischeating)
+					{
+						switch (curSong.toLowerCase())
+						{	
+							default:
+							startCountdown();	
+						}
+					}
 			}
 
 		super.create();
@@ -1899,7 +1891,6 @@ class PlayState extends MusicBeatState
 					gf.dance();
 					if (!boyfriend.animation.curAnim.name.startsWith('sing'))
 					boyfriend.playAnim('idle');		
-					trace('start timer running');
 		
 					var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
 					introAssets.set('default', ['ready', "set", "go"]);
@@ -2018,7 +2009,7 @@ class PlayState extends MusicBeatState
 	public static var songMultiplier = 1.0;
 	///default: 1.0
 
-	#if windows
+	/*#if windows
 	function antiCheat()
 	{
 		var output = new sys.io.Process("tasklist", []).stdout.readAll().toString().toLowerCase();
@@ -2048,7 +2039,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 	}
-	#end
+	#end*/
 
 	function startSong():Void
 	{
@@ -2177,6 +2168,7 @@ class PlayState extends MusicBeatState
 					oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
 				else
 					oldNote = null;
+
 
 				var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote);
 				swagNote.sustainLength = songNotes[2];
@@ -2529,6 +2521,9 @@ class PlayState extends MusicBeatState
 			{
 				resyncVocals();
 			}
+			
+			if (FlxG.save.data.camHUDTRAN)
+				camHUD.alpha = FlxG.save.data.camHUDALPHA;
 
 			if (startTimer != null)
 				if (!startTimer.finished)
@@ -2699,6 +2694,7 @@ class PlayState extends MusicBeatState
 				defaultCamZoom += 0.1;
 				camHUD.zoom += 0.1;
 			}
+
 
 			if (FlxG.keys.justPressed.V)
 				{
@@ -3367,6 +3363,20 @@ class PlayState extends MusicBeatState
 		{
 			FlxG.switchState(new ChartingState());
 		}
+
+		if (FlxG.keys.justPressed.FIVE)
+			{
+			  if (donotidleinbetweenclosenotes)
+				{
+					donotidleinbetweenclosenotes = false;
+					trace('not ok!');
+				}
+				else
+					{
+						donotidleinbetweenclosenotes = true;
+						trace('ok!');	
+					}
+			}
 
 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
@@ -4884,18 +4894,42 @@ class PlayState extends MusicBeatState
 				}
 			});
 		}
+
+		notes.forEach(function(daNote:Note)
+			{
+				if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && (!holdArray.contains(true) && !onbeat && donotidleinbetweenclosenotes))
+					{
+						if (daNote.y >= strumLine.y && daNote.canBeHit && daNote.mustPress)
+							{
+								trace('too close');
+							}
+							else if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss') && (boyfriend.animation.curAnim.curFrame >= 15 || boyfriend.animation.curAnim.finished))
+								{
+									boyfriend.playAnim('idle');
+									trace(boyfriend.curCharacter + ' anim dance');
+								}
+					}			
+			});
+
+			if (notes.length <= 0)
+				{
+					if (curBeat % 1 == 0 && boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss') && (boyfriend.animation.curAnim.curFrame >= 10 || boyfriend.animation.curAnim.finished))
+						{
+							boyfriend.playAnim('idle');
+							trace(boyfriend.curCharacter + ' note dance');
+						}		
+				}
+
+			if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss') && !donotidleinbetweenclosenotes && (boyfriend.animation.curAnim.curFrame >= 10 || boyfriend.animation.curAnim.finished))
+				boyfriend.playAnim('idle');
 			
 				
-					if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && (!holdArray.contains(true) && !onbeat))
-						{
-							if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss') && (boyfriend.animation.curAnim.curFrame >= 10 || boyfriend.animation.curAnim.finished))
-								boyfriend.playAnim('idle');
-						}
+	
 				
 
 
 				
-					if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && !up && !down && !right && !left && !FlxG.save.data.botplay && shouldidleafterrelease && !onbeat)
+					if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && !up && !down && !right && !left && !FlxG.save.data.botplay && shouldidleafterrelease && !onbeat && !donotidleinbetweenclosenotes)
 						{
 							if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss'))
 							{
