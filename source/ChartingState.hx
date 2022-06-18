@@ -269,6 +269,7 @@ class ChartingState extends MusicBeatState
 		UI_box.resize(300, 680); // 300, 400
 		UI_box.x = FlxG.width / 2;
 		UI_box.y = 20;
+		UI_box.selected_tab = 3;
 		add(UI_box);
 
 		addSongUI();
@@ -504,6 +505,7 @@ class ChartingState extends MusicBeatState
 	var currentgfspeed:FlxUINumericStepper;
 	var steppernumanim:FlxUINumericStepper;
 	var check_shader:FlxUICheckBox;
+	var check_gfsection:FlxUICheckBox;
 
 	function addSectionUI():Void
 	{
@@ -544,16 +546,21 @@ class ChartingState extends MusicBeatState
 		});
 
 		check_playnoisemusthit = new FlxUICheckBox(10, 190, null, null, "Play Noise (P1)", 100);
-		check_playnoisemusthit.name = '	check_playnoisemusthit';
+		check_playnoisemusthit.name = 'check_playnoisemusthit';
 		check_playnoisemusthit.checked = false;
 
 		check_playnoisemusthitdad = new FlxUICheckBox(10, 210, null, null, "Play Noise (P2)", 100);
-		check_playnoisemusthitdad.name = '	check_playnoisemusthitdad';
+		check_playnoisemusthitdad.name = 'check_playnoisemusthitdad';
 		check_playnoisemusthitdad.checked = false;
+
+		
+		check_gfsection = new FlxUICheckBox(10, 230, null, null, "GF section", 100);
+		check_gfsection.name = 'check_gfsection';
+		check_gfsection.checked = _song.notes[curSection].gfsection;
 
 		check_mustHitSection = new FlxUICheckBox(10, 30, null, null, "Camera Focuses on Player 1", 100);
 		check_mustHitSection.name = 'check_mustHit';
-		check_mustHitSection.checked = true;
+		check_mustHitSection.checked = false;
 		// _song.needsVoices = check_mustHit.checked;
 
 		var startfromposbutton:FlxButton = new FlxButton(150, 30, "Play here", startfromsection);
@@ -573,6 +580,7 @@ class ChartingState extends MusicBeatState
 		tab_group_section.add(check_playnoisemusthit);
 		tab_group_section.add(check_playnoisemusthitdad);
 		tab_group_section.add(startfromposbutton);
+		tab_group_section.add(check_gfsection);
 
 		UI_box.addGroup(tab_group_section);
 	}
@@ -905,6 +913,8 @@ class ChartingState extends MusicBeatState
 		// WONT WORK FOR TUTORIAL OR TEST SONG!!! REDO LATER
 		if (Paths.doesSoundAssetExist(voices))
 		vocals = new FlxSound().loadEmbedded(Paths.voices(daSong));
+		else
+		vocals = new FlxSound();
 		FlxG.sound.list.add(vocals);
 
 		FlxG.sound.music.pause();
@@ -989,6 +999,8 @@ class ChartingState extends MusicBeatState
 				    _song.notes[curSection].shakegamecamera = check.checked;
 				case "Shake HUD":	
 				    _song.notes[curSection].shakeHUD = check.checked;
+				case "GF section":	
+				    _song.notes[curSection].gfsection = check.checked;
 				case 'Alt Anim Note':
 					if (curSelectedNote != null)
 					{
@@ -1838,6 +1850,7 @@ class ChartingState extends MusicBeatState
 		var sec = _song.notes[curSection];
 		stepperLength.value = sec.lengthInSteps;
 		check_mustHitSection.checked = sec.mustHitSection;
+		check_gfsection.checked = sec.gfsection;
 		check_shakegamecamera.checked = sec.shakegamecamera;
 		check_shakeHUD.checked = sec.shakeHUD;
 		check_gfspeed.checked = sec.gfspeed;
@@ -2035,6 +2048,7 @@ class ChartingState extends MusicBeatState
 			crossFade: false,
 			shakegamecamera: false,
 			shakeHUD: false,
+			gfsection: false,
 			startTime: 0,
 	        endTime: 0
 		};
@@ -2261,7 +2275,7 @@ class ChartingState extends MusicBeatState
 					#end
 					trace('Type: ' + fr.type);
 					trace('Size: ' + fr.size);
-					trace('loading...');
+					trace('loading ' + fr.name + ' from system...' + ' (' + fr.size + ' bytes)');
 					PlayState.SONG = Song.parseJSONshit(data);
 					
 					LoadingState.loadAndSwitchState(new ChartingState());

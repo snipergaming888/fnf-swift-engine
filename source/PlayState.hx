@@ -1448,8 +1448,8 @@ class PlayState extends MusicBeatState
 		notes.cameras = [camHUD];
 		if (FlxG.save.data.notesplashes)
 		grpNoteSplashes.cameras = [camHUD];
-		if (FlxG.save.data.cpunotesplashes)
-			cpuNoteSplashes.cameras = [camHUD];
+		if (FlxG.save.data.cpunotesplashes && FlxG.save.data.notesplashes)
+		cpuNoteSplashes.cameras = [camHUD];
 		startingSong = true;
 
 	if (FlxG.save.data.songinfo)
@@ -2670,7 +2670,7 @@ class PlayState extends MusicBeatState
 
 			#if debug
 			if (songStarted && !endingSong)
-            conducttext.text = "" + Conductor.songPosition;
+            conducttext.text = 'Pos: ' + Conductor.songPosition + "\n" + "Step: " + curStep + "\n" + 'Beat: ' + curBeat;
 			#end
 
 
@@ -3384,6 +3384,8 @@ class PlayState extends MusicBeatState
 			{
 				if (FlxG.save.data.newhealthheadbump)
 					{
+					//iconP1.setGraphicSize(Std.int(FlxMath.lerp(150, iconP1.width, 0.80)));
+					//iconP2.setGraphicSize(Std.int(FlxMath.lerp(150, iconP2.width, 0.80)));
 					iconP1.setGraphicSize(Std.int(FlxMath.lerp(iconP1.width, 150, 0.15)));
 					iconP2.setGraphicSize(Std.int(FlxMath.lerp(iconP2.width, 150, 0.15)));
 					}
@@ -3498,7 +3500,17 @@ class PlayState extends MusicBeatState
 				
 			else if (camFollow.x != dad.getMidpoint().x + 150 && !PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection)
 			{
-				camFollow.setPosition(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100);
+				if (SONG.notes[Math.floor(curStep / 16)] != null)
+					{
+						if (SONG.notes[Math.floor(curStep / 16)].gfsection)
+							camFollow.setPosition(gf.getMidpoint().x, gf.getMidpoint().y);
+							else if (camFollow.x == dad.getMidpoint().x + 150 && SONG.notes[Math.floor(curStep / 16)].gfsection)
+							camFollow.setPosition(gf.getMidpoint().x, gf.getMidpoint().y);
+							else if (camFollow.x != dad.getMidpoint().x + 150 && SONG.notes[Math.floor(curStep / 16)].gfsection)
+							camFollow.setPosition(gf.getMidpoint().x, gf.getMidpoint().y);
+							else
+							camFollow.setPosition(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100);
+					}
 				// camFollow.setPosition(lucky.getMidpoint().x - 120, lucky.getMidpoint().y + 210);
 
 				switch (dad.curCharacter)
@@ -3817,10 +3829,18 @@ class PlayState extends MusicBeatState
 											}
 								}
 						}
-
-					var animToPlay:String = singAnimations[Std.int(Math.abs(daNote.noteData))] + altAnim;
-					dad.playAnim(animToPlay, true);
-					dad.holdTimer = daNote.sustainLength; //0
+					if (SONG.notes[Math.floor(curStep / 16)].gfsection)
+						{
+							var animToPlay:String = singAnimations[Std.int(Math.abs(daNote.noteData))] + altAnim;
+							gf.playAnim(animToPlay, true);
+							gf.holdTimer = daNote.sustainLength; //0
+						}
+						else
+							{
+								var animToPlay:String = singAnimations[Std.int(Math.abs(daNote.noteData))] + altAnim;
+								dad.playAnim(animToPlay, true);
+								dad.holdTimer = daNote.sustainLength; //0
+							}
 
 					if (FlxG.save.data.notesplashes && !daNote.isSustainNote && !FlxG.save.data.middlescroll && FlxG.save.data.cpunotesplashes)
 						{
@@ -4532,6 +4552,7 @@ class PlayState extends MusicBeatState
 						currentTimingShown.antialiasing = false;
 					}
 			}
+		if (FlxG.save.data.showratinggraphic) // the Sick!	
 		add(rating);
 
 		if (SONG.noteskin != 'pixel')
@@ -4590,7 +4611,7 @@ class PlayState extends MusicBeatState
 			if (FlxG.save.data.enablesickpositions)
 				{
 					numScore.x = rating.x + (43 * daLoop) - 50;
-					numScore.y = rating.y + 150;
+					numScore.y = rating.y + 100; //150
 					numScore.cameras = [camHUD];
 				}
 				else
@@ -4618,6 +4639,7 @@ class PlayState extends MusicBeatState
 				{
 					if (FlxG.save.data.combotext)
 					add(comboSpr);
+					if (FlxG.save.data.combonumber)
 					add(numScore);
 				}
 
@@ -4920,8 +4942,11 @@ class PlayState extends MusicBeatState
 						}		
 				}
 
-			if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss') && !donotidleinbetweenclosenotes && (boyfriend.animation.curAnim.curFrame >= 10 || boyfriend.animation.curAnim.finished))
-				boyfriend.playAnim('idle');
+			if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss') && !up && !down && !right && !left && !donotidleinbetweenclosenotes && (boyfriend.animation.curAnim.curFrame >= 10 || boyfriend.animation.curAnim.finished))
+				{
+					boyfriend.playAnim('idle');
+					trace(boyfriend.curCharacter + ' dance');
+				}
 			
 				
 	
@@ -4935,6 +4960,7 @@ class PlayState extends MusicBeatState
 							{
 										{
 											boyfriend.playAnim('idle');
+											trace(boyfriend.curCharacter + ' dance');
 										}
 							}
 						}
@@ -5135,15 +5161,19 @@ class PlayState extends MusicBeatState
 
 					function rating()
 						{
-							if (accuracy <= 40)
+							if (accuracy <= 30)
 								{
 									songRating = 'F';
 								}
+							else if (accuracy <= 40)
+								{
+									songRating = 'E';
+								}
 							else if (accuracy <= 50)
 								{
-									songRating = 'D';
+								   songRating = 'D';
 								}
-							else if (accuracy <= 60)
+							else if (accuracy <= 70)
 								{
 								   songRating = 'C';
 								}
@@ -5159,13 +5189,13 @@ class PlayState extends MusicBeatState
 								{
 								   songRating = 'S';
 								}
-							else if (accuracy <= 99)
+							else if (accuracy >= 96)
 								{
 								   songRating = 'S+';
 								}
 							else if (accuracy == 100)
 								{
-								   songRating = 'S+';
+									songRating = 'S+';
 								}
 						}
 
@@ -5561,6 +5591,36 @@ class PlayState extends MusicBeatState
 		trainMoving = true;
 		if (!trainSound.playing)
 			trainSound.play(true);
+		#if cpp
+		if (FlxG.timeScale != 1)
+			{
+				if (FreeplayState.gamespeed > 1)
+					{
+						@:privateAccess
+						{
+							if (trainSound.playing)
+								lime.media.openal.AL.sourcef(trainSound._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, FreeplayState.gamespeed);
+							//sniper gaming looking for a way to pitch vocals without cpp
+						}
+						///trace("pitched inst and vocals to " + FlxG.timeScale);
+					 
+					}			
+		
+
+		if (FreeplayState.gamespeed < 1)
+			{
+				{
+					@:privateAccess
+					{
+						if (trainSound.playing)
+							lime.media.openal.AL.sourcef(trainSound._channel.__source.__backend.handle, lime.media.openal.AL.PITCH, FreeplayState.gamespeed);
+						//sniper gaming looking for a way to pitch vocals without cpp
+					}
+					///trace("pitched inst and vocals to " + gamespeed);
+				}
+			}
+			}
+		#end	
 	}
 
 	var startedMoving:Bool = false;
@@ -5938,6 +5998,17 @@ class PlayState extends MusicBeatState
 						boyfriend.playAnim('idle');
 					}
 			}
+
+			
+			if (boyfriend.animation.curAnim.name == "hey" && curSong.toLowerCase() == 'bopeebo')
+				{
+				    if (curBeat % 2 == 0)
+						{
+							boyfriend.playAnim('idle');
+							trace(boyfriend.curCharacter + ' cancel hey');
+						}
+				}
+			
 			
 			
 			if (SONG.notes[Math.floor(curStep / 16)] != null)
@@ -5951,6 +6022,11 @@ class PlayState extends MusicBeatState
 								dad.dance();
 							}
 				}
+
+			if (SONG.notes[Math.floor(curStep / 16)] != null && SONG.notes[Math.floor(curStep / 16)].gfsection)
+				{
+
+				}	
 				// idle every second beat
 
 		var up = controls.UP;
@@ -5964,6 +6040,7 @@ class PlayState extends MusicBeatState
 				{
 							{
 								boyfriend.playAnim('idle');
+								trace(boyfriend.curCharacter + ' dance');
 							}
 				}
 			}
@@ -5971,7 +6048,7 @@ class PlayState extends MusicBeatState
 
 		if (curBeat % 8 == 7 && curSong == 'Bopeebo')
 		{
-			boyfriend.playAnim('hey', true);
+			//boyfriend.playAnim('hey', true);
 			gf.playAnim('cheer', true);
 		}
 

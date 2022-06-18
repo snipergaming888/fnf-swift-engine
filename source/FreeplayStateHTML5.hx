@@ -85,13 +85,15 @@ class FreeplayStateHTML5 extends MusicBeatState
 			songText.isMenuItem = true;
 			songText.targetY = i;
 			grpSongs.add(songText);
-
-			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter);
-			icon.sprTracker = songText;
-
-			// using a FlxGroup is too much fuss!
-			iconArray.push(icon);
-			add(icon);
+            if (FlxG.save.data.showheads)
+				{
+					var icon:HealthIcon = new HealthIcon(songs[i].songCharacter);
+					icon.sprTracker = songText;
+		
+					// using a FlxGroup is too much fuss!
+					iconArray.push(icon);
+					add(icon);
+				}
 
 			// songText.x += 40;
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!

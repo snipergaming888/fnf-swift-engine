@@ -51,7 +51,7 @@ class MiscOptions extends MusicBeatState
 		menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat-opt'));
 		menuBG.scrollFactor.set();
 		menuBG.x -= 30;	
-		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.freeplaysongs ? 'freeplay song previews on' : 'freeplay song previews off') +"\n" + (FlxG.save.data.discordrpc ? 'discord presence on' : 'discord presence off') +"\n" + (FlxG.save.data.disguiseaske142 ? 'KE four version txt on' : 'KE four version txt off') +"\n" + (FlxG.save.data.disguiseaske154 ? 'KE five version txt on' : 'KE five version txt off'));
+		controlsStrings = CoolUtil.coolStringFile("\n" + (FlxG.save.data.freeplaysongs ? 'freeplay song previews on' : 'freeplay song previews off') +"\n" + (FlxG.save.data.showheads ? 'show freeplay icons on' : 'show freeplay icons off') +"\n" + (FlxG.save.data.discordrpc ? 'discord presence on' : 'discord presence off') +"\n" + (FlxG.save.data.disguiseaske142 ? 'KE four version txt on' : 'KE four version txt off') +"\n" + (FlxG.save.data.disguiseaske154 ? 'KE five version txt on' : 'KE five version txt off'));
 		
 		trace(controlsStrings);
 
@@ -162,8 +162,8 @@ class MiscOptions extends MusicBeatState
 			if (curSelected < 0)
 				curSelected = 0;
 				
-			if (curSelected > 3)
-				curSelected = 3;
+			if (curSelected > 4)
+				curSelected = 4;
 					
 
 			grpControls.forEach(function(sex:Alphabet)
@@ -206,12 +206,15 @@ class MiscOptions extends MusicBeatState
 				versionShit.text = "Play songs in freeplay when hovering over them.";
 
 			if (curSelected == 1)
-				versionShit.text = "Disable or enable the games discord presence.";
+				versionShit.text = "Show the Icons of who you are facing.";
 
 			if (curSelected == 2)
-				versionShit.text = "Enable Kade Engine 1.4.2 version text.";
+				versionShit.text = "Disable or enable the games discord presence.";
 
 			if (curSelected == 3)
+				versionShit.text = "Enable Kade Engine 1.4.2 version text.";
+
+			if (curSelected == 4)
 				versionShit.text = "Enable Kade Engine 1.5.4 version text.";
 
 			if (controls.ACCEPT)
@@ -237,6 +240,15 @@ class MiscOptions extends MusicBeatState
 												FlxG.sound.play(Paths.sound('scrollMenu'));
 											case 1:
 												grpControls.remove(grpControls.members[curSelected]);
+												FlxG.save.data.showheads = !FlxG.save.data.showheads;
+												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.showheads ? 'show freeplay icons on' : 'show freeplay icons off'), true, false);
+												ctrl.y += 102;
+												ctrl.x += 50;
+												ctrl.targetY = curSelected - 0;
+												grpControls.add(ctrl);
+												FlxG.sound.play(Paths.sound('scrollMenu'));
+											case 2:
+												grpControls.remove(grpControls.members[curSelected]);
 												FlxG.save.data.discordrpc = !FlxG.save.data.discordrpc;
 												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.discordrpc ? 'discord presence on' : 'discord presence off'), true, false);
 												ctrl.y += 102;
@@ -254,7 +266,7 @@ class MiscOptions extends MusicBeatState
 															DiscordClient.initialize();
 														}
 												#end
-											case 2:
+											case 3:
 												grpControls.remove(grpControls.members[curSelected]);
 												FlxG.save.data.disguiseaske142 = !FlxG.save.data.disguiseaske142;
 												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.disguiseaske142 ? 'KE four version txt on' : 'KE four version txt off'), true, false);
@@ -263,7 +275,7 @@ class MiscOptions extends MusicBeatState
 												ctrl.isMenuItem = true;
 												ctrl.targetY = curSelected - 3;
 												grpControls.add(ctrl);
-											case 3:
+											case 4:
 												grpControls.remove(grpControls.members[curSelected]);
 												FlxG.save.data.disguiseaske154 = !FlxG.save.data.disguiseaske154;
 												var ctrl:Alphabet = new Alphabet(0, (80 * curSelected) + 60, (FlxG.save.data.disguiseaske154 ? 'KE five version txt on' : 'KE five version txt off'), true, false);

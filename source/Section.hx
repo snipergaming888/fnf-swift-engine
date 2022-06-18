@@ -8,6 +8,7 @@ typedef SwagSection =
 	var lengthInSteps:Int;
 	var typeOfSection:Int;
 	var mustHitSection:Bool;
+	var gfsection:Bool;
 	var bpm:Int;
 	var changeBPM:Bool;
 	var altAnim:Bool;
@@ -52,6 +53,7 @@ class Section
 	public var lengthInSteps:Int = 16;
 	public var typeOfSection:Int = 0;
 	public var mustHitSection:Bool = true;
+	public var gfsection:Bool = false;
 	public var camzoomonp1:Bool = true;
 	public var camerashake:Bool;
 	public var disablecamzooming:Bool;

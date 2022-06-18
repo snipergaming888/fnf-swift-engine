@@ -45,8 +45,8 @@ class MainMenuState extends MusicBeatState
 	var playanims:Bool = false;
 	var defaultCamZoom:Float = 1.05;
 	var camZoom:FlxTween;
-	public static var sniperengineversion:String = " Swift Engine 1.6.4";
-	public static var sniperengineversionA:String = " SE 1.6.4";
+	public static var sniperengineversion:String = " Swift Engine 1.6.5";
+	public static var sniperengineversionA:String = " SE 1.6.5";
 	public static var KE142:String = " - KE 1.4.2";
 	public static var KE154:String = " - KE 1.5.4";
 	public static var gameVer:String = "v0.2.7.1";
@@ -215,10 +215,9 @@ class MainMenuState extends MusicBeatState
 					selectedSomethin = true;
 					accepted = true;
 					FlxG.sound.play(Paths.sound('confirmMenu'));
+					FlxFlicker.flicker(magenta, 1.1, 0.15, false);
 				    ///FlxTween.tween(versionShit, {y: versionShit.y + 1000, alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 1.0});
 				    ///trace('playing anim');
-
-					FlxFlicker.flicker(magenta, 1.1, 0.15, false);
 
 					menuItems.forEach(function(spr:FlxSprite)
 					{

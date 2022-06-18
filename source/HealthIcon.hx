@@ -33,6 +33,9 @@ class HealthIcon extends FlxSprite
             antialiasing = true;
 		}
 
+        if (char == null || char == '')
+			char = 'bf';
+
 		changeIcon(char);
 		scrollFactor.set();
 	}
@@ -47,7 +50,8 @@ class HealthIcon extends FlxSprite
 		if (!char.endsWith('-pixel'))
 		char = char.split("-")[0];
 			
-
+        if (char == null || char == '')
+			char = 'bf';
 
 		loadGraphic(Paths.image('icons/icon-' + char), true, 150, 150);
 		animation.add(char, [0, 1], 0, false, isPlayer);

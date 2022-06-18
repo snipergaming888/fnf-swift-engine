@@ -113,13 +113,15 @@ class FreeplayState extends MusicBeatState
 			songText.targetY = i;
 			grpSongs.add(songText);
 
-			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter);
-			icon.sprTracker = songText;
-
-			// using a FlxGroup is too much fuss!
-			iconArray.push(icon);
-			add(icon);
-
+			if (FlxG.save.data.showheads)
+				{
+					var icon:HealthIcon = new HealthIcon(songs[i].songCharacter);
+					icon.sprTracker = songText;
+		
+					// using a FlxGroup is too much fuss!
+					iconArray.push(icon);
+					add(icon);
+				}
 			// songText.x += 40;
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 			// songText.screenCenter(X);
@@ -151,7 +153,7 @@ class FreeplayState extends MusicBeatState
 		scoreBG.alpha = 0.6;
 		add(scoreBG);
 		#if PRELOAD_ALL
-		infotext = new FlxText(5, FlxG.height - 18, 0, "Press V to toggle vocals for a song / hold down shift + left or right to change song speed.", 12);
+		infotext = new FlxText(5, FlxG.height - 18, 0, "Press V to toggle vocals for a song. | Hold down shift + left or right to change song speed.", 12);
 		#else
 		infotext = new FlxText(5, FlxG.height - 18, 0, "hold down shift + left or right to change song speed.", 12);
 		#end
@@ -608,15 +610,17 @@ class FreeplayState extends MusicBeatState
 		#end
 
 		var bullShit:Int = 0;
-
-		for (i in 0...iconArray.length)
+       if (FlxG.save.data.showheads)
 		{
-			iconArray[i].alpha = 0.6;
+			for (i in 0...iconArray.length)
+				{
+					iconArray[i].alpha = 0.6;
+				}
 		}
 
 
 		///curSelected = FlxG.save.data.curselected;
-
+		if (FlxG.save.data.showheads)
 		iconArray[curSelected].alpha = 1;
 
 		for (item in grpSongs.members)

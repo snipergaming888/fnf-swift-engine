@@ -37,7 +37,7 @@ class GameplayCustomizeState extends MusicBeatState
     var gf:Character;
 
     var strumLine:FlxSprite;
-    var defaultCamZoom:Float = 0.9;
+    var defaultCamZoom:Float = 0.8;
     private var gfSpeed:Int = 1;
     var strumLineNotes:FlxTypedGroup<FlxSprite>;
     var playerStrums:FlxTypedGroup<FlxSprite>;

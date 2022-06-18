@@ -695,6 +695,17 @@ class Character extends FlxSprite
 	/**
 	 * FOR GF DANCING SHIT
 	 */
+
+	 /*if (!animation.curAnim.name.startsWith('hair'))
+		{
+			danced = !danced;
+
+			if (danced)
+				playAnim('danceRight');
+			else
+				playAnim('danceLeft');
+		}*/
+
 	public function dance()
 	{
 		if (!debugMode)
@@ -703,69 +714,104 @@ class Character extends FlxSprite
 			{
 				case 'gf':
 					if (!animation.curAnim.name.startsWith('hair'))
-					{
-						danced = !danced;
-
-						if (danced)
-							playAnim('danceRight');
-						else
-							playAnim('danceLeft');
-					}
-
+						{
+								if (!animation.curAnim.name.startsWith('sing'))
+										{
+											danced = !danced;
+	
+											if (danced)
+												playAnim('danceRight');
+											else
+												playAnim('danceLeft');
+										}
+										else if (animation.curAnim.name.startsWith('sing'))
+											{
+												if (animation.curAnim.finished)
+													{
+														danced = !danced;
+	
+														if (danced)
+															playAnim('danceRight');
+														else
+															playAnim('danceLeft');	
+													}
+											}
+						}
 				case 'gf-christmas':
 					if (!animation.curAnim.name.startsWith('hair'))
-					{
-						danced = !danced;
-
-						if (danced)
-							playAnim('danceRight');
-						else
-							playAnim('danceLeft');
-					}
-
+						{
+								if (!animation.curAnim.name.startsWith('sing'))
+										{
+											danced = !danced;
+	
+											if (danced)
+												playAnim('danceRight');
+											else
+												playAnim('danceLeft');
+										}
+										else if (animation.curAnim.name.startsWith('sing'))
+											{
+												if (animation.curAnim.finished)
+													{
+														danced = !danced;
+	
+														if (danced)
+															playAnim('danceRight');
+														else
+															playAnim('danceLeft');	
+													}
+											}
+						}
 				case 'gf-car':
 					if (!animation.curAnim.name.startsWith('hair'))
-					{
-						danced = !danced;
-
-						if (danced)
-							playAnim('danceRight');
-						else
-							playAnim('danceLeft');
-					}
+						{
+								if (!animation.curAnim.name.startsWith('sing'))
+										{
+											danced = !danced;
+	
+											if (danced)
+												playAnim('danceRight');
+											else
+												playAnim('danceLeft');
+										}
+										else if (animation.curAnim.name.startsWith('sing'))
+											{
+												if (animation.curAnim.finished)
+													{
+														danced = !danced;
+	
+														if (danced)
+															playAnim('danceRight');
+														else
+															playAnim('danceLeft');	
+													}
+											}
+						}
 				case 'gf-pixel':
 					if (!animation.curAnim.name.startsWith('hair'))
-					{
-						danced = !danced;
-
-						if (danced)
-							playAnim('danceRight');
-						else
-							playAnim('danceLeft');
-					}
-
-					case 'gf-pixel-glitch':
-						if (!animation.curAnim.name.startsWith('hair'))
 						{
-							danced = !danced;
+								if (!animation.curAnim.name.startsWith('sing'))
+										{
+											danced = !danced;
 	
-							if (danced)
-								playAnim('danceRight');
-							else
-								playAnim('danceLeft');
+											if (danced)
+												playAnim('danceRight');
+											else
+												playAnim('danceLeft');
+										}
+										else if (animation.curAnim.name.startsWith('sing'))
+											{
+												if (animation.curAnim.finished)
+													{
+														danced = !danced;
+	
+														if (danced)
+															playAnim('danceRight');
+														else
+															playAnim('danceLeft');	
+													}
+											}
 						}
-
-						case 'gf-pixel-glitch2':
-							if (!animation.curAnim.name.startsWith('hair'))
-							{
-								danced = !danced;
-		
-								if (danced)
-									playAnim('danceRight');
-								else
-									playAnim('danceLeft');
-							}
-
 				case 'spooky':
 					danced = !danced;
 

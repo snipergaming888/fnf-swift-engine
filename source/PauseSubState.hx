@@ -233,7 +233,7 @@ class PauseSubState extends MusicBeatSubstate
 		function regenappearance():Void
 		{
 			remove(grpMenuShit);
-			menuItems =	CoolUtil.coolStringFile("\n" + (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD") + "\n" + (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF") + "\n" + (FlxG.save.data.hittimings ? "MS Timing info ON" : "MS Timing info OFF") + "\n" + (FlxG.save.data.showratings ? "ratings info ON" : "ratings info OFF") + "\n" + (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION off")+ "\n" + (FlxG.save.data.transparency ? "hold note transparency ON" : "hold note transparency off")+ "\n" + (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF") + "\n" + (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF") + "\n" + (FlxG.save.data.nps ? "NPS ON" : "NPS OFF") + "\n" + (FlxG.save.data.healthcolor ? 'new healthbar on' : 'new healthbar off') + "\n" + (FlxG.save.data.newhealthheadbump ? 'new healthhead bump on' : 'new healthhead bump off') + "\n" + (FlxG.save.data.fps ? "FPS COUNTER ON" : "FPS COUNTER OFF") + "\n" + (FlxG.save.data.togglecap ? "FPS CAP ON" : "FPS CAP OFF") + "\n" + (FlxG.save.data.memoryMonitor ? "memoryMonitor ON" : "memoryMonitor OFF") + "\n" + (FlxG.save.data.middlecam ? "Camera focusing ON" : "camera focusing Off") + "\n" + (FlxG.save.data.camfollowspeedon ? "Camera speed modif on" : "Camera speed modif off") + "\n" + (FlxG.save.data.enablesickpositions ? 'custom rating position on' : 'custom rating position off') + "\n" + (FlxG.save.data.songinfo ? 'song info popup on' : 'song info popup off') + "\n" + (FlxG.save.data.combotext ? 'combo text on' : 'combo text off') + "\n" + "Edit in-game appearance" + "\n" + "EDIT Scoretext preference" + "\n" + (FlxG.save.data.minscore ? 'old scoretext on' : 'old scoretext off') + "\n" + (FlxG.save.data.notesplashes ? 'notesplashes on' : 'notesplashes off') + "\n" + "BACK");
+			menuItems =	CoolUtil.coolStringFile("\n" + (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD") + "\n" + (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF") + "\n" + (FlxG.save.data.hittimings ? "MS Timing info ON" : "MS Timing info OFF") + "\n" + (FlxG.save.data.showratings ? "judgment counter ON" : "judgment counter OFF") + "\n" + (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION off")+ "\n" + (FlxG.save.data.transparency ? "hold note transparency ON" : "hold note transparency off")+ "\n" + (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF") + "\n" + (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF") + "\n" + (FlxG.save.data.nps ? "NPS ON" : "NPS OFF") + "\n" + (FlxG.save.data.healthcolor ? 'new healthbar on' : 'new healthbar off') + "\n" + (FlxG.save.data.newhealthheadbump ? 'new healthhead bump on' : 'new healthhead bump off') + "\n" + (FlxG.save.data.fps ? "FPS COUNTER ON" : "FPS COUNTER OFF") + "\n" + (FlxG.save.data.togglecap ? "FPS CAP ON" : "FPS CAP OFF") + "\n" + (FlxG.save.data.memoryMonitor ? "memoryMonitor ON" : "memoryMonitor OFF") + "\n" + (FlxG.save.data.middlecam ? "Camera focusing ON" : "camera focusing Off") + "\n" + (FlxG.save.data.camfollowspeedon ? "Camera speed modif on" : "Camera speed modif off") + "\n" + (FlxG.save.data.enablesickpositions ? 'custom rating position on' : 'custom rating position off') + "\n" + (FlxG.save.data.songinfo ? 'song info popup on' : 'song info popup off') + "\n" + (FlxG.save.data.combotext ? 'combo text on' : 'combo text off') + "\n" + (FlxG.save.data.combonumber ? 'combo counter on' : 'combo counter off') + "\n" + "Edit in-game appearance" + "\n" + "EDIT Scoretext preference" + "\n" + (FlxG.save.data.minscore ? 'old scoretext on' : 'old scoretext off') + "\n" + (FlxG.save.data.notesplashes ? 'notesplashes on' : 'notesplashes off') + "\n" + (FlxG.save.data.showratinggraphic ? 'show ratings on' : 'show ratings off') + "\n" + "BACK");
 					trace(menuItems);		
 
 					grpMenuShit = new FlxTypedGroup<Alphabet>();
@@ -492,16 +492,21 @@ class PauseSubState extends MusicBeatSubstate
 			versionShit.text = "Show 'combo' text next to the combo number.";
 
 		if (curSelected == 21 && isinappearance)
-			versionShit.text = "Customize were your ratings should be and other gameplay elements.";
+			versionShit.text = "Show what your combo is next to the combo text.";
 
 		if (curSelected == 22 && isinappearance)
-			versionShit.text = "Edit Your prefered scoretext Layout.";
+			versionShit.text = "Customize were your ratings should be and other gameplay elements.";
 
 		if (curSelected == 23 && isinappearance)
-			versionShit.text = "enable old scoretext.";
+			versionShit.text = "Edit Your prefered scoretext Layout.";
 
 		if (curSelected == 24 && isinappearance)
+			versionShit.text = "enable old scoretext.";
+
+		if (curSelected == 25 && isinappearance)
 			versionShit.text = "enable notesplashes. CPU note splashes: " + FlxG.save.data.cpunotesplashes + " (toggle with N) " + "show notesplashes with holdnotes: " + FlxG.save.data.notesplashhold + " (toggle with H)";
+		if (curSelected == 25 && isinappearance)
+			versionShit.text = "Hide or show the rating.";
 		if (isinkeybinds)
 			versionShit.text = "Press enter on the key you want to rebind then press the key you want to rebind it to.";
         if (FlxG.save.data.antialiasing && curSelected == 0 && isinperformance)
@@ -653,7 +658,7 @@ class PauseSubState extends MusicBeatSubstate
 						}
 				}
 
-				if (curSelected == 15 && isinappearance)
+				if (curSelected == 14 && isinappearance)
 					{
 						var multiply:Float = 1;
 	
@@ -1158,7 +1163,7 @@ class PauseSubState extends MusicBeatSubstate
 				case "APPEARANCE":
 					remove(grpMenuShit);
 					isinappearance = true;
-					menuItems =	CoolUtil.coolStringFile("\n" + (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD") + "\n" + (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF") + "\n" + (FlxG.save.data.hittimings ? "MS Timing info ON" : "MS Timing info OFF") + "\n" + (FlxG.save.data.showratings ? "ratings info ON" : "ratings info OFF") + "\n" + (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION off")+ "\n" + (FlxG.save.data.transparency ? "hold note transparency ON" : "hold note transparency off")+ "\n" + (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF") + "\n" + (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF") + "\n" + (FlxG.save.data.nps ? "NPS ON" : "NPS OFF") + "\n" + (FlxG.save.data.healthcolor ? 'new healthbar on' : 'new healthbar off') + "\n" + (FlxG.save.data.newhealthheadbump ? 'new healthhead bump on' : 'new healthhead bump off') + "\n" + (FlxG.save.data.fps ? "FPS COUNTER ON" : "FPS COUNTER OFF") + "\n" + (FlxG.save.data.togglecap ? "FPS CAP ON" : "FPS CAP OFF") + "\n" + (FlxG.save.data.memoryMonitor ? "memoryMonitor ON" : "memoryMonitor OFF") + "\n" + (FlxG.save.data.middlecam ? "Camera focusing ON" : "camera focusing Off") + "\n" + (FlxG.save.data.camfollowspeedon ? "Camera speed modif on" : "Camera speed modif off") + "\n" + (FlxG.save.data.enablesickpositions ? 'custom rating position on' : 'custom rating position off') + "\n" + (FlxG.save.data.songinfo ? 'song info popup on' : 'song info popup off') + "\n" + (FlxG.save.data.combotext ? 'combo text on' : 'combo text off') + "\n" + "Edit in-game appearance" + "\n" + "EDIT Scoretext preference" + "\n" + (FlxG.save.data.minscore ? 'old scoretext on' : 'old scoretext off') + "\n" + (FlxG.save.data.notesplashes ? 'notesplashes on' : 'notesplashes off') + "\n" + "BACK");
+					menuItems =	CoolUtil.coolStringFile("\n" + (FlxG.save.data.hideHUD ? "HIDE HUD" : "DO NOT HIDE HUD") + "\n" + (FlxG.save.data.cinematic ? "cinematic MODE ON" : "cinematic MODE OFF") + "\n" + (FlxG.save.data.hittimings ? "MS Timing info ON" : "MS Timing info OFF") + "\n" + (FlxG.save.data.showratings ? "judgment counter ON" : "judgment counter OFF") + "\n" + (FlxG.save.data.songPosition ? "SONG POSITION ON" : "SONG POSITION off")+ "\n" + (FlxG.save.data.transparency ? "hold note transparency ON" : "hold note transparency off")+ "\n" + (FlxG.save.data.strumlights ? "CPU STRUM LIGHTS ON" : "CPU STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.playerstrumlights ? "PLAYER STRUM LIGHTS ON" : "PLAYER STRUM LIGHTS OFF")+ "\n" + (FlxG.save.data.camzooming ? "CAMERA ZOOMING ON" : "CAMERA ZOOMING OFF") + "\n" + (FlxG.save.data.watermarks ? "WATERMARKS ON" : "WATERMARKS OFF") + "\n" + (FlxG.save.data.nps ? "NPS ON" : "NPS OFF") + "\n" + (FlxG.save.data.healthcolor ? 'new healthbar on' : 'new healthbar off') + "\n" + (FlxG.save.data.newhealthheadbump ? 'new healthhead bump on' : 'new healthhead bump off') + "\n" + (FlxG.save.data.fps ? "FPS COUNTER ON" : "FPS COUNTER OFF") + "\n" + (FlxG.save.data.togglecap ? "FPS CAP ON" : "FPS CAP OFF") + "\n" + (FlxG.save.data.memoryMonitor ? "memoryMonitor ON" : "memoryMonitor OFF") + "\n" + (FlxG.save.data.middlecam ? "Camera focusing ON" : "camera focusing Off") + "\n" + (FlxG.save.data.camfollowspeedon ? "Camera speed modif on" : "Camera speed modif off") + "\n" + (FlxG.save.data.enablesickpositions ? 'custom rating position on' : 'custom rating position off') + "\n" + (FlxG.save.data.songinfo ? 'song info popup on' : 'song info popup off') + "\n" + (FlxG.save.data.combotext ? 'combo text on' : 'combo text off') + "\n" + (FlxG.save.data.combonumber ? 'combo counter on' : 'combo counter off') + "\n" + "Edit in-game appearance" + "\n" + "EDIT Scoretext preference" + "\n" + (FlxG.save.data.minscore ? 'old scoretext on' : 'old scoretext off') + "\n" + (FlxG.save.data.notesplashes ? 'notesplashes on' : 'notesplashes off') + "\n" + (FlxG.save.data.showratinggraphic ? 'show ratings on' : 'show ratings off') + "\n" + "BACK");
 					trace(menuItems);		
 
 					grpMenuShit = new FlxTypedGroup<Alphabet>();
@@ -1430,7 +1435,7 @@ class PauseSubState extends MusicBeatSubstate
 								FlxG.save.data.hittimings = true;
 								regenappearance();
 							}
-				case "ratings info ON" | "ratings info OFF":
+				case "judgment counter ON" | "judgment counter OFF":
 				    if (FlxG.save.data.showratings)
 						{
 							FlxG.save.data.showratings = false;
@@ -1644,6 +1649,17 @@ class PauseSubState extends MusicBeatSubstate
 								FlxG.save.data.combotext = true;
 								regenappearance();
 							}
+				case "combo counter on" | "combo counter off":
+				    if (FlxG.save.data.combonumber)
+						{
+							FlxG.save.data.combonumber = false;
+							regenappearance();
+						}
+						else if (!FlxG.save.data.combonumber)
+							{
+								FlxG.save.data.combonumber = true;
+								regenappearance();
+							}			
 				case "notesplashes on" | "notesplashes off":
 				    if (FlxG.save.data.notesplashes)
 						{
@@ -1668,6 +1684,17 @@ class PauseSubState extends MusicBeatSubstate
 						else if (!FlxG.save.data.minscore)
 							{
 								FlxG.save.data.minscore = true;
+								regenappearance();
+							}
+					case "show ratings on" | "show ratings off":
+				    if (FlxG.save.data.showratinggraphic)
+						{
+							FlxG.save.data.showratinggraphic = false;
+							regenappearance();
+						}
+						else if (!FlxG.save.data.showratinggraphic)
+							{
+								FlxG.save.data.showratinggraphic = true;
 								regenappearance();
 							}					
 				// PERFORMANCE SHIT	

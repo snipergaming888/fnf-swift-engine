@@ -227,6 +227,9 @@ class Settings extends MusicBeatState
 
               if (FlxG.save.data.combotext == null)
                 FlxG.save.data.combotext = false;
+
+              if (FlxG.save.data.combonumber == null)
+                FlxG.save.data.combonumber = false;
               
               if (FlxG.save.data.songinfo == null)
                 FlxG.save.data.songinfo = false;
@@ -269,6 +272,12 @@ class Settings extends MusicBeatState
 
               if (FlxG.save.data.camHUDALPHA == null)
                 FlxG.save.data.camHUDALPHA = 1;
+
+              if (FlxG.save.data.showheads == null)
+                FlxG.save.data.showheads = true;
+
+              if (FlxG.save.data.showratinggraphic == null)
+              FlxG.save.data.showratinggraphic = true;
 
 
               FlxGraphic.defaultPersist = FlxG.save.data.graphicpersist;
@@ -434,8 +443,14 @@ class Settings extends MusicBeatState
 
                     FlxG.save.data.middlescrollBG = false;
 
+                    FlxG.save.data.combotext = true;
+
+                    FlxG.save.data.showheads = true;
+
                     FlxG.save.data.smoothanims = false;
                     FlxG.save.data.sqishyanims = false;
+
+                    FlxG.save.data.showratinggraphic = true;
   
                 FlxG.save.data.hasplayed = false;
                 trace('anim played? ' + FlxG.save.data.hasplayed);
