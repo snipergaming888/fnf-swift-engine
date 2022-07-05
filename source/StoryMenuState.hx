@@ -32,7 +32,7 @@ class StoryMenuState extends MusicBeatState
 		['Cocoa', 'Eggnog', 'Winter-Horrorland'],
 		['Senpai', 'Roses', 'Thorns']
 	];
-	var weekData2:Array<Dynamic> = [ // put your last song in the week here. Note that doing this is only required for the new loading system to properly work on HTML5 targets.
+	public static var weekData2:Array<Dynamic> = [ // put your last song in the week here. Note that doing this is only required for the new loading system to properly work on HTML5 targets.
 		['Tutorial'],
 		['Dadbattle'],
 		["Monster"],
@@ -41,7 +41,7 @@ class StoryMenuState extends MusicBeatState
 		['Winter-Horrorland'],
 		['Thorns']
 	];
-	var weekData3:Array<Dynamic> = [ // put your second song in the week here. Note that doing this is only required for the new loading system to properly work on HTML5 targets. (currently the system is vary janky and only supports pre-loading 3 songs.)
+	public static var weekData3:Array<Dynamic> = [ // put your second song in the week here. Note that doing this is only required for the new loading system to properly work on HTML5 targets. (currently the system is vary janky and only supports pre-loading 3 songs.)
 		['Tutorial'],
 		['fresh'],
 		["south"],
@@ -249,7 +249,10 @@ class StoryMenuState extends MusicBeatState
 		add(txtWeekTitle);
 
 		updateText();
-		changeWeek();
+
+		song2 = "";
+		song3 = "";
+		PRESSED = false;
 
 		trace("Line 234");
 

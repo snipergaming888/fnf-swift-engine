@@ -60,6 +60,7 @@ class PauseSubState extends MusicBeatSubstate
 	public var daSelected:String;
 	public static var practice:FlxText;
 	public static var practicemode:Bool = false;
+	public static var currentcap:Int;
 
 	var difficultyChoices:Array<String> = ['EASY', 'NORMAL', 'HARD', 'BACK'];
 	var speed:Array<String> = ['SPEED', 'BACK'];
@@ -320,6 +321,8 @@ class PauseSubState extends MusicBeatSubstate
 
 		super.update(elapsed);
 
+		currentcap = FlxG.save.data.fpsCap + 4;
+
 		var upP = controls.UP_P;
 		var downP = controls.DOWN_P;
 		var accepted = controls.ACCEPT;
@@ -396,6 +399,32 @@ class PauseSubState extends MusicBeatSubstate
 										{
 											versionShit.visible = false;
 										}
+
+										if (FlxG.keys.justPressed.C && curSelected == 3 && isinappearance)
+											{
+											if (!FlxG.save.data.combo)
+												{
+													FlxG.save.data.combo = true;
+												}
+												else if (FlxG.save.data.combo)
+													{
+														FlxG.save.data.combo = false;
+													}
+												trace(FlxG.save.data.combo);
+											}
+						
+											if (FlxG.keys.justPressed.H && curSelected == 3 && isinappearance)
+												{
+												if (!FlxG.save.data.highestcombo)
+													{
+														FlxG.save.data.highestcombo = true;
+													}
+													else if (FlxG.save.data.highestcombo)
+														{
+															FlxG.save.data.highestcombo = false;
+														}
+													trace(FlxG.save.data.highestcombo);
+												}
 		
 						if (isSettingControlup)
 							{
@@ -453,7 +482,7 @@ class PauseSubState extends MusicBeatSubstate
 		if (curSelected == 2 && isinappearance)
 			versionShit.text = "Show in miliseconds how long it took for you to hit a note.";
 		if (curSelected == 3 && isinappearance)
-			versionShit.text = "Show how many sicks, goods, bads and shits you get off to the side.";
+			versionShit.text = "Show a column of judgments to the side. (Show highest combo? " + FlxG.save.data.highestcombo + " | Show combo? " + FlxG.save.data.combo + " | Show misses? " + FlxG.save.data.showmisses + ', toggle with H, C and M.)';
 		if (curSelected == 4 && isinappearance)
 			versionShit.text = "Show what position in the song you are.";
 		if (curSelected == 5 && isinappearance)
@@ -475,7 +504,7 @@ class PauseSubState extends MusicBeatSubstate
 		if (curSelected == 13 && isinappearance)
 			versionShit.text = "Toggle the FPS counter on and off.";
 		if (curSelected == 14 && isinappearance)
-			versionShit.text = "Set the FPS cap. FPS: " + FlxG.save.data.fpsCap + " (Left, Right, Space to reset, Shift to go faster)";
+			versionShit.text = "Set the FPS cap. FPS: " + currentcap + " (Left, Right, R to reset, Shift to go faster)";
 		if (curSelected == 15 && isinappearance)
 			versionShit.text = "Toggle the memory monitor on and off.";
 		if (curSelected == 16 && isinappearance)
@@ -505,7 +534,7 @@ class PauseSubState extends MusicBeatSubstate
 
 		if (curSelected == 25 && isinappearance)
 			versionShit.text = "enable notesplashes. CPU note splashes: " + FlxG.save.data.cpunotesplashes + " (toggle with N) " + "show notesplashes with holdnotes: " + FlxG.save.data.notesplashhold + " (toggle with H)";
-		if (curSelected == 25 && isinappearance)
+		if (curSelected == 26 && isinappearance)
 			versionShit.text = "Hide or show the rating.";
 		if (isinkeybinds)
 			versionShit.text = "Press enter on the key you want to rebind then press the key you want to rebind it to.";
@@ -527,8 +556,11 @@ class PauseSubState extends MusicBeatSubstate
 			versionShit.text = "Play songs in freeplay when hovering over them.";
 		if (curSelected == 1 && isinmisc)
 			versionShit.text = "Disable or enable the games discord presence.";
+		if (menuItems[curSelected] == 'BACK')
+			versionShit.text = "Go back.";
 
-		if (FlxG.keys.justPressed.N && curSelected == 24 && isinappearance)
+
+		if (FlxG.keys.justPressed.N && curSelected == 25 && isinappearance)
 			{
 			if (!FlxG.save.data.cpunotesplashes)
 				{
@@ -541,7 +573,7 @@ class PauseSubState extends MusicBeatSubstate
 				trace(FlxG.save.data.cpunotesplashes);
 			}
 
-			if (FlxG.keys.justPressed.H && curSelected == 24 && isinappearance)
+			if (FlxG.keys.justPressed.H && curSelected == 25 && isinappearance)
 				{
 				if (!FlxG.save.data.notesplashhold)
 					{
@@ -553,6 +585,19 @@ class PauseSubState extends MusicBeatSubstate
 						}
 					trace(FlxG.save.data.notesplashhold);
 				}
+
+				if (FlxG.keys.justPressed.M && curSelected == 3 && isinappearance)
+					{
+					if (!FlxG.save.data.showmisses)
+						{
+							FlxG.save.data.showmisses = true;
+						}
+						else if (FlxG.save.data.showmisses)
+							{
+								FlxG.save.data.showmisses = false;
+							}
+						trace(FlxG.save.data.showmisses);
+					}
 		    	
 
 

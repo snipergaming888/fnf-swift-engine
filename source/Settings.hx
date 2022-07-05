@@ -213,6 +213,9 @@ class Settings extends MusicBeatState
               if (FlxG.save.data.fpsplusenginescoretext == null)
                 FlxG.save.data.fpsplusenginescoretext = false;
 
+              if (FlxG.save.data.noscoretext == null)
+                FlxG.save.data.noscoretext = false;
+
               if (FlxG.save.data.ke142ratings == null)
                 FlxG.save.data.ke142ratings = false;
 
@@ -229,7 +232,7 @@ class Settings extends MusicBeatState
                 FlxG.save.data.combotext = false;
 
               if (FlxG.save.data.combonumber == null)
-                FlxG.save.data.combonumber = false;
+                FlxG.save.data.combonumber = true;
               
               if (FlxG.save.data.songinfo == null)
                 FlxG.save.data.songinfo = false;
@@ -278,6 +281,15 @@ class Settings extends MusicBeatState
 
               if (FlxG.save.data.showratinggraphic == null)
               FlxG.save.data.showratinggraphic = true;
+
+              if (FlxG.save.data.combo == null)
+                FlxG.save.data.combo = false;
+
+              if (FlxG.save.data.highestcombo == null)
+                FlxG.save.data.highestcombo = false;
+
+              if (FlxG.save.data.showmisses == null)
+                FlxG.save.data.showmisses = false;
 
 
               FlxGraphic.defaultPersist = FlxG.save.data.graphicpersist;
@@ -416,6 +428,8 @@ class Settings extends MusicBeatState
                     FlxG.save.data.kadeengine18scoretext = false;
 
                     FlxG.save.data.fpsplusenginescoretext = false;
+                    
+                    FlxG.save.data.noscoretext = false;
 
                     FlxG.save.data.changedHit = false;
 
@@ -443,12 +457,20 @@ class Settings extends MusicBeatState
 
                     FlxG.save.data.middlescrollBG = false;
 
-                    FlxG.save.data.combotext = true;
+                    FlxG.save.data.combotext = false;
 
                     FlxG.save.data.showheads = true;
 
                     FlxG.save.data.smoothanims = false;
                     FlxG.save.data.sqishyanims = false;
+
+                    FlxG.save.data.combonumber = true;
+
+                    FlxG.save.data.combo = false;
+
+                    FlxG.save.data.highestcombo = false;
+
+                    FlxG.save.data.showmisses = false;
 
                     FlxG.save.data.showratinggraphic = true;
   

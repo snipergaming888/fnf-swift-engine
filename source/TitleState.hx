@@ -261,7 +261,7 @@ class TitleState extends MusicBeatState
 		if (FlxG.save.data.antialiasing)
 		ngSpr.antialiasing = true;
 
-		FlxTween.tween(credTextShit, {y: credTextShit.y + 20}, 2.9, {ease: FlxEase.quadInOut, type: PINGPONG});
+		//FlxTween.tween(credTextShit, {y: credTextShit.y + 20}, 2.9, {ease: FlxEase.quadInOut, type: PINGPONG});
 
 		if (initialized)
 			skipIntro();
@@ -436,8 +436,7 @@ class TitleState extends MusicBeatState
 			money.y += (i * 60) + 200;
 			credGroup.add(money);
 			textGroup.add(money);
-			money.y -= 350;
-			FlxTween.tween(money, {y: money.y + 350}, 0.5, {ease: FlxEase.expoOut, startDelay: 0.0});
+			//FlxTween.tween(money, {y: money.y + 350}, 0.5, {ease: FlxEase.expoOut, startDelay: 0.0});
 		}
 	}
 
@@ -448,8 +447,7 @@ class TitleState extends MusicBeatState
 		coolText.y += (textGroup.length * 60) + 200;
 		credGroup.add(coolText);
 		textGroup.add(coolText);
-		coolText.y -= 350;
-		FlxTween.tween(coolText, {y: coolText.y + 350}, 0.5, {ease: FlxEase.expoOut, startDelay: 0.0});
+		//FlxTween.tween(coolText, {y: coolText.y + 350}, 0.5, {ease: FlxEase.expoOut, startDelay: 0.0});
 	}
 
 		function addMoreTextcolorsnipergaming(text:String)
@@ -460,8 +458,7 @@ class TitleState extends MusicBeatState
 				coolText.y += (textGroup.length * 60) + 200;
 				credGroup.add(coolText);
 				textGroup.add(coolText);
-				coolText.y -= 350;
-				FlxTween.tween(coolText, {y: coolText.y + 350}, 0.5, {ease: FlxEase.expoOut, startDelay: 0.0});
+				//FlxTween.tween(coolText, {y: coolText.y + 350}, 0.5, {ease: FlxEase.expoOut, startDelay: 0.0});
 			}
 
 	function deleteCoolText()

@@ -152,11 +152,10 @@ class FreeplayState extends MusicBeatState
 		var scoreBG:FlxSprite = new FlxSprite(0,  FlxG.height - 18).makeGraphic(Std.int(FlxG.width), 110, 0xFF000000);
 		scoreBG.alpha = 0.6;
 		add(scoreBG);
-		#if PRELOAD_ALL
+		if (FlxG.save.data.freeplaysongs)
 		infotext = new FlxText(5, FlxG.height - 18, 0, "Press V to toggle vocals for a song. | Hold down shift + left or right to change song speed.", 12);
-		#else
-		infotext = new FlxText(5, FlxG.height - 18, 0, "hold down shift + left or right to change song speed.", 12);
-		#end
+		else if (!FlxG.save.data.freeplaysongs)
+		infotext = new FlxText(5, FlxG.height - 18, 0, "Hold down shift + left or right to change song speed.", 12);
 		infotext.scrollFactor.set();
 		infotext.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(infotext);

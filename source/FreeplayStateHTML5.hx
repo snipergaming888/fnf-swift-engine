@@ -281,11 +281,14 @@ class FreeplayStateHTML5 extends MusicBeatState
 
 		var bullShit:Int = 0;
 
-		for (i in 0...iconArray.length)
-		{
-			iconArray[i].alpha = 0.6;
-		}
-
+		if (FlxG.save.data.showheads)
+			{
+				for (i in 0...iconArray.length)
+					{
+						iconArray[i].alpha = 0.6;
+					}
+			}
+		if (FlxG.save.data.showheads)
 		iconArray[curSelected].alpha = 1;
 
 		for (item in grpSongs.members)

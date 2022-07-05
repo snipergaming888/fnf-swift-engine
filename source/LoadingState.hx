@@ -33,24 +33,8 @@ class LoadingState extends MusicBeatState
 	var peroid3:FlxSprite;
 	var loadingA:Alphabet;
 	var ctrl:Alphabet;
-	public static var weekDataweb:Array<Dynamic> = [
-		['Tutorial'],
-		['Fresh'],
-		['South'],
-		['Philly'],
-		["High"],
-		['Eggnog'],
-		['Roses']
-	];
-	public static var weekDataweb2:Array<Dynamic> = [
-		['Tutorial'],
-		['Dadbattle'],
-		["Monster"],
-		["Blammed"],
-		["Milf"],
-		['Winter-Horrorland'],
-		['Thorns']
-	];
+	public static var weekDataweb:Array<Dynamic> = StoryMenuState.weekData2;
+	public static var weekDataweb2:Array<Dynamic> = StoryMenuState.weekData3;
 	//public static var stringThing:Array<String> = weekDataweb[StoryMenuState.curWeek];
 	public static var stringThing:String = weekDataweb[StoryMenuState.curWeek];
 

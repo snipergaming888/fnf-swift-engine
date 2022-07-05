@@ -71,6 +71,8 @@ class ChartingState extends MusicBeatState
 	public static var storyDifficultyString:String = "";
 	public var mustPress:Bool = false;
 	public var canBeHit:Bool = false;
+	public var iswide:Bool = true;
+	public var isnotwide = false;
 
 	var highlight:FlxSprite;
 	var hasplayed:Bool = false;
@@ -247,7 +249,7 @@ class ChartingState extends MusicBeatState
 		Conductor.changeBPM(_song.bpm);
 		Conductor.mapBPMChanges(_song);
 
-		bpmTxt = new FlxText(1000, 50, 0, "", 16);
+		bpmTxt = new FlxText(1135, 50, 0, "", 16);
 		bpmTxt.scrollFactor.set();
 		add(bpmTxt);
 
@@ -266,7 +268,7 @@ class ChartingState extends MusicBeatState
 
 		UI_box = new FlxUITabMenu(null, tabs, true);
 
-		UI_box.resize(300, 680); // 300, 400
+		UI_box.resize(300, 680); // 300, 680
 		UI_box.x = FlxG.width / 2;
 		UI_box.y = 20;
 		UI_box.selected_tab = 3;
@@ -1240,6 +1242,19 @@ class ChartingState extends MusicBeatState
 			{
 				writingNotes = !writingNotes;
 			}
+
+			if (UI_box.selected_tab == 0 && !iswide)
+				{
+					UI_box.resize(480, 680);
+					iswide = true;
+					isnotwide = false;
+				}
+				else if (isnotwide)
+					{
+						UI_box.resize(300, 680);
+						iswide = false;
+						isnotwide = true;	
+					}
 
 			if (UI_box.selected_tab == 0)
 				{

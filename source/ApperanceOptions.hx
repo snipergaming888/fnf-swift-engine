@@ -43,6 +43,7 @@ class ApperanceOptions extends MusicBeatState
 	var menuBG:FlxSprite;
 	var flashing:Bool = false;
 	var canselectoptions:Bool = false;
+	public static var currentcap:Int;
 	override function create()
 	{
 		menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
@@ -98,6 +99,7 @@ class ApperanceOptions extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+		currentcap = FlxG.save.data.fpsCap + 4;
 
 		if (FlxG.sound.music != null)
             Conductor.songPosition = FlxG.sound.music.time;
@@ -215,14 +217,14 @@ class ApperanceOptions extends MusicBeatState
 								}
 						}
 			
-					if (FlxG.keys.justPressed.SPACE && FlxG.save.data.togglecap)
+					if (FlxG.keys.justPressed.R && FlxG.save.data.togglecap)
 					{
 						/*#if sys
 						FlxG.save.data.fpsCap = System.DisplayMode.refreshRate; // get monitors refresh rate
 						#else
 						FlxG.save.data.fpsCap = 138; // default to 144fps
 						#end*/
-						FlxG.save.data.fpsCap = 138; // default to 144fps
+						FlxG.save.data.fpsCap = 140; // default to 144fps
 						(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
 					}
 				}
@@ -252,6 +254,45 @@ class ApperanceOptions extends MusicBeatState
 								}
 							trace(FlxG.save.data.notesplashhold);
 						}
+
+						if (FlxG.keys.justPressed.C && curSelected == 3)
+							{
+							if (!FlxG.save.data.combo)
+								{
+									FlxG.save.data.combo = true;
+								}
+								else if (FlxG.save.data.combo)
+									{
+										FlxG.save.data.combo = false;
+									}
+								trace(FlxG.save.data.combo);
+							}
+		
+							if (FlxG.keys.justPressed.H && curSelected == 3)
+								{
+								if (!FlxG.save.data.highestcombo)
+									{
+										FlxG.save.data.highestcombo = true;
+									}
+									else if (FlxG.save.data.highestcombo)
+										{
+											FlxG.save.data.highestcombo = false;
+										}
+									trace(FlxG.save.data.highestcombo);
+								}
+
+								if (FlxG.keys.justPressed.M && curSelected == 3)
+									{
+									if (!FlxG.save.data.showmisses)
+										{
+											FlxG.save.data.showmisses = true;
+										}
+										else if (FlxG.save.data.showmisses)
+											{
+												FlxG.save.data.showmisses = false;
+											}
+										trace(FlxG.save.data.showmisses);
+									}
 
 				if (curSelected == 17)
 					{
@@ -302,7 +343,7 @@ class ApperanceOptions extends MusicBeatState
 				versionShit.text = "Show in miliseconds how long it took for you to hit a note.";
 
 			if (curSelected == 3)
-				versionShit.text = "Show how many sicks, goods, bads and shits you get off to the side.";
+				versionShit.text = "Show a column of judgments to the side. (Show highest combo? " + FlxG.save.data.highestcombo + " | Show combo? " + FlxG.save.data.combo + " | Show misses? " + FlxG.save.data.showmisses + ', toggle with H, C and M.)';
 
 			if (curSelected == 4)
 				versionShit.text = "Show what position in the song you are.";
@@ -335,7 +376,7 @@ class ApperanceOptions extends MusicBeatState
 				versionShit.text = "Toggle the FPS counter on and off.";
 			
 			if (curSelected == 14)
-				versionShit.text = "Set the FPS cap. FPS: " + FlxG.save.data.fpsCap + " (Left, Right, Space to reset, Shift to go faster)";
+				versionShit.text = "Set the FPS cap. FPS: " + currentcap + " (Left, Right, R to reset, Shift to go faster)";
 
 			if (curSelected == 15)
 				versionShit.text = "Toggle the memory monitor on and off.";

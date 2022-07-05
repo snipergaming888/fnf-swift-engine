@@ -121,7 +121,9 @@ class PlayState extends MusicBeatState
 
 	private var gfSpeed:Int = 1;
 	private var health:Float = 1;
+	private var highestcombo:Int = 0;
 	private var combo:Int = 1;
+	private var truecombo:Int = 0;
 	private var misses:Int = 0;
 	private var sicks:Int = 0;
 	private var goods:Int = 0;
@@ -324,7 +326,7 @@ class PlayState extends MusicBeatState
 			controls.loadKeyBinds();
 			PlayerSettings.player1.controls.loadKeyBinds();
 			trace('binds loadeded');
-			// load settings again just incase if they were changed
+			// load settings again just if they were changed
 			Settings.loadsettings();
 			botplaycheck();
 			if (FlxG.save.data.songinfo)
@@ -1528,7 +1530,15 @@ class PlayState extends MusicBeatState
 									case 'senpai':
 										schoolIntro(doof);
 									case 'roses':
+										if (FlxG.save.data.usedeprecatedloading)
 										FlxG.sound.play(Paths.sound('ANGRY'));
+										else
+											{
+												new FlxTimer().start(0.15, function(tmr:FlxTimer)
+													{
+													FlxG.sound.play(Paths.sound('ANGRY'));
+													});
+											}
 										schoolIntro(doof);
 									case 'thorns':
 										schoolIntro(doof);
@@ -1660,6 +1670,8 @@ class PlayState extends MusicBeatState
 		persistentUpdate = true;
 		persistentDraw = true;
 		paused = false;
+		if (StoryMenuState.curWeek == 3)
+			trainReset();
 		for (i in members)
 		{
 			remove(i);
@@ -1673,6 +1685,8 @@ class PlayState extends MusicBeatState
 		totalPlayed = 0;
 		songTime = 0;
 		combo = 1;
+		truecombo = 0;
+		highestcombo = 0;
 		accuracy = 0;
 		baseText2 = "N/A";
 		baseText = "N/A";
@@ -1715,6 +1729,8 @@ class PlayState extends MusicBeatState
 			persistentUpdate = true;
 			persistentDraw = true;
 			paused = false;
+			if (StoryMenuState.curWeek == 3)
+				trainReset();
 			for (i in members)
 			{
 				remove(i);
@@ -1727,6 +1743,8 @@ class PlayState extends MusicBeatState
 			notesHit = 0;
 			songTime = 0;
 			combo = 1;
+			truecombo = 0;
+			highestcombo = 0;
 			accuracy = 0;
 			baseText2 = "N/A";
 			baseText = "N/A";
@@ -1770,6 +1788,8 @@ class PlayState extends MusicBeatState
 			{
 				remove(i);
 			}
+			if (StoryMenuState.curWeek == 3)
+				trainReset();
 			songScore = 0;
 			unspawnNotes = [];
 			notes.clear();
@@ -1777,6 +1797,8 @@ class PlayState extends MusicBeatState
 			totalPlayed = 0;
 			songTime = 0;
 			combo = 1;
+			truecombo = 0;
+			highestcombo = 0;
 			accuracy = 0;
 			baseText2 = "N/A";
 			baseText = "N/A";
@@ -2479,7 +2501,6 @@ class PlayState extends MusicBeatState
 
 			strumLineNotes.add(babyArrow);
 			generatedStaticArrows = true;
-			//updatenotesplashes(daNote);
 		}
 	}
 
@@ -2579,7 +2600,6 @@ class PlayState extends MusicBeatState
 			{
 			DiscordClient.changePresence(detailsText + SONG.song + storyDifficultyText + botplayd + practicemodeon + ratingsd, " Rating: " + songRating + " (" + fullcombotext + ")" + " | Cur Acc: " + baseText2 + " | All Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC);
 			}
-			//(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
 		}
 		#end
 
@@ -2880,6 +2900,13 @@ class PlayState extends MusicBeatState
 																	}
 																	addedwatermarks = true;		
 										}
+
+										if (!FlxG.save.data.watermarks && addedwatermarks)
+											{
+												remove(sniperenginemark);
+												remove(version);
+												addedwatermarks = false;
+											}
 
 	 if (reloadhealthbar)
 		{
@@ -3252,6 +3279,8 @@ class PlayState extends MusicBeatState
 										scoreTxt.text = "Score:" + songScore + " | Combo Breaks:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + " %" + " | " + generateRanking();
 										else if (FlxG.save.data.fpsplusenginescoretext)
 										scoreTxt.text = "Score:" + songScore + " | Misses:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + "%";
+										else if (FlxG.save.data.noscoretext)
+										scoreTxt.text = "";	
 					if (addedratingstext && !FlxG.save.data.showratings)
 						{
 							//nothin
@@ -3263,7 +3292,7 @@ class PlayState extends MusicBeatState
 							else if (FlxG.save.data.showratings && addedratingstext && startedCountdown)
 								{
 									if (!inCutscene)
-									ratings.text = "Sicks: " + sicks + "\n" + "\n" + "Goods: " + goods + "\n" + "\n" + "Bads: " + bads + "\n" + "\n" + "Shits: " + shits + "\n" + "";	
+									ratings.text = "" + (FlxG.save.data.highestcombo ? "Highest Combo: " + highestcombo + "\n" + "\n" + "" : "") + (FlxG.save.data.combo ? "Combo: " + truecombo + "\n" + "\n" + "" : "") + "Sicks: " + sicks + "\n" + "\n" + "Goods: " + goods + "\n" + "\n" + "Bads: " + bads + "\n" + "\n" + "Shits: " + shits + "\n" + "\n" + "" + (FlxG.save.data.showmisses ? "Miss: " + misses + "\n" + "\n" + "" : "");	
 								}
 					
     
@@ -3384,10 +3413,12 @@ class PlayState extends MusicBeatState
 			{
 				if (FlxG.save.data.newhealthheadbump)
 					{
-					//iconP1.setGraphicSize(Std.int(FlxMath.lerp(150, iconP1.width, 0.80)));
-					//iconP2.setGraphicSize(Std.int(FlxMath.lerp(150, iconP2.width, 0.80)));
-					iconP1.setGraphicSize(Std.int(FlxMath.lerp(iconP1.width, 150, 0.15)));
-					iconP2.setGraphicSize(Std.int(FlxMath.lerp(iconP2.width, 150, 0.15)));
+						{
+							iconP1.setGraphicSize(Std.int(FlxMath.lerp(150, iconP1.width, 0.85)));
+							iconP2.setGraphicSize(Std.int(FlxMath.lerp(150, iconP2.width, 0.85)));
+						}	
+					//iconP1.setGraphicSize(Std.int(FlxMath.lerp(iconP1.width, 150, 0.15)));
+					//iconP2.setGraphicSize(Std.int(FlxMath.lerp(iconP2.width, 150, 0.15)));
 					}
 					else
 						{
@@ -3817,7 +3848,7 @@ class PlayState extends MusicBeatState
 								{
 									if (trailon)
 										{
-											trail.velocity.x = -200;
+											//trail.velocity.x = -200;
 											new FlxTimer().start(0.3, function(tmr:FlxTimer)
 												{
 													trail.velocity.x = 0;
@@ -4250,6 +4281,9 @@ class PlayState extends MusicBeatState
 		// boyfriend.playAnim('hey');
 		vocals.volume = 1;
 
+		if (truecombo >= highestcombo)
+			highestcombo = truecombo;
+
 		var placement:String = Std.string(combo);
 
 		if (FlxG.save.data.enablesickpositions)
@@ -4531,6 +4565,9 @@ class PlayState extends MusicBeatState
 			{
 				if (FlxG.save.data.enablesickpositions)
 					{
+						if (SONG.noteskin == 'pixel')
+						currentTimingShown.x = FlxG.save.data.changedHitX + 210;
+						else
 						currentTimingShown.x = FlxG.save.data.changedHitX + 250;
 						currentTimingShown.y = FlxG.save.data.changedHitY + 40;
 						currentTimingShown.cameras = [camHUD];
@@ -5082,6 +5119,7 @@ class PlayState extends MusicBeatState
 				gf.playAnim('sad');
 			}
 			combo = 0;
+			truecombo = 0;
 			songScore -= 10;
 			notesPassing += 1;
             if (FlxG.save.data.missnotes)
@@ -5388,6 +5426,9 @@ class PlayState extends MusicBeatState
 				popUpScore(note);
 				///popUpScore(note.strumTime);
 				combo += 1;
+				truecombo += 1;
+				if (highestcombo <= truecombo)
+				highestcombo = truecombo;
 			}
 			else
 				totalNotesHit += 1;
@@ -6165,7 +6206,7 @@ class PlayState extends MusicBeatState
 					   {
 						 defaultCamZoom = 0.9;
 						 trace(defaultCamZoom);
-					   }	   			
+					   }// make it pull from the json you idiot.	   			
 				}
 		}
 
