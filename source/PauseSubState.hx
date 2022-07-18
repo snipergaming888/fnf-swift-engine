@@ -765,6 +765,10 @@ class PauseSubState extends MusicBeatSubstate
 
 				if (FlxG.keys.justPressed.ESCAPE)
 					{
+						if (FlxG.save.data.cinematic)
+							{
+								PlayState.camHUD.visible = false;
+							}
 						close();
 						if (isingameplay = false)
 							{

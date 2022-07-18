@@ -70,9 +70,6 @@ class ScoretextselectState extends MusicBeatState
 				FreeplayState.voices.stop();
 			}
 		addedhealthbarshit = false;
-        if (FlxG.save.data.optimizations)
-		magenta = new FlxSprite(-80).loadGraphic(Paths.image('menuDesat-opt'));
-		else
 		magenta = new FlxSprite(-80).loadGraphic(Paths.image('menuDesat'));
 		magenta.scrollFactor.x = 0;
 		magenta.scrollFactor.y = 0.18;
@@ -168,7 +165,7 @@ class ScoretextselectState extends MusicBeatState
 
 		#if cpp
 		// Updating Discord Rich Presence
-		DiscordClient.changePresence("Choosing Scoretext preference", null);
+		DiscordClient.changePresence("Choosing Scoretext Preference", null);
 		#end
 
 		super.create();
@@ -185,22 +182,24 @@ class ScoretextselectState extends MusicBeatState
 		if (scoretextlayout == 0)
 		scoreTxt.text = "Score: " + songScore + " | Current Accuracy: " + baseText2 + " | Overall Accuracy: " + "N/A" + " | Misses: " + misses + " | " + fullcombotext + " (" + songRating + ")";
 		if (scoretextlayout == 1)
-		scoreTxt.text = (FlxG.save.data.npsDisplay ? "NPS: " + nps + " | " : "") + "Score:" + songScore + " | Combo Breaks:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | " + generateRanking();
+			scoreTxt.text = "Score: " + songScore + " - Accuracy: " + "N/A" + " - Misses: " + misses + " - " + songRating + " - [" + fullcombotext + "]";
 		if (scoretextlayout == 2)
-		scoreTxt.text = "Score:" + songScore + " | Misses:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + "% " + (fc ? "| FC" : misses == 0 ? "| A" : accuracy <= 75 ? "| BAD" : "");
+		scoreTxt.text = (FlxG.save.data.npsDisplay ? "NPS: " + nps + " | " : "") + "Score:" + songScore + " | Combo Breaks:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | " + generateRanking();
 		if (scoretextlayout == 3)
-		scoreTxt.text = "Misses:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + "% |" + " Score:" + songScore;
+		scoreTxt.text = "Score:" + songScore + " | Misses:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + "% " + (fc ? "| FC" : misses == 0 ? "| A" : accuracy <= 75 ? "| BAD" : "");
 		if (scoretextlayout == 4)
-		scoreTxt.text = " Score: " + songScore + " | " + "Misses: " + misses;
+		scoreTxt.text = "Misses:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + "% |" + " Score:" + songScore;
 		if (scoretextlayout == 5)
-		scoreTxt.text = 'Score: ' + songScore + ' | Misses: ' + misses + ' | Rating: ' + songRating;
+		scoreTxt.text = " Score: " + songScore + " | " + "Misses: " + misses;
 		if (scoretextlayout == 6)
-		scoreTxt.text = "Score:" + songScore;
+		scoreTxt.text = 'Score: ' + songScore + ' | Misses: ' + misses + ' | Rating: ' + songRating;
 		if (scoretextlayout == 7)
-		scoreTxt.text = "Score:" + songScore + " | Combo Breaks:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + " %" + " | " + generateRanking(); // Letter Rank
+		scoreTxt.text = "Score:" + songScore;
 		if (scoretextlayout == 8)
-		scoreTxt.text = "Score:" + songScore + " | Misses:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + "%";
+		scoreTxt.text = "Score:" + songScore + " | Combo Breaks:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + " %" + " | " + generateRanking(); // Letter Rank
 		if (scoretextlayout == 9)
+		scoreTxt.text = "Score:" + songScore + " | Misses:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + "%";
+		if (scoretextlayout == 10)
 		scoreTxt.text = "";
 		var multiply:Int = 1;
 
@@ -223,12 +222,12 @@ class ScoretextselectState extends MusicBeatState
 					scoretextlayout = 0;
 				}
 
-			if (FlxG.keys.justPressed.UP && scoretextlayout >= 0 && scoretextlayout < 9)
+			if (FlxG.keys.justPressed.UP && scoretextlayout >= 0 && scoretextlayout < 10)
 				{
 					scoretextlayout += 1;
 				}
 
-			if (FlxG.keys.justPressed.DOWN && scoretextlayout > 0 && scoretextlayout <= 9)
+			if (FlxG.keys.justPressed.DOWN && scoretextlayout > 0 && scoretextlayout <= 10)
 				{
 					scoretextlayout -= 1;
 				}
@@ -236,22 +235,24 @@ class ScoretextselectState extends MusicBeatState
 				if (scoretextlayout == 0)
 					scoretextlayouttext = 'Swift Engine';
 				if (scoretextlayout == 1)
-					scoretextlayouttext = 'Kade Engine 1.4.2';
+					scoretextlayouttext = 'Swift Engine Compact';
 				if (scoretextlayout == 2)
-					scoretextlayouttext = 'Kade Engine 1.0';
+					scoretextlayouttext = 'Kade Engine 1.4.2';
 				if (scoretextlayout == 3)
-					scoretextlayouttext = 'Unknown Engine v1.0421';
+					scoretextlayouttext = 'Kade Engine 1.0';
 				if (scoretextlayout == 4)
-					scoretextlayouttext = 'Sniper Engine Alpha';
+					scoretextlayouttext = 'Unknown Engine v1.0421';
 				if (scoretextlayout == 5)
-					scoretextlayouttext = 'Psyche Engine';
+					scoretextlayouttext = 'Sniper Engine Alpha';
 				if (scoretextlayout == 6)
-					scoretextlayouttext = 'Base FNF (centered)';
+					scoretextlayouttext = 'Psyche Engine';
 				if (scoretextlayout == 7)
-				scoretextlayouttext = 'Kade Engine 1.8';
+					scoretextlayouttext = 'Base FNF (centered)';
 				if (scoretextlayout == 8)
-				scoretextlayouttext = 'Fps Plus Engine';
+				scoretextlayouttext = 'Kade Engine 1.8';
 				if (scoretextlayout == 9)
+				scoretextlayouttext = 'Fps Plus Engine';
+				if (scoretextlayout == 10)
 				scoretextlayouttext = 'Disabled';	
 
 		if (FlxG.keys.justPressed.SPACE)
@@ -282,22 +283,23 @@ class ScoretextselectState extends MusicBeatState
 					}
 				if (scoretextlayout == 1)
 					{
-						FlxG.save.data.swiftenginescoretext = false;
-						FlxG.save.data.kadeengine142scoretext = true;
-						FlxG.save.data.kadeengine10scoretext = false;
-						FlxG.save.data.unknownenginescoretext = false;
-						FlxG.save.data.sniperenginealphascoretext = false;
-						FlxG.save.data.pscyheenginescoretext = false;
-						FlxG.save.data.basefnfscoretext = false;
-						FlxG.save.data.kadeengine18scoretext = false;
-						FlxG.save.data.fpsplusenginescoretext = false;
-						FlxG.save.data.noscoretext = false;
-					}
+                     FlxG.save.data.swiftenginescoretext = false;
+					 FlxG.save.data.swiftenginecompact = true;
+					 FlxG.save.data.kadeengine142scoretext = false;
+					 FlxG.save.data.kadeengine10scoretext = false;
+					 FlxG.save.data.unknownenginescoretext = false;
+					 FlxG.save.data.sniperenginealphascoretext = false;
+					 FlxG.save.data.pscyheenginescoretext = false;
+					 FlxG.save.data.basefnfscoretext = false;
+					 FlxG.save.data.kadeengine18scoretext = false;
+					 FlxG.save.data.fpsplusenginescoretext = false;
+					 FlxG.save.data.noscoretext = false;
+					}	
 				if (scoretextlayout == 2)
 					{
 						FlxG.save.data.swiftenginescoretext = false;
-						FlxG.save.data.kadeengine142scoretext = false;
-						FlxG.save.data.kadeengine10scoretext = true;
+						FlxG.save.data.kadeengine142scoretext = true;
+						FlxG.save.data.kadeengine10scoretext = false;
 						FlxG.save.data.unknownenginescoretext = false;
 						FlxG.save.data.sniperenginealphascoretext = false;
 						FlxG.save.data.pscyheenginescoretext = false;
@@ -310,8 +312,8 @@ class ScoretextselectState extends MusicBeatState
 					{
 						FlxG.save.data.swiftenginescoretext = false;
 						FlxG.save.data.kadeengine142scoretext = false;
-						FlxG.save.data.kadeengine10scoretext = false;
-						FlxG.save.data.unknownenginescoretext = true;
+						FlxG.save.data.kadeengine10scoretext = true;
+						FlxG.save.data.unknownenginescoretext = false;
 						FlxG.save.data.sniperenginealphascoretext = false;
 						FlxG.save.data.pscyheenginescoretext = false;
 						FlxG.save.data.basefnfscoretext = false;
@@ -324,8 +326,8 @@ class ScoretextselectState extends MusicBeatState
 						FlxG.save.data.swiftenginescoretext = false;
 						FlxG.save.data.kadeengine142scoretext = false;
 						FlxG.save.data.kadeengine10scoretext = false;
-						FlxG.save.data.unknownenginescoretext = false;
-						FlxG.save.data.sniperenginealphascoretext = true;
+						FlxG.save.data.unknownenginescoretext = true;
+						FlxG.save.data.sniperenginealphascoretext = false;
 						FlxG.save.data.pscyheenginescoretext = false;
 						FlxG.save.data.basefnfscoretext = false;
 						FlxG.save.data.kadeengine18scoretext = false;
@@ -338,8 +340,8 @@ class ScoretextselectState extends MusicBeatState
 						FlxG.save.data.kadeengine142scoretext = false;
 						FlxG.save.data.kadeengine10scoretext = false;
 						FlxG.save.data.unknownenginescoretext = false;
-						FlxG.save.data.sniperenginealphascoretext = false;
-						FlxG.save.data.pscyheenginescoretext = true;
+						FlxG.save.data.sniperenginealphascoretext = true;
+						FlxG.save.data.pscyheenginescoretext = false;
 						FlxG.save.data.basefnfscoretext = false;
 						FlxG.save.data.kadeengine18scoretext = false;
 						FlxG.save.data.fpsplusenginescoretext = false;
@@ -352,8 +354,8 @@ class ScoretextselectState extends MusicBeatState
 						FlxG.save.data.kadeengine10scoretext = false;
 						FlxG.save.data.unknownenginescoretext = false;
 						FlxG.save.data.sniperenginealphascoretext = false;
-						FlxG.save.data.pscyheenginescoretext = false;
-						FlxG.save.data.basefnfscoretext = true;
+						FlxG.save.data.pscyheenginescoretext = true;
+						FlxG.save.data.basefnfscoretext = false;
 						FlxG.save.data.kadeengine18scoretext = false;
 						FlxG.save.data.fpsplusenginescoretext = false;
 						FlxG.save.data.noscoretext = false;
@@ -366,8 +368,8 @@ class ScoretextselectState extends MusicBeatState
 						FlxG.save.data.unknownenginescoretext = false;
 						FlxG.save.data.sniperenginealphascoretext = false;
 						FlxG.save.data.pscyheenginescoretext = false;
-						FlxG.save.data.basefnfscoretext = false;
-						FlxG.save.data.kadeengine18scoretext = true;
+						FlxG.save.data.basefnfscoretext = true;
+						FlxG.save.data.kadeengine18scoretext = false;
 						FlxG.save.data.fpsplusenginescoretext = false;
 						FlxG.save.data.noscoretext = false;
 					}
@@ -380,11 +382,24 @@ class ScoretextselectState extends MusicBeatState
 						FlxG.save.data.sniperenginealphascoretext = false;
 						FlxG.save.data.pscyheenginescoretext = false;
 						FlxG.save.data.basefnfscoretext = false;
+						FlxG.save.data.kadeengine18scoretext = true;
+						FlxG.save.data.fpsplusenginescoretext = false;
+						FlxG.save.data.noscoretext = false;
+					}
+				if (scoretextlayout == 9)
+					{
+						FlxG.save.data.swiftenginescoretext = false;
+						FlxG.save.data.kadeengine142scoretext = false;
+						FlxG.save.data.kadeengine10scoretext = false;
+						FlxG.save.data.unknownenginescoretext = false;
+						FlxG.save.data.sniperenginealphascoretext = false;
+						FlxG.save.data.pscyheenginescoretext = false;
+						FlxG.save.data.basefnfscoretext = false;
 						FlxG.save.data.kadeengine18scoretext = false;
 						FlxG.save.data.fpsplusenginescoretext = true;
 						FlxG.save.data.noscoretext = false;
 					}
-				if (scoretextlayout == 9)
+				if (scoretextlayout == 10)
 					{
 						FlxG.save.data.swiftenginescoretext = false;
 						FlxG.save.data.kadeengine142scoretext = false;

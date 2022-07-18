@@ -15,7 +15,7 @@ class Settings extends MusicBeatState
           {
             //settings
 
-            if (FlxG.save.data.firststart == null)
+            if (FlxG.save.data.firststart == null || FlxG.save.data.firststart == false || FlxG.save.data.firststart != true)
               {
                 resettodefaultsettings();
                 FlxG.save.data.firststart = true;
@@ -187,7 +187,10 @@ class Settings extends MusicBeatState
                 FlxG.save.data.camfollowspeedon = false;
 
               if (FlxG.save.data.swiftenginescoretext == null)
-                FlxG.save.data.swiftenginescoretext = true;
+                FlxG.save.data.swiftenginescoretext = false;
+
+              if (FlxG.save.data.swiftenginecompact == null)
+                FlxG.save.data.swiftenginecompact = true;
 
               if (FlxG.save.data.kadeengine142scoretext == null)
                 FlxG.save.data.kadeengine142scoretext = false;
@@ -473,6 +476,8 @@ class Settings extends MusicBeatState
                     FlxG.save.data.showmisses = false;
 
                     FlxG.save.data.showratinggraphic = true;
+
+                    FlxG.save.data.swiftenginecompact = true;
   
                 FlxG.save.data.hasplayed = false;
                 trace('anim played? ' + FlxG.save.data.hasplayed);

@@ -47,8 +47,6 @@ class TitleState extends MusicBeatState
 	var credTextShit:Alphabet;
 	var textGroup:FlxGroup;
 	var ngSpr:FlxSprite;
-	var CYAN:FlxColor = 0xFF00FFFF;
-	var LIGHTBLUE:FlxColor = 0xFF00eaff;
 	var logo:FlxSprite;
 	var _controlsSave:FlxSave;
 	public static var abletocache:Bool = false;
@@ -158,7 +156,10 @@ class TitleState extends MusicBeatState
 				if (FlxG.save.data.togglecap)
 					{
 						openfl.Lib.current.stage.frameRate = FlxG.save.data.fpsCap;
-						trace('CAP CAP CAP CAP');
+						(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
+						FlxG.updateFramerate = FlxG.save.data.fpsCap;
+						FlxG.drawFramerate = FlxG.save.data.fpsCap; 
+						trace('update FPS cap');
 					}
 				
 			trace('liam is a nerd');
@@ -207,7 +208,7 @@ class TitleState extends MusicBeatState
 			logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
 			logoBl.animation.play('bump');
 			logoBl.updateHitbox();
-			FlxTween.tween(logoBl, {y: -100 }, 0.5, { type: FlxTween.PINGPONG, ease: FlxEase.quadInOut, startDelay: 0, loopDelay: 0.0});
+			//FlxTween.tween(logoBl, {y: -100 }, 0.5, { type: FlxTween.PINGPONG, ease: FlxEase.quadInOut, startDelay: 0, loopDelay: 0.0});
 			// logoBl.screenCenter();
 			// logoBl.color = FlxColor.BLACK;
 	
@@ -436,7 +437,8 @@ class TitleState extends MusicBeatState
 			money.y += (i * 60) + 200;
 			credGroup.add(money);
 			textGroup.add(money);
-			//FlxTween.tween(money, {y: money.y + 350}, 0.5, {ease: FlxEase.expoOut, startDelay: 0.0});
+			money.y -= 350;
+			FlxTween.tween(money, {y: money.y + 350}, FlxG.elapsed* 60, {ease: FlxEase.expoOut, startDelay: 0.0});
 		}
 	}
 
@@ -447,7 +449,8 @@ class TitleState extends MusicBeatState
 		coolText.y += (textGroup.length * 60) + 200;
 		credGroup.add(coolText);
 		textGroup.add(coolText);
-		//FlxTween.tween(coolText, {y: coolText.y + 350}, 0.5, {ease: FlxEase.expoOut, startDelay: 0.0});
+		coolText.y -= 350;
+		FlxTween.tween(coolText, {y: coolText.y + 350}, FlxG.elapsed* 60, {ease: FlxEase.expoOut, startDelay: 0.0});
 	}
 
 		function addMoreTextcolorsnipergaming(text:String)
@@ -458,7 +461,8 @@ class TitleState extends MusicBeatState
 				coolText.y += (textGroup.length * 60) + 200;
 				credGroup.add(coolText);
 				textGroup.add(coolText);
-				//FlxTween.tween(coolText, {y: coolText.y + 350}, 0.5, {ease: FlxEase.expoOut, startDelay: 0.0});
+				coolText.y -= 350;
+				FlxTween.tween(coolText, {y: coolText.y + 350}, FlxG.elapsed* 60, {ease: FlxEase.expoOut, startDelay: 0.0});
 			}
 
 	function deleteCoolText()

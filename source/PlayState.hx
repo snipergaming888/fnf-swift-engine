@@ -1670,7 +1670,7 @@ class PlayState extends MusicBeatState
 		persistentUpdate = true;
 		persistentDraw = true;
 		paused = false;
-		if (StoryMenuState.curWeek == 3)
+		if (storyWeek == 3)
 			trainReset();
 		for (i in members)
 		{
@@ -1729,7 +1729,7 @@ class PlayState extends MusicBeatState
 			persistentUpdate = true;
 			persistentDraw = true;
 			paused = false;
-			if (StoryMenuState.curWeek == 3)
+			if (storyWeek == 3)
 				trainReset();
 			for (i in members)
 			{
@@ -1788,7 +1788,7 @@ class PlayState extends MusicBeatState
 			{
 				remove(i);
 			}
-			if (StoryMenuState.curWeek == 3)
+			if (storyWeek == 3)
 				trainReset();
 			songScore = 0;
 			unspawnNotes = [];
@@ -2076,7 +2076,6 @@ class PlayState extends MusicBeatState
 		FlxG.sound.music.onComplete = endSong;
 		if (!paused)
 		vocals.play();
-		if (FlxG.timeScale == 1)
 		songLength = FlxG.sound.music.length;
 		if (vocals != null)
 			vocals.time = startTime;
@@ -2556,17 +2555,16 @@ class PlayState extends MusicBeatState
 					
 							if (spr.animation.curAnim.name != 'confirm')
 								{		
-											trace('cleared strums');
 											spr.animation.play('static');
 											spr.centerOffsets();
 								}
 
 								if (spr.animation.curAnim.name != 'pressed')
 									{		
-										        trace('cleared strums');
 												spr.animation.play('static');
 												spr.centerOffsets();
 									}
+								trace('cleared strums');
 				});
 
 			#if cpp
@@ -3021,6 +3019,29 @@ class PlayState extends MusicBeatState
 							}
 					
 				}
+
+				if (FlxG.timeScale != 1)
+					{
+						if (generatedMusic)
+							{
+								if (songStarted && !endingSong)
+								{
+									
+									// Song ends abruptly on slow rate even with second condition being deleted,
+									// and if it's deleted on songs like cocoa then it would end without finishing instrumental fully,
+									// so no reason to delete it at all
+									// seeing if length will work		
+											for (i in 0...unspawnNotes.length)
+												{
+													if (unspawnNotes.length == 0 && FlxG.sound.music.time == 0 && notes.length <= 0)
+														{
+															trace("notes, unspawned and time length is zero (END)");
+															endSong();
+														}
+												}
+								}
+							}
+					}
 				#end
 						if (songStarted && !endingSong)
 							{
@@ -3234,6 +3255,13 @@ class PlayState extends MusicBeatState
 								scoreTxt.text = "Score: " + songScore + " | Current Accuracy: " + baseText2 + " | Overall Accuracy: " + truncateFloat(accuracy, 2) + "%" + " | Misses: " + misses + " | " + fullcombotext + " (" + songRating + ")";
 							}
 				}
+				else if (FlxG.save.data.swiftenginecompact)
+					{
+						if (accuracy == 0 && !inCutscene)
+							scoreTxt.text = "Score: " + songScore + " - Accuracy: " + "N/A" + " - Misses: " + misses + " - " + songRating;
+						else if (!inCutscene)
+							scoreTxt.text = "Score: " + songScore + " - Accuracy: " + truncateFloat(accuracy, 2) + "%" + " - Misses: " + misses + " - " + songRating + " - [" + fullcombotext + "]";
+					}
 				else if (FlxG.save.data.kadeengine142scoretext)
 					{
 						scoreTxt.text = (FlxG.save.data.npsDisplay ? "NPS: " + nps + " | " : "") + "Score:" + songScore + " | Combo Breaks:" + misses + " | Accuracy:" + truncateFloat(accuracy, 2) + "% | " + generateRanking();
@@ -3316,11 +3344,11 @@ class PlayState extends MusicBeatState
 										{
 											fullcombotext = "FC"; // Full combo (default when the player has gotten all above ratings including a Shit)
 										}
-										else if (misses <= 10)
+										else if (misses < 10)
 											{
 												fullcombotext = "SDM"; // Single Digit Miss (misses are under 10)
 											}
-											else if (misses > 10)
+											else if (misses >= 10)
 												{
 													fullcombotext = "Clear"; // Default when misses are over 10. Thank you for coming to my ted talk lol
 												}
@@ -3646,6 +3674,7 @@ class PlayState extends MusicBeatState
 								}
 								else
 									{
+										if (FlxG.save.data.oldinput)
 										boyfriend.stunned = true;
 		
 										persistentUpdate = false;
@@ -3687,7 +3716,8 @@ class PlayState extends MusicBeatState
 			else if (health <= 0 && !PauseSubState.practicemode)
 				{
 		
-					blueballed += 1;	
+					blueballed += 1;
+					if (FlxG.save.data.oldinput)	
 					boyfriend.stunned = true;
 		
 					persistentUpdate = false;
@@ -4485,7 +4515,7 @@ class PlayState extends MusicBeatState
 			{
 				comboSpr.screenCenter();
 				comboSpr.x = rating.x + 100;
-				comboSpr.y = rating.y + 100;
+				comboSpr.y = rating.y + 70;
 				comboSpr.acceleration.y = 600;
 				comboSpr.velocity.y -= 150;
 	
@@ -4928,7 +4958,7 @@ class PlayState extends MusicBeatState
 					});
 		}
 
-		if ((up || right || down || left) && generatedMusic) ///&& !boyfriend.stunned
+		if ((up || right || down || left) && generatedMusic && !boyfriend.stunned) ///&& !boyfriend.stunned
 		{
 			notes.forEachAlive(function(daNote:Note)
 			{
@@ -4962,7 +4992,7 @@ class PlayState extends MusicBeatState
 							{
 								trace('too close');
 							}
-							else if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss') && (boyfriend.animation.curAnim.curFrame >= 15 || boyfriend.animation.curAnim.finished))
+							else if (daNote.y <= strumLine.y + 500 && !daNote.canBeHit && !daNote.mustPress && boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss') && (boyfriend.animation.curAnim.curFrame >= 10 || boyfriend.animation.curAnim.finished))
 								{
 									boyfriend.playAnim('idle');
 									trace(boyfriend.curCharacter + ' anim dance');
@@ -4979,17 +5009,18 @@ class PlayState extends MusicBeatState
 						}		
 				}
 
+				if (dad.curCharacter.startsWith('bf') && dad.animation.curAnim.name.startsWith('sing') && !dad.animation.curAnim.name.endsWith('miss') && (dad.animation.curAnim.curFrame >= 10 || dad.animation.curAnim.finished))
+					{
+						dad.playAnim('idle');
+						trace(dad.curCharacter + ' dance');
+					}	
+
 			if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss') && !up && !down && !right && !left && !donotidleinbetweenclosenotes && (boyfriend.animation.curAnim.curFrame >= 10 || boyfriend.animation.curAnim.finished))
 				{
 					boyfriend.playAnim('idle');
 					trace(boyfriend.curCharacter + ' dance');
 				}
-			
 				
-	
-				
-
-
 				
 					if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && !up && !down && !right && !left && !FlxG.save.data.botplay && shouldidleafterrelease && !onbeat && !donotidleinbetweenclosenotes)
 						{
@@ -5125,6 +5156,17 @@ class PlayState extends MusicBeatState
             if (FlxG.save.data.missnotes)
 			FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
 			misses +=1;
+            if (FlxG.save.data.oldinput)
+			boyfriend.stunned = true;
+
+			// get stunned for 5 seconds
+			if (FlxG.save.data.oldinput)
+				{
+					new FlxTimer().start(5 / 60, function(tmr:FlxTimer)
+						{
+							boyfriend.stunned = false;
+						});
+				}
 
 			switch (direction)
 			{
@@ -5792,10 +5834,7 @@ class PlayState extends MusicBeatState
 				#end				
 
 			// Song duration in a float, useful for the time left feature
-			if (FlxG.timeScale == 1)
 				songLength = FlxG.sound.music.length;
-				else
-				songLength = FlxG.sound.music.length + FreeplayState.gamespeed + 8;
 
 
 			if (curSong.toLowerCase() == 'avidity' && curStep >= 737 && curStep < 768 && !SONG.notes[Math.floor(curStep / 16)].disablecamzooming)
