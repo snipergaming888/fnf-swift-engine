@@ -47,9 +47,12 @@ hscript
 newgrounds
 actuate
 faxe
-extension-webm
+openfl-webm (extension-webm)
 polymod
 FlxRes
+For faxe and FLxRes, go to there Githubs and download the source and place it in its respective folders.
+faxe: https://github.com/ashea-code/faxe
+FLxRes: https://github.com/harpwood/FlxRes/releases
 ```
 So for each of those type `haxelib install [library]` so shit like `haxelib install newgrounds`
 
