@@ -45,6 +45,11 @@ flixel-addons
 flixel-ui
 hscript
 newgrounds
+actuate
+faxe
+extension-webm
+polymod
+FlxRes
 ```
 So for each of those type `haxelib install [library]` so shit like `haxelib install newgrounds`
 
