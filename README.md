@@ -49,6 +49,7 @@ actuate
 faxe
 openfl-webm (extension-webm)
 polymod
+discord_rpc
 FlxRes
 For faxe and FLxRes, go to there Githubs and download the source and place it in its respective folders.
 faxe: https://github.com/ashea-code/faxe
